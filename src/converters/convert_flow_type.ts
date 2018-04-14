@@ -26,6 +26,7 @@ import {
     isNumberTypeAnnotation,
     isObjectTypeAnnotation,
     isObjectTypeProperty,
+    isObjectTypeSpreadProperty,
     isStringLiteralTypeAnnotation,
     isStringTypeAnnotation,
     isThisTypeAnnotation,
@@ -247,6 +248,7 @@ export function convertFlowType(path: NodePath<FlowType>): TSType {
 
     if (isNodePath(isObjectTypeAnnotation, path)) {
         const members: TSTypeElement[] = [];
+        const spreads: TSType[] = [];
 
         const objectTypeNode = path.node as ObjectTypeAnnotation;
         if (objectTypeNode.exact) {
@@ -255,7 +257,7 @@ export function convertFlowType(path: NodePath<FlowType>): TSType {
 
         if (objectTypeNode.properties && objectTypeNode.properties.length > 0) {
             for (const [i, property] of objectTypeNode.properties.entries()) {
-                if (property.type === 'ObjectTypeProperty') {
+                if (isObjectTypeProperty(property)) {
                     const tsPropSignature = tsPropertySignature(
                         property.key,
                         tsTypeAnnotation(convertFlowType(path.get(`properties.${i}`).get('value')))
@@ -263,10 +265,11 @@ export function convertFlowType(path: NodePath<FlowType>): TSType {
                     tsPropSignature.optional = property.optional;
                     tsPropSignature.readonly = property.variance && property.variance.kind === 'plus';
                     members.push(tsPropSignature);
+                }
 
-                } else {
-                    //property is ObjectTypeSpreadProperty
-                    throw new UnsupportedError('ObjectTypeSpreadProperty');
+                if (isObjectTypeSpreadProperty(property)) {
+                    // {p1:T, ...U} -> {p1:T} | U
+                    spreads.push(convertFlowType(path.get(`properties.${i}`).get('argument')));
                 }
             }
         }
@@ -294,7 +297,14 @@ export function convertFlowType(path: NodePath<FlowType>): TSType {
 
         // TSCallSignatureDeclaration | TSConstructSignatureDeclaration | TSMethodSignature ;
 
-        return tsTypeLiteral(members);
+        let ret: TSType = tsTypeLiteral(members);
+
+        if (spreads.length > 0) {
+            spreads.unshift(ret);
+            ret = tsUnionType(spreads);
+        }
+
+        return ret;
     }
 
     if (isNodePath(isStringLiteralTypeAnnotation, path)) {
