@@ -93,6 +93,13 @@ pluginTester({
   [x: number]: boolean;
 };`
     }, {
+        title: 'Type literal: type literal with variance',
+        code: `let a: { +b: string, -c:number };`,
+        output: `let a: {
+  readonly b: string;
+  c: number;
+};`,
+    }, {
         title: 'Maybe type: variable declaration',
         code: `let a: ?string;`,
         output: `let a: string | undefined | null;`,

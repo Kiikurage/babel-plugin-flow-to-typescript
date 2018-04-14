@@ -2,7 +2,7 @@
   "name": "babel-plugin-flow-to-typescript",
   "version": "0.0.1",
   "scripts": {
-    "test": "jest",
+    "test": "jest --watch",
     "build": "tsc"
   },
   "dependencies": {

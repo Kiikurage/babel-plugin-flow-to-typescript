@@ -261,6 +261,7 @@ export function convertFlowType(path: NodePath<FlowType>): TSType {
                         tsTypeAnnotation(convertFlowType(path.get(`properties.${i}`).get('value')))
                     );
                     tsPropSignature.optional = property.optional;
+                    tsPropSignature.readonly = property.variance && property.variance.kind === 'plus';
                     members.push(tsPropSignature);
 
                 } else {
