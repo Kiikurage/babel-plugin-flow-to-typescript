@@ -30,11 +30,11 @@ $ babel --plugins ${ABS_PATH_TO_THIS_DIR}/dist ${SRC_FLOW_FILE} -o ${DEST_TS_FIL
 
 | Supported? | Syntax | Flow | TypeScript |
 |---|---|---|---|
-| ❎ | Maybe type | `let a:?number` | `let a: number | null | undefined` |
+| ❎ | Maybe type | `let a:?number` | `let a: number \| null \| undefined` |
 | ❎ | Void type | `void` | `void` |
 | ❎ | Mixed type | `mixed` | `{}` |
 |    | Function type | `(A, B) => C` | `(a: A, b: B) => C` |
-| ❎ | Exact type | `{| a: A |}` | `{ a: A }` |
+| ❎ | Exact type | `{\| a: A \|}` | `{ a: A }` |
 | ❎ | Indexers | `{ [A]: B }` | `{ [a: A]: B }` |
 | ❎ | Existential type | `Map<*, *>` | `Map<any, any>` |
 |    | Opaque types | `opaque type A = B` | `type A = B` |
