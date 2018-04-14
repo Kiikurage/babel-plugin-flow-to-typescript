@@ -1,29 +1,18 @@
 # babel-plugin-flow-to-typescript
 
-<span color="red">**Work In Progress**</span>
-
 [Babel] plugin to convert [Flow] code into [TypeScript]
 
 ## How to use
 
 ```shell
-#--------------------------------------------
-# 1. Clone and Build
-
-$ git clone https://github.com/Kiikurage/babel-plugin-flow-to-typescript
-$ yarn install
-$ yarn run build
-
-#--------------------------------------------
-# 2. Use with Babel
-
-$ yarn global add @babel/core @babel/cli
+$ yarn global add @babel/cli 
+$ yarn add babel-plugin-flow-to-typescript
 
 # you must use babel@^7.x.x
 $ babel --version 
-> 7.0.0-beta.44 (@babel/core 7.0.0-beta.44)
+7.0.0-beta.44 (@babel/core 7.0.0-beta.44)
 
-$ babel --plugins ${ABS_PATH_TO_THIS_DIR}/dist ${SRC_FLOW_FILE} -o ${DEST_TS_FILE}
+$ babel --plugins babel-plugin-flow-to-typescript ${SRC_FLOW_FILE} -o ${DEST_TS_FILE}
 ```
 
 ## Implementation status
@@ -51,7 +40,6 @@ $ babel --plugins ${ABS_PATH_TO_THIS_DIR}/dist ${SRC_FLOW_FILE} -o ${DEST_TS_FIL
 | ❎ | $ElementType| `$ElementType<T, k>` | `T[k]` |
 
 - [ ] add CLI
-- [ ] publish to npm
 
 [Babel]: https://github.com/babel/babel
 [Flow]: https://github.com/facebook/flow

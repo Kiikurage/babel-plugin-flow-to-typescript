@@ -1,14 +1,37 @@
 {
   "name": "babel-plugin-flow-to-typescript",
-  "version": "0.0.1",
+  "description": "Babel plugin to convert Flow into TypeScript",
+  "author": {
+    "name": "Yuichiro Kikura",
+    "email": "y.kikura@gmail.com",
+    "url": "https://github.com/Kiikurage"
+  },
+  "files": [
+    "dist",
+    "README.md"
+  ],
+  "version": "0.1.0",
   "scripts": {
-    "test": "jest --watch",
+    "test": "jest",
+    "test-watch": "jest --watch",
     "build": "tsc"
+  },
+  "keywords": [
+    "babel",
+    "flow",
+    "typescript"
+  ],
+  "main": "dist/index.js",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Kiikurage/babel-plugin-flow-to-typescript.git"
   },
   "dependencies": {
     "@babel/core": "^7.0.0-beta.44",
     "@babel/traverse": "^7.0.0-beta.44",
-    "@babel/types": "^7.0.0-beta.44",
+    "@babel/types": "^7.0.0-beta.44"
+  },
+  "devDependencies": {
     "@types/babel-core": "^6.25.3",
     "@types/babel-types": "^7.0.1",
     "@types/node": "^9.6.2",
