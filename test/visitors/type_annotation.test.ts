@@ -100,6 +100,20 @@ pluginTester({
   c: number;
 };`,
     }, {
+        title: 'Type literal: type literal with spread operator',
+        code: `let a: { b: string, ...T };`,
+        output: `let a: {
+  b: string;
+} | T;`,
+    }, {
+        title: 'Type literal: deep type literal with spread operator',
+        code: `let a: { b: { c: T, ...U} };`,
+        output: `let a: {
+  b: {
+    c: T;
+  } | U;
+};`,
+    }, {
         title: 'Maybe type: variable declaration',
         code: `let a: ?string;`,
         output: `let a: string | undefined | null;`,
