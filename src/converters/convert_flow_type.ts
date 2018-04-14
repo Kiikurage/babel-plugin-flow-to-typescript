@@ -34,7 +34,6 @@ import {
     isTypeAnnotation,
     isTypeofTypeAnnotation,
     isUnionTypeAnnotation,
-    isVariableDeclarator,
     isVoidTypeAnnotation,
     NumberLiteralTypeAnnotation,
     numericLiteral,
@@ -126,6 +125,10 @@ export function convertFlowType(path: NodePath<FlowType>): TSType {
         } else if (id.name === '$ReadOnly') {
             // $ReadOnly<X> -> Readonly<X>
             return tsTypeReference(identifier('Readonly'), tsTypeParameters);
+
+        } else if (id.name === '$ReadOnlyArray') {
+            // $ReadOnlyArray<X> -> ReadonlyArray<X>
+            return tsTypeReference(identifier('ReadonlyArray'), tsTypeParameters);
 
         } else if (id.name === '$Exact') {
             warnOnlyOnce('Exact object type annotation in Flow is ignored. In TypeScript, it\'s always regarded as exact type');
