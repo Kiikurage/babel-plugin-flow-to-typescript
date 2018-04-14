@@ -49,6 +49,10 @@ pluginTester({
         code: `let a: $ReadOnly<X>;`,
         output: `let a: Readonly<X>;`
     }, {
+        title: 'Utility generics: $ReadOnlyArray',
+        code: `let a: $ReadOnlyArray<X>;`,
+        output: `let a: ReadonlyArray<X>;`
+    }, {
         title: 'Utility generics: $Exact',
         code: `let a: $Exact<X>;`,
         output: `let a: X;`
