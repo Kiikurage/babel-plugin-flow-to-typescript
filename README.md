@@ -37,7 +37,7 @@ $ babel --plugins ${ABS_PATH_TO_THIS_DIR}/dist ${SRC_FLOW_FILE} -o ${DEST_TS_FIL
 | ❎ | Exact type | `{\| a: A \|}` | `{ a: A }` |
 | ❎ | Indexers | `{ [A]: B }` | `{ [a: A]: B }` |
 | ❎ | Existential type | `Map<*, *>` | `Map<any, any>` |
-|    | Opaque types | `opaque type A = B` | `type A = B` |
+| ❎ | Opaque types | `opaque type A = B` | `type A = B` |
 | ❎ | Variance | `interface A { +b: B, -c: C }` | `interface A { readonly b: B, c: C }` |
 | ❎ | Type parameter bounds | `function f<A: string>(a:A){}` | `function f<A extends string>(a:A){}` |
 | ❎ | Cast | `(a: A)` | `(a as A)` |
