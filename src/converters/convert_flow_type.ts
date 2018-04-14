@@ -226,12 +226,9 @@ export function convertFlowType(path: NodePath<FlowType>): TSType {
             }
         }
 
-        if (isVariableDeclarator(pathStack[0].node)) {
-            // var x:?T -> var x:T | null | undefined
-            return tsUnionType([tsT, tsUndefinedKeyword(), tsNullKeyword()]);
-        }
-
-        throw new UnsupportedError(`NullableType(context=${pathStack[0].node.type})`);
+        // var x: X<?T> -> var x: X<T | null | undefined>
+        // var x:?T -> var x:T | null | undefined
+        return tsUnionType([tsT, tsUndefinedKeyword(), tsNullKeyword()]);
     }
 
     if (isNodePath(isNullLiteralTypeAnnotation, path)) {

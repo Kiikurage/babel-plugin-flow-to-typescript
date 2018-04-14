@@ -138,6 +138,10 @@ pluginTester({
         code: `function f(arg?: ?string) {}`,
         output: `function f(arg?: string | null) {}`,
     }, {
+        title: 'Maybe type: generic type instantiation',
+        code: `let a: X<?T>;`,
+        output: `let a: X<T | undefined | null>;`,
+    }, {
         title: 'Union type',
         code: `let a: string | number | boolean;`,
         output: `let a: string | number | boolean;`,
