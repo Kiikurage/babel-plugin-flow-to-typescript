@@ -65,8 +65,10 @@ import {
     tsUndefinedKeyword,
     tsUnionType,
     tsVoidKeyword,
+    tsTupleType,
     TypeofTypeAnnotation,
-    UnionTypeAnnotation
+    UnionTypeAnnotation,
+    TupleTypeAnnotation
 } from '@babel/types';
 import {
     isNodePath,
@@ -337,7 +339,8 @@ export function convertFlowType(path: NodePath<FlowType>): TSType {
     }
 
     if (isNodePath(isTupleTypeAnnotation, path)) {
-        throw new UnsupportedError('NIY');
+        const flowTypes = (path as NodePath<TupleTypeAnnotation>).node.types;
+        return tsTupleType(flowTypes.map((_, i) => convertFlowType((path as NodePath<TupleTypeAnnotation>).get(`types.${i}`))))
     }
 
     throw new UnsupportedError(`FlowType(type=${path.node.type})`);
