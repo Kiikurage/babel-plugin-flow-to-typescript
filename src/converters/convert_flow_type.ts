@@ -65,15 +65,25 @@ import {
     tsUndefinedKeyword,
     tsUnionType,
     tsVoidKeyword,
+    tsTupleType,
+    tsFunctionType,
+    isTSTypeParameter,
+    tsTypeParameter,
+    tsTypeParameterDeclaration,
     TypeofTypeAnnotation,
-    UnionTypeAnnotation
+    UnionTypeAnnotation,
+    TupleTypeAnnotation,
+    FunctionTypeAnnotation,
+    restElement
 } from '@babel/types';
 import {
     isNodePath,
     UnsupportedError,
-    warnOnlyOnce
+    warnOnlyOnce,
+    generateFreeIdentifier
 } from '../util';
 
+// @ts-ignore
 export function convertFlowType(path: NodePath<FlowType>): TSType {
     if (isNodePath(isAnyTypeAnnotation, path)) {
         return tsAnyKeyword();
@@ -334,12 +344,72 @@ export function convertFlowType(path: NodePath<FlowType>): TSType {
     }
 
     if (isNodePath(isFunctionTypeAnnotation, path)) {
-        throw new UnsupportedError('NIY');
+        // https://github.com/bcherny/flow-to-typescript/blob/f1dbe3d1f97b97d655ea6c5f1f5caaaa9f1e0c9f/src/convert.ts
+        const node = (path as NodePath<FunctionTypeAnnotation>).node;
+        let typeParams = undefined;
+
+        if (node.typeParameters) {
+          typeParams = tsTypeParameterDeclaration(node.typeParameters.params.map((_, i) => {
+            // TODO: How is this possible?
+            if (isTSTypeParameter(_)) {
+              return _;
+            }
+
+            const param = tsTypeParameter(convertFlowType(path.get(`typeParameters.params.${i}.bound`)));
+            param.name = _.name;
+            return param;
+          }));
+        }
+
+        const f = tsFunctionType(typeParams);
+      
+        // Params
+        if (node.params) {
+          const paramNames = node.params.map(_ => _.name).filter(_ => _ !== null).map(_ => (_ as Identifier).name);
+          f.parameters = node.params.map((_, i) => {
+            let name = _.name && _.name.name;
+      
+            // Generate param name? (Required in TS, optional in Flow)
+            if (name == null) {
+              name = generateFreeIdentifier(paramNames);
+              paramNames.push(name);
+            }
+      
+            const id = identifier(name);
+      
+            if (_.typeAnnotation) {
+              id.typeAnnotation = tsTypeAnnotation(convertFlowType(path.get(`params.${i}.typeAnnotation`)));
+            }
+
+            return id;
+          });
+        }
+
+        // rest parameters
+        if (node.rest) {
+          if (f.parameters == null) {
+            f.parameters = [];
+          }
+
+          if (node.rest.name) {
+            const id = restElement(node.rest.name);
+            id.typeAnnotation = tsTypeAnnotation(convertFlowType(path.get(`rest.typeAnnotation`)));
+            f.parameters.push(id);
+          }
+        }
+      
+        // Return type
+        if (node.returnType) {
+          f.typeAnnotation = tsTypeAnnotation(convertFlowType(path.get('returnType')));
+        }
+
+        return f;
     }
 
     if (isNodePath(isTupleTypeAnnotation, path)) {
-        throw new UnsupportedError('NIY');
+        const flowTypes = (path as NodePath<TupleTypeAnnotation>).node.types;
+        return tsTupleType(flowTypes.map((_, i) => convertFlowType((path as NodePath<TupleTypeAnnotation>).get(`types.${i}`))))
     }
-
+    
     throw new UnsupportedError(`FlowType(type=${path.node.type})`);
 }
