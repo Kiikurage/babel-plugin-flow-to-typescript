@@ -253,6 +253,7 @@ export function convertFlowType(path: NodePath<FlowType>): TSType {
         const objectTypeNode = path.node as ObjectTypeAnnotation;
         if (objectTypeNode.exact) {
             warnOnlyOnce('Exact object type annotation in Flow is ignored. In TypeScript, it\'s always regarded as exact type');
+            objectTypeNode.exact = false
         }
 
         if (objectTypeNode.properties && objectTypeNode.properties.length > 0) {
