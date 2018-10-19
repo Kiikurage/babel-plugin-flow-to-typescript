@@ -159,5 +159,55 @@ pluginTester({
         title: 'Void literal',
         code: `let a: void;`,
         output: `let a: void;`,
-    }]
-});
+    }, {
+        title: 'Tuple type',
+        code: `let a: [number, string, Array<boolean>];`,
+        output: `let a: [number, string, Array<boolean>];`,
+    }, {
+        title: 'Function type',
+        code: `function test(): string { return 'test'; }`,
+        output: `function test(): string {
+  return 'test';
+}`
+    }, {
+        title: 'Function type (param)',
+        code: `function test(arg: string): string { return arg; }`,
+        output: `function test(arg: string): string {
+  return arg;
+}`
+    }, {
+        title: 'Function type (multi param)',
+        code: `function test(arg1: string, arg2: number): string { return arg1; }`,
+        output: `function test(arg1: string, arg2: number): string {
+  return arg1;
+}`
+    }, {
+        title: 'Arrow Function type',
+        code: `let test: () => string;`,
+        output: `let test: () => string; `
+    }, {
+        title: 'Arrow Function type (param)',
+        code: `let test: (a: number) => string;`,
+        output: `let test: (a: number) => string;`
+    }, {
+        title: 'Arrow Function type (multi params)',
+        code: `let test: (a: number, b: string) => string;`,
+        output: `let test: (a: number, b: string) => string;`
+    }, {
+        title: 'Generic Function type',
+        code: `function test<T>(value: T): T { return value; }`,
+        output: `function test<T>(value: T): T {
+  return value;
+}`
+    }, {
+        title: 'Function type (rest param)',
+        code: `function test(value: number, ...arg2: Array<string>): number { return value; }`,
+        output: `function test(value: number, ...arg2: Array<string>): number {
+  return value;
+}`
+    }, {
+        title: 'Arrow Function type (rest param)',
+        code: `let test: (value: number, ...args: Array<string>) => number;`,
+        output: `let test: (value: number, ...args: Array<string>) => number;`
+    }
+]});
