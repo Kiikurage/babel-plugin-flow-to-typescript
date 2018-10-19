@@ -194,11 +194,6 @@ pluginTester({
   return value;
 }`
     }, {
-        title: 'Generic Function type',
-        code: `let test: <T>(value: T) => T;`,
-        output: `let test: <T>(value: T) => T;`
-    },
-    {
         title: 'Function type (rest param)',
         code: `function test(value: number, ...arg2: Array<string>): number { return value; }`,
         output: `function test(value: number, ...arg2: Array<string>): number {
@@ -208,5 +203,5 @@ pluginTester({
         title: 'Arrow Function type (rest param)',
         code: `let test: (value: number, ...args: Array<string>) => number;`,
         output: `let test: (value: number, ...args: Array<string>) => number;`
-    }]
-});
+    }
+]});
