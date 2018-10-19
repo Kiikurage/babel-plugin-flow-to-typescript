@@ -22,8 +22,8 @@ jobs:
           paths:
             - node_modules
           key: v{{ .Environment.CIRCLECI_CACHE_VERSION }}-dependencies-{{ checksum "yarn.lock" }}
-      - run: npm test
-      - run: npm build
+      - run: yarn test
+      - run: yarn build
   node-v8:
     <<: *base
     docker:
