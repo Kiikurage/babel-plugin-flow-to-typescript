@@ -1,5 +1,8 @@
 {
   "name": "@cureapp/babel-plugin-flow-to-typescript",
+  "publishConfig": {
+    "access": "public"
+  },
   "description": "Babel plugin to convert Flow into TypeScript",
   "author": "CureApp",
   "files": [
@@ -8,6 +11,7 @@
   ],
   "version": "0.3.0",
   "scripts": {
+  	"prepare": "npm run build",
     "test": "jest",
     "test-watch": "jest --watch",
     "build": "tsc"
