@@ -69,6 +69,12 @@ pluginTester({
         code: `let a: $ElementType<T, k>;`,
         output: `let a: T[k];`
     }, {
+        title: 'Object type: exact=true',
+        code: `let a: {| a: T |};`,
+        output: `let a: {
+  a: T;
+};`
+    }, {
         title: 'Intersection type',
         code: `let a: {x: number} & {y: string};`,
         output: `let a: {
