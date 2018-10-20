@@ -1,4 +1,4 @@
-import {ExportDeclaration, ExportSpecifier} from '@babel/types';
+import {ExportDeclaration} from '@babel/types';
 import {NodePath} from '@babel/traverse';
 import {convertEmportDeclaration} from '../converters/convert_export_declaration';
 
