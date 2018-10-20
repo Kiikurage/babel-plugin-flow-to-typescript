@@ -66,7 +66,11 @@ import {
     tsUnionType,
     tsVoidKeyword,
     TypeofTypeAnnotation,
-    UnionTypeAnnotation
+    UnionTypeAnnotation,
+    isQualifiedTypeIdentifier,
+    tsQualifiedName,
+    TSEntityName,
+    TSQualifiedName
 } from '@babel/types';
 import {
     isNodePath,
@@ -159,6 +163,12 @@ export function convertFlowType(path: NodePath<FlowType>): TSType {
             return tsIndexedAccessType(tsT, tsK);
 
             //TODO: $ObjMap<T, F>, $TupleMap<T, F>, $Call<F>, Class<T>, $Supertype<T>, $Subtype<T>
+        } else if (isQualifiedTypeIdentifier(id)) {
+            if (isQualifiedTypeIdentifier(id.qualification)) {
+                path.buildCodeFrameError('Nested qualification is not supported', UnsupportedError)
+            }
+            const tsQ = tsQualifiedName(id.qualification as TSEntityName, id.id)
+            return tsTypeReference(tsQ, tsTypeParameters);
 
         } else {
             return tsTypeReference(id, tsTypeParameters);

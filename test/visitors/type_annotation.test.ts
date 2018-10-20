@@ -33,6 +33,10 @@ pluginTester({
         code: `let a: empty;`,
         output: `let a: never;`,
     }, {
+        title: 'Qualified type identifier',
+        code: `let a: A.B;`,
+        output: `let a: A.B;`,
+    }, {
         title: 'Generic type',
         code: `let a: X<T>;`,
         output: `let a: X<T>;`
