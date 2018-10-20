@@ -340,7 +340,9 @@ export function convertFlowType(path: NodePath<FlowType>): TSType {
     }
 
     if (isNodePath(isTypeofTypeAnnotation, path)) {
-        return tsTypeOperator(convertFlowType((path as NodePath<TypeofTypeAnnotation>).get('arguments')), 'typeof');
+        const typeOp = tsTypeOperator(convertFlowType((path as NodePath<TypeofTypeAnnotation>).get('argument')));
+        typeOp.operator = 'typeof'
+        return typeOp
     }
 
     if (isNodePath(isUnionTypeAnnotation, path)) {
