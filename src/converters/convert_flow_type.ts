@@ -165,7 +165,7 @@ export function convertFlowType(path: NodePath<FlowType>): TSType {
             //TODO: $ObjMap<T, F>, $TupleMap<T, F>, $Call<F>, Class<T>, $Supertype<T>, $Subtype<T>
         } else if (isQualifiedTypeIdentifier(id)) {
             if (isQualifiedTypeIdentifier(id.qualification)) {
-                path.buildCodeFrameError('Nested qualification is not supported', UnsupportedError)
+                throw path.buildCodeFrameError('Nested qualification is not supported', UnsupportedError)
             }
             const tsQ = tsQualifiedName(id.qualification as TSEntityName, id.id)
             return tsTypeReference(tsQ, tsTypeParameters);
