@@ -1,5 +1,5 @@
 import {buildPlugin} from './plugin';
-import {ImportDeclaration} from './visitors/import_declaration';
+import {ImportDeclaration, ImportSpecifier} from './visitors/import_declaration';
 import {OpaqueType} from './visitors/opaque_type';
 import {TypeAnnotation} from './visitors/type_annotation';
 import {TypeCastExpression} from './visitors/type_cast_expression';
@@ -9,6 +9,7 @@ export = buildPlugin([
     TypeAnnotation,
     TypeParameterDeclaration,
     ImportDeclaration,
+    ImportSpecifier,
     TypeCastExpression,
     OpaqueType
 ]);
