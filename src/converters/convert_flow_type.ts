@@ -172,11 +172,14 @@ export function convertFlowType(path: NodePath<FlowType>): TSType {
             return tsIndexedAccessType(tsT, tsK);
 
             //TODO: $ObjMap<T, F>, $TupleMap<T, F>, $Call<F>, Class<T>, $Supertype<T>, $Subtype<T>
+        } else if (id.name === '$Shape') {
+            // $Shape<T> -> Partial<T>
+            return tsTypeReference(identifier('Partial'), tsTypeParameters);
         } else if (isQualifiedTypeIdentifier(id)) {
             if (isQualifiedTypeIdentifier(id.qualification)) {
-                throw path.buildCodeFrameError('Nested qualification is not supported', UnsupportedError)
+                throw path.buildCodeFrameError('Nested qualification is not supported', UnsupportedError);
             }
-            const tsQ = tsQualifiedName(id.qualification as TSEntityName, id.id)
+            const tsQ = tsQualifiedName(id.qualification as TSEntityName, id.id);
             return tsTypeReference(tsQ, tsTypeParameters);
 
         } else {
