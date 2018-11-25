@@ -38,6 +38,7 @@ $ babel --plugins @cureapp/babel-plugin-flow-to-typescript ${SRC_FLOW_FILE} -o $
 | ❎ | $Diff| `$Diff<X, Y>` | `Pick<X, Exclude<keyof X, keyof Y>>` |
 | ❎ | $PropertyType| `$PropertyType<T, k>` | `T[k]` |
 | ❎ | $ElementType| `$ElementType<T, k>` | `T[k]` |
+| ❎ | $Shape| `$Shape<T>` | `Partial<T>` |
 
 - [ ] add CLI
 
