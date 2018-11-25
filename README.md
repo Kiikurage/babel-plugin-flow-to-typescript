@@ -39,6 +39,7 @@ $ babel --plugins @cureapp/babel-plugin-flow-to-typescript ${SRC_FLOW_FILE} -o $
 | ❎ | $PropertyType| `$PropertyType<T, k>` | `T[k]` |
 | ❎ | $ElementType| `$ElementType<T, k>` | `T[k]` |
 | ❎ | $Shape| `$Shape<T>` | `Partial<T>` |
+| ❎ | Class| `Class<T>` | `typeof T` |
 
 - [ ] add CLI
 

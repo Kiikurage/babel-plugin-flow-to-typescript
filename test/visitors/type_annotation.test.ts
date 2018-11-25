@@ -81,6 +81,10 @@ pluginTester({
         code: `let a: $Shape<X>;`,
         output: `let a: Partial<X>;`
     }, {
+        title: 'Utility generics: Class',
+        code: `let a: Class<X>;`,
+        output: `let a: typeof X;`
+    }, {
         title: 'Arrow Function type (rest param)',
         code: `let test: (value: number, ...args: Array<string>) => number;`,
         output: `let test: (value: number, ...args: Array<string>) => number;`
