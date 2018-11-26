@@ -86,7 +86,6 @@ import {
     generateFreeIdentifier
 } from '../util';
 
-// @ts-ignore
 export function convertFlowType(path: NodePath<FlowType>): TSType {
     if (isNodePath(isAnyTypeAnnotation, path)) {
         return tsAnyKeyword();
@@ -171,7 +170,7 @@ export function convertFlowType(path: NodePath<FlowType>): TSType {
             const [tsT, tsK] = tsTypeParameters!.params;
             return tsIndexedAccessType(tsT, tsK);
 
-            //TODO: $ObjMap<T, F>, $TupleMap<T, F>, $Call<F>, Class<T>, $Supertype<T>, $Subtype<T>
+            //TODO: $ObjMap<T, F>, $TupleMap<T, F>, $Call<F>, $Supertype<T>, $Subtype<T>
         } else if (id.name === '$Shape') {
             // $Shape<T> -> Partial<T>
             return tsTypeReference(identifier('Partial'), tsTypeParameters);
