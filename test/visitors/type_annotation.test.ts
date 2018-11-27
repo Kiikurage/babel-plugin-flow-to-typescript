@@ -77,6 +77,10 @@ pluginTester({
         code: `let a: $PropertyType<T, k>;`,
         output: `let a: T[k];`
     }, {
+        title: 'Utility generics: $ElementType',
+        code: `let a: $ElementType<T, k>;`,
+        output: `let a: T[k];`
+    }, {
         title: 'Utility generics: $Shape',
         code: `let a: $Shape<X>;`,
         output: `let a: Partial<X>;`
@@ -84,10 +88,6 @@ pluginTester({
         title: 'Utility generics: Class',
         code: `let a: Class<X>;`,
         output: `let a: typeof X;`
-    }, {
-        title: 'Arrow Function type (rest param)',
-        code: `let test: (value: number, ...args: Array<string>) => number;`,
-        output: `let test: (value: number, ...args: Array<string>) => number;`
     }, {
         title: 'Object type: exact=true',
         code: `let a: {| a: T |};`,
