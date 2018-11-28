@@ -9,7 +9,7 @@
     "dist",
     "README.md"
   ],
-  "version": "0.3.6",
+  "version": "0.3.7",
   "scripts": {
     "prepare": "npm run build",
     "test": "jest",
