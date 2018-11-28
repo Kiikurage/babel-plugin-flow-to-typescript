@@ -81,6 +81,14 @@ pluginTester({
         code: `let a: $ElementType<T, k>;`,
         output: `let a: T[k];`
     }, {
+        title: 'Utility generics: $Shape',
+        code: `let a: $Shape<X>;`,
+        output: `let a: Partial<X>;`
+    }, {
+        title: 'Utility generics: Class',
+        code: `let a: Class<X>;`,
+        output: `let a: typeof X;`
+    }, {
         title: 'Object type: exact=true',
         code: `let a: {| a: T |};`,
         output: `let a: {

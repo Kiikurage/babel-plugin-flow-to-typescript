@@ -6,5 +6,5 @@ export function TypeAnnotation(path: NodePath<TypeAnnotation>) {
     path.replaceWith(convertTypeAnnotation(path));
 }
 export function TypeAlias(path: NodePath<TypeAlias>) {
-    path.replaceWith(convertTypeAlias(path))
+    path.replaceWith(convertTypeAlias(path));
 }

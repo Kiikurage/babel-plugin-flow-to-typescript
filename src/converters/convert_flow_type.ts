@@ -86,7 +86,6 @@ import {
     generateFreeIdentifier
 } from '../util';
 
-// @ts-ignore
 export function convertFlowType(path: NodePath<FlowType>): TSType {
     if (isNodePath(isAnyTypeAnnotation, path)) {
         return tsAnyKeyword();
@@ -171,12 +170,23 @@ export function convertFlowType(path: NodePath<FlowType>): TSType {
             const [tsT, tsK] = tsTypeParameters!.params;
             return tsIndexedAccessType(tsT, tsK);
 
-            //TODO: $ObjMap<T, F>, $TupleMap<T, F>, $Call<F>, Class<T>, $Supertype<T>, $Subtype<T>
+            //TODO: $ObjMap<T, F>, $TupleMap<T, F>, $Call<F>, $Supertype<T>, $Subtype<T>
+        } else if (id.name === '$Shape') {
+            // $Shape<T> -> Partial<T>
+            return tsTypeReference(identifier('Partial'), tsTypeParameters);
+
+        } else if (id.name === 'Class') {
+            // Class<T> -> typeof T
+            const tsType = tsTypeParameters!.params[0];
+            const tsTypeofT = tsTypeOperator(tsType);
+            tsTypeofT.operator = 'typeof';
+            return tsTypeofT;
+
         } else if (isQualifiedTypeIdentifier(id)) {
             if (isQualifiedTypeIdentifier(id.qualification)) {
-                throw path.buildCodeFrameError('Nested qualification is not supported', UnsupportedError)
+                throw path.buildCodeFrameError('Nested qualification is not supported', UnsupportedError);
             }
-            const tsQ = tsQualifiedName(id.qualification as TSEntityName, id.id)
+            const tsQ = tsQualifiedName(id.qualification as TSEntityName, id.id);
             return tsTypeReference(tsQ, tsTypeParameters);
 
         } else {
@@ -272,7 +282,7 @@ export function convertFlowType(path: NodePath<FlowType>): TSType {
         const objectTypeNode = path.node as ObjectTypeAnnotation;
         if (objectTypeNode.exact) {
             warnOnlyOnce('Exact object type annotation in Flow is ignored. In TypeScript, it\'s always regarded as exact type');
-            objectTypeNode.exact = false
+            objectTypeNode.exact = false;
         }
 
         if (objectTypeNode.properties && objectTypeNode.properties.length > 0) {
@@ -341,8 +351,8 @@ export function convertFlowType(path: NodePath<FlowType>): TSType {
 
     if (isNodePath(isTypeofTypeAnnotation, path)) {
         const typeOp = tsTypeOperator(convertFlowType((path as NodePath<TypeofTypeAnnotation>).get('argument')));
-        typeOp.operator = 'typeof'
-        return typeOp
+        typeOp.operator = 'typeof';
+        return typeOp;
     }
 
     if (isNodePath(isUnionTypeAnnotation, path)) {
@@ -419,7 +429,7 @@ export function convertFlowType(path: NodePath<FlowType>): TSType {
 
     if (isNodePath(isTupleTypeAnnotation, path)) {
         const flowTypes = (path as NodePath<TupleTypeAnnotation>).node.types;
-        return tsTupleType(flowTypes.map((_, i) => convertFlowType((path as NodePath<TupleTypeAnnotation>).get(`types.${i}`))))
+        return tsTupleType(flowTypes.map((_, i) => convertFlowType((path as NodePath<TupleTypeAnnotation>).get(`types.${i}`))));
     }
     
     throw new UnsupportedError(`FlowType(type=${path.node.type})`);
