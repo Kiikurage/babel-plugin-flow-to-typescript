@@ -153,5 +153,10 @@ pluginTester({
         title: 'Void literal',
         code: `let a: void;`,
         output: `let a: void;`,
+    }, {
+        title: 'Function type annotation',
+        code: `const f: X<T> => string = (x) => '';`,
+        output: `const f: (x0: X<T>) => string = x => '';`,
+
     }]
 });
