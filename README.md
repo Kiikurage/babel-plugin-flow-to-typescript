@@ -22,7 +22,7 @@ $ babel --plugins babel-plugin-flow-to-typescript ${SRC_FLOW_FILE} -o ${DEST_TS_
 | ❎ | Maybe type | `let a:?number` | `let a: number \| null \| undefined` |
 | ❎ | Void type | `void` | `void` |
 | ❎ | Mixed type | `mixed` | `{}` |
-|    | Function type | `(A, B) => C` | `(a: A, b: B) => C` |
+| ❎ | Function type | `(A, B) => C` | `(x1: A, x2: B) => C` |
 | ❎ | Exact type | `{\| a: A \|}` | `{ a: A }` |
 | ❎ | Indexers | `{ [A]: B }` | `{ [a: A]: B }` |
 | ❎ | Existential type | `Map<*, *>` | `Map<any, any>` |
@@ -38,8 +38,12 @@ $ babel --plugins babel-plugin-flow-to-typescript ${SRC_FLOW_FILE} -o ${DEST_TS_
 | ❎ | $Diff| `$Diff<X, Y>` | `Pick<X, Exclude<keyof X, keyof Y>>` |
 | ❎ | $PropertyType| `$PropertyType<T, k>` | `T[k]` |
 | ❎ | $ElementType| `$ElementType<T, k>` | `T[k]` |
+| ❎ | typeof operator| `typeof foo` | `typeof foo` |
+| ❎ | JSX | - | - |
+| ❎ | Tuple type | `[number, string]` | `[number, string]` |
+| ❎ | Exact type | `{|a: T|}` | `{a: T}` |
+| ❎ | Type alias | `type A = string` | `type A = string` |
 
-- [ ] add CLI
 
 [Babel]: https://github.com/babel/babel
 [Flow]: https://github.com/facebook/flow
