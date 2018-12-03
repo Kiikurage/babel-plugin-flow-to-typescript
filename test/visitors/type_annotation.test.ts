@@ -1,9 +1,9 @@
 import * as pluginTester from 'babel-plugin-tester';
 import {buildPlugin} from '../../src/plugin';
-import {TypeAnnotation} from '../../src/visitors/type_annotation';
+import {TypeAnnotation, TypeAlias} from '../../src/visitors/type_annotation';
 
 pluginTester({
-    plugin: buildPlugin([TypeAnnotation]),
+    plugin: buildPlugin([TypeAnnotation, TypeAlias]),
     tests: [{
         title: 'Any type',
         code: `let a: any;`,
@@ -68,6 +68,18 @@ pluginTester({
         title: 'Utility generics: $ElementType',
         code: `let a: $ElementType<T, k>;`,
         output: `let a: T[k];`
+    }, {
+        title: 'Object type: exact=true',
+        code: `let a: {| a: T |};`,
+        output: `let a: {
+  a: T;
+};`
+    }, {
+        title: 'Object type alias: exact=true',
+        code: `type a = {| a: T |};`,
+        output: `type a = {
+  a: T;
+};`
     }, {
         title: 'Intersection type',
         code: `let a: {x: number} & {y: string};`,
