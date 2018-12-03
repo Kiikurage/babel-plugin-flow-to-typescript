@@ -153,5 +153,9 @@ pluginTester({
         title: 'Void literal',
         code: `let a: void;`,
         output: `let a: void;`,
+    }, {
+        title: 'Tuple type',
+        code: `let a: [number, string, Array<boolean>];`,
+        output: `let a: [number, string, Array<boolean>];`,
     }]
 });
