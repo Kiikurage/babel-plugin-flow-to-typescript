@@ -3,6 +3,8 @@ import {
     booleanLiteral,
     FlowType,
     FunctionDeclaration,
+    FunctionTypeAnnotation,
+    FunctionTypeParam,
     GenericTypeAnnotation,
     Identifier,
     identifier,
@@ -44,6 +46,7 @@ import {
     tsAnyKeyword,
     tsArrayType,
     tsBooleanKeyword,
+    tsFunctionType,
     tsIndexedAccessType,
     tsIndexSignature,
     tsIntersectionType,
@@ -338,7 +341,20 @@ export function convertFlowType(path: NodePath<FlowType>): TSType {
     }
 
     if (isNodePath(isFunctionTypeAnnotation, path)) {
-        throw new UnsupportedError('NIY');
+        const nodePath = path as NodePath<FunctionTypeAnnotation>;
+        const identifiers = path.node.params.map((p, i) => {
+            const name = (p.name && p.name.name) || `x${i}`;
+            const ftParam = nodePath.get(`params.${i}`) as NodePath<FunctionTypeParam>;
+            const typeAnn = ftParam.get('typeAnnotation') as NodePath<FlowType>;
+
+            const iden = identifier(name);
+            iden.typeAnnotation = tsTypeAnnotation(convertFlowType(typeAnn));
+            return iden;
+        });
+        const returnType = tsTypeAnnotation(convertFlowType(nodePath.get('returnType')));
+        const tsFT = tsFunctionType(null, returnType);
+        tsFT.parameters = identifiers;
+        return tsFT;
     }
 
     if (isNodePath(isTupleTypeAnnotation, path)) {

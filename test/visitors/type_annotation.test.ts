@@ -174,6 +174,10 @@ pluginTester({
         code: `let a: void;`,
         output: `let a: void;`,
     }, {
+        title: 'Function type annotation',
+        code: `const f: X<T> => string = (x) => '';`,
+        output: `const f: (x0: X<T>) => string = x => '';`
+    }, {
         title: 'Tuple type',
         code: `let a: [number, string, Array<boolean>];`,
         output: `let a: [number, string, Array<boolean>];`,
