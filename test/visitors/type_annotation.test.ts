@@ -33,6 +33,10 @@ pluginTester({
         code: `let a: empty;`,
         output: `let a: never;`,
     }, {
+        title: 'typeof keyword',
+        code: `let a: typeof A;`,
+        output: `let a: typeof A;`,
+    }, {
         title: 'Generic type',
         code: `let a: X<T>;`,
         output: `let a: X<T>;`
@@ -40,6 +44,10 @@ pluginTester({
         title: 'Utility generics: $Keys',
         code: `let a: $Keys<X>;`,
         output: `let a: keyof X;`
+    }, {
+        title: 'Utility generics: $Keys with typeof',
+        code: `let a: $Keys<typeof X>;`,
+        output: `let a: keyof typeof X;`
     }, {
         title: 'Utility generics: $Values',
         code: `let a: $Values<X>;`,
