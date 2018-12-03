@@ -1,9 +1,9 @@
 import * as pluginTester from 'babel-plugin-tester';
 import {buildPlugin} from '../../src/plugin';
-import {TypeAnnotation} from '../../src/visitors/type_annotation';
+import {TypeAnnotation, TypeAlias} from '../../src/visitors/type_annotation';
 
 pluginTester({
-    plugin: buildPlugin([TypeAnnotation]),
+    plugin: buildPlugin([TypeAnnotation, TypeAlias]),
     tests: [{
         title: 'Any type',
         code: `let a: any;`,
@@ -33,6 +33,10 @@ pluginTester({
         code: `let a: empty;`,
         output: `let a: never;`,
     }, {
+        title: 'typeof keyword',
+        code: `let a: typeof A;`,
+        output: `let a: typeof A;`,
+    }, {
         title: 'Generic type',
         code: `let a: X<T>;`,
         output: `let a: X<T>;`
@@ -40,6 +44,10 @@ pluginTester({
         title: 'Utility generics: $Keys',
         code: `let a: $Keys<X>;`,
         output: `let a: keyof X;`
+    }, {
+        title: 'Utility generics: $Keys with typeof',
+        code: `let a: $Keys<typeof X>;`,
+        output: `let a: keyof typeof X;`
     }, {
         title: 'Utility generics: $Values',
         code: `let a: $Values<X>;`,
@@ -68,6 +76,18 @@ pluginTester({
         title: 'Utility generics: $ElementType',
         code: `let a: $ElementType<T, k>;`,
         output: `let a: T[k];`
+    }, {
+        title: 'Object type: exact=true',
+        code: `let a: {| a: T |};`,
+        output: `let a: {
+  a: T;
+};`
+    }, {
+        title: 'Object type alias: exact=true',
+        code: `type a = {| a: T |};`,
+        output: `type a = {
+  a: T;
+};`
     }, {
         title: 'Intersection type',
         code: `let a: {x: number} & {y: string};`,
@@ -156,7 +176,10 @@ pluginTester({
     }, {
         title: 'Function type annotation',
         code: `const f: X<T> => string = (x) => '';`,
-        output: `const f: (x0: X<T>) => string = x => '';`,
-
+        output: `const f: (x0: X<T>) => string = x => '';`
+    }, {
+        title: 'Tuple type',
+        code: `let a: [number, string, Array<boolean>];`,
+        output: `let a: [number, string, Array<boolean>];`,
     }]
 });
