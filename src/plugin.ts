@@ -11,6 +11,7 @@ export function buildPlugin(visitors: Function[]) {
             parserOpts.plugins.push('flow');
             parserOpts.plugins.push('jsx');
             parserOpts.plugins.push('objectRestSpread');
+            parserOpts.plugins.push('classProperties');
         }
     });
 }
