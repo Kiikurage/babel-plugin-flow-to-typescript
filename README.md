@@ -5,11 +5,11 @@
 ## How to use
 
 ```shell
-$ yarn global add @babel/cli 
-$ yarn add babel-plugin-flow-to-typescript
+$ npm install -g @babel/cli
+$ npm install babel-plugin-flow-to-typescript
 
 # you must use babel@^7.x.x
-$ babel --version 
+$ babel --version
 7.0.0-beta.44 (@babel/core 7.0.0-beta.44)
 
 $ babel --plugins babel-plugin-flow-to-typescript ${SRC_FLOW_FILE} -o ${DEST_TS_FILE}
