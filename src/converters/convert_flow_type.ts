@@ -54,6 +54,7 @@ import {
     tsNeverKeyword,
     tsNullKeyword,
     tsNumberKeyword,
+    tsObjectKeyword,
     tsPropertySignature,
     tsStringKeyword,
     tsThisType,
@@ -164,6 +165,9 @@ export function convertFlowType(path: NodePath<FlowType>): TSType {
             return tsIndexedAccessType(tsT, tsK);
 
             //TODO: $ObjMap<T, F>, $TupleMap<T, F>, $Call<F>, Class<T>, $Supertype<T>, $Subtype<T>
+
+        } else if (id.name === 'Object') {
+            return tsObjectKeyword();
 
         } else {
             return tsTypeReference(id, tsTypeParameters);
