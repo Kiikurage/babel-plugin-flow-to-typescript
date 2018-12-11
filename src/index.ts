@@ -4,6 +4,7 @@ import {OpaqueType} from './visitors/opaque_type';
 import {TypeAnnotation, TypeAlias} from './visitors/type_annotation';
 import {TypeCastExpression} from './visitors/type_cast_expression';
 import {TypeParameterDeclaration} from './visitors/type_parameter_declaration';
+import {ClassMethod} from './visitors/class_method';
 
 export = buildPlugin([
     TypeAnnotation,
@@ -12,5 +13,6 @@ export = buildPlugin([
     ImportDeclaration,
     ImportSpecifier,
     TypeCastExpression,
-    OpaqueType
+    OpaqueType,
+    ClassMethod
 ]);
