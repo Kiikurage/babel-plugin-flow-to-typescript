@@ -1,6 +1,6 @@
 import * as pluginTester from 'babel-plugin-tester';
 import {buildPlugin} from '../../src/plugin';
-import {ClassMethod} from '../../src/visitors/class_method';
+import {ClassMethod} from '../../src/visitors/class_declaration';
 
 pluginTester({
     plugin: buildPlugin([ClassMethod]),
