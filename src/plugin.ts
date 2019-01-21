@@ -10,6 +10,7 @@ export function buildPlugin(visitors: Function[]) {
         manipulateOptions(_opts: any, parserOpts: any) {
             parserOpts.plugins.push('flow');
             parserOpts.plugins.push('jsx');
+            parserOpts.plugins.push('classProperties')
         }
     });
 }
