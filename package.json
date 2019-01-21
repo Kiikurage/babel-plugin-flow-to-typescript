@@ -1,5 +1,5 @@
 {
-  "name": "babel-plugin-flow-to-typescript",
+  "name": "@steelbrain/babel-plugin-flow-to-typescript",
   "description": "Babel plugin to convert Flow into TypeScript",
   "author": {
     "name": "Yuichiro Kikura",
