@@ -15,7 +15,8 @@
   "scripts": {
     "test": "jest",
     "test-watch": "jest --watch",
-    "build": "tsc"
+    "build": "tsc",
+    "watch": "tsc --watch"
   },
   "keywords": [
     "babel",
