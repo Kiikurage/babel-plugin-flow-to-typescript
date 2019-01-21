@@ -163,11 +163,13 @@ export function convertFlowType(path: NodePath<FlowType>): TSType {
             const [tsT, tsK] = tsTypeParameters!.params;
             return tsIndexedAccessType(tsT, tsK);
 
-            //TODO: $ObjMap<T, F>, $TupleMap<T, F>, $Call<F>, Class<T>, $Supertype<T>, $Subtype<T>
+        } else if (id.name === '$FlowFixMe') {
+            return tsTypeReference(identifier('any'), tsTypeParameters);
 
         } else {
             return tsTypeReference(id, tsTypeParameters);
         }
+        //TODO: $ObjMap<T, F>, $TupleMap<T, F>, $Call<F>, Class<T>, $Supertype<T>, $Subtype<T>
 
     }
 
