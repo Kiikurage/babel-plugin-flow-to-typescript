@@ -166,6 +166,10 @@ export function convertFlowType(path: NodePath<FlowType>): TSType {
         } else if (id.name === '$FlowFixMe') {
             return tsTypeReference(identifier('any'), tsTypeParameters);
 
+        // @ts-ignore
+        } else if (id.type === 'QualifiedTypeIdentifier') {
+            // @ts-ignore
+            return tsTypeReference(identifier(`${id.qualification.name}.${id.id.name}`))
         } else {
             return tsTypeReference(id, tsTypeParameters);
         }
