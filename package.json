@@ -1,6 +1,7 @@
 {
   "name": "@steelbrain/babel-plugin-flow-to-typescript",
   "description": "Babel plugin to convert Flow into TypeScript",
+  "LICENSE": "MIT",
   "author": {
     "name": "Yuichiro Kikura",
     "email": "y.kikura@gmail.com",
