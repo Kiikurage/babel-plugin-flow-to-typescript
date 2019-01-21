@@ -54,6 +54,7 @@ import {
     tsNeverKeyword,
     tsNullKeyword,
     tsNumberKeyword,
+    tsObjectKeyword,
     tsPropertySignature,
     tsStringKeyword,
     tsThisType,
@@ -166,6 +167,8 @@ export function convertFlowType(path: NodePath<FlowType>): TSType {
         } else if (id.name === '$FlowFixMe') {
             return tsTypeReference(identifier('any'), tsTypeParameters);
 
+        } else if (id.name === 'Object') {
+            return tsObjectKeyword()
         // @ts-ignore
         } else if (id.type === 'QualifiedTypeIdentifier') {
             // @ts-ignore

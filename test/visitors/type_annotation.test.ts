@@ -181,5 +181,9 @@ pluginTester({
         title: 'Tuple type',
         code: `let a: [number, string, Array<boolean>];`,
         output: `let a: [number, string, Array<boolean>];`,
+    }, {
+        title: 'Object type',
+        code: `let a: Object;`,
+        output: `let a: object;`,
     }]
 });
