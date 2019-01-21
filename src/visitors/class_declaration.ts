@@ -23,4 +23,15 @@ export function ClassDeclaration(path: NodePath<ClassDeclaration>) {
   if (typeParameterPath.node) {
     processTypeParameters(typeParameterPath)
   }
+
+  const classImplements = path.get('implements')
+  if (Array.isArray(classImplements)) {
+    // @ts-ignore
+    classImplements.forEach(classImplementsPath => {
+      const typeParameterPath = classImplementsPath.get('typeParameters');
+      if (typeParameterPath.node) {
+        processTypeParameters(typeParameterPath)
+      }
+    })
+  }
 }
