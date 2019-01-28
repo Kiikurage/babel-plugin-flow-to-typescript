@@ -4,4 +4,4 @@ node_modules
 .idea
 *.log
 __snapshots__
-/package-lock.json
+/yarn.lock
