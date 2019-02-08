@@ -7,14 +7,15 @@
     "url": "https://github.com/Kiikurage"
   },
   "files": [
-    "dist",
+    "dist/*",
     "README.md"
   ],
   "version": "0.3.0",
   "scripts": {
+    "build": "tsc",
+    "prepare": "npm run build",
     "test": "jest",
-    "test-watch": "jest --watch",
-    "build": "tsc"
+    "test-watch": "jest --watch"
   },
   "keywords": [
     "babel",
