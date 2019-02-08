@@ -27,9 +27,9 @@
     "url": "https://github.com/Kiikurage/babel-plugin-flow-to-typescript.git"
   },
   "dependencies": {
-    "@babel/core": "^7.0.0",
-    "@babel/traverse": "^7.0.0",
-    "@babel/types": "^7.0.0"
+    "@babel/core": "^7.1.0",
+    "@babel/traverse": "^7.1.0",
+    "@babel/types": "^7.1.0"
   },
   "devDependencies": {
     "@types/babel-core": "^6.25.3",

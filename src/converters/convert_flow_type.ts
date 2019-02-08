@@ -68,6 +68,7 @@ import {
     tsTypeReference,
     tsUndefinedKeyword,
     tsUnionType,
+    tsUnknownKeyword,
     tsVoidKeyword,
     TupleTypeAnnotation,
     TypeofTypeAnnotation,
@@ -177,7 +178,7 @@ export function convertFlowType(path: NodePath<FlowType>): TSType {
     }
 
     if (isNodePath(isMixedTypeAnnotation, path)) {
-        return tsTypeLiteral([]);
+        return tsUnknownKeyword();
     }
 
     if (isNodePath(isNullableTypeAnnotation, path)) {

@@ -27,7 +27,7 @@ pluginTester({
     }, {
         title: 'Mixed type',
         code: `let a: mixed;`,
-        output: `let a: {};`,
+        output: `let a: unknown;`,
     }, {
         title: 'Null literal',
         code: `let a: null;`,
