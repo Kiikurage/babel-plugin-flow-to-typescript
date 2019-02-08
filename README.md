@@ -22,6 +22,7 @@ $ babel --plugins babel-plugin-flow-to-typescript ${SRC_FLOW_FILE} -o ${DEST_TS_
 | ❎ | Maybe type | `let a:?number` | `let a: number \| null \| undefined` |
 | ❎ | Void type | `void` | `void` |
 | ❎ | Mixed type | `mixed` | `{}` |
+| ❎ | Object type | `Object` | `object` |
 | ❎ | Function type | `(A, B) => C` | `(x1: A, x2: B) => C` |
 | ❎ | Exact type | `{\| a: A \|}` | `{ a: A }` |
 | ❎ | Indexers | `{ [A]: B }` | `{ [a: A]: B }` |

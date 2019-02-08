@@ -54,6 +54,7 @@ import {
     tsNeverKeyword,
     tsNullKeyword,
     tsNumberKeyword,
+    tsObjectKeyword,
     tsPropertySignature,
     tsStringKeyword,
     tsThisType,
@@ -115,7 +116,10 @@ export function convertFlowType(path: NodePath<FlowType>): TSType {
         }
 
         const id = (path as NodePath<GenericTypeAnnotation>).node.id;
-        if (isIdentifier(id) && id.name === '$Keys') {
+        if (isIdentifier(id) && id.name === 'Object') {
+            return tsObjectKeyword();
+
+        } else if (isIdentifier(id) && id.name === '$Keys') {
             // $Keys -> keyof
             const ret = tsTypeOperator(tsTypeParameters!.params[0]);
             ret.operator = 'keyof';

@@ -33,6 +33,10 @@ pluginTester({
         code: `let a: null;`,
         output: `let a: null;`,
     }, {
+        title: 'Object type',
+        code: `let a: Object;`,
+        output: `let a: object;`,
+    }, {
         title: 'Empty type',
         code: `let a: empty;`,
         output: `let a: never;`,
