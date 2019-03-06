@@ -54,7 +54,6 @@ import {
     tsNeverKeyword,
     tsNullKeyword,
     tsNumberKeyword,
-    tsObjectKeyword,
     tsPropertySignature,
     tsStringKeyword,
     tsThisType,
@@ -72,13 +71,9 @@ import {
     tsTupleType,
     TypeofTypeAnnotation,
     UnionTypeAnnotation,
-    TupleTypeAnnotation
+    TupleTypeAnnotation,
 } from '@babel/types';
-import {
-    isNodePath,
-    UnsupportedError,
-    warnOnlyOnce
-} from '../util';
+import {isNodePath, UnsupportedError, warnOnlyOnce} from '../util';
 
 export function convertFlowType(path: NodePath<FlowType>): TSType {
     if (isNodePath(isAnyTypeAnnotation, path)) {
@@ -120,26 +115,21 @@ export function convertFlowType(path: NodePath<FlowType>): TSType {
             const ret = tsTypeOperator(tsTypeParameters!.params[0]);
             ret.operator = 'keyof';
             return ret;
-
         } else if (id.name === '$Values') {
             // $Values<X> -> X[keyof X]
             const tsType = tsTypeParameters!.params[0];
             const tsKey = tsTypeOperator(tsType);
             tsKey.operator = 'keyof';
             return tsIndexedAccessType(tsType, tsKey);
-
         } else if (id.name === '$ReadOnly') {
             // $ReadOnly<X> -> Readonly<X>
             return tsTypeReference(identifier('Readonly'), tsTypeParameters);
-
         } else if (id.name === '$ReadOnlyArray') {
             // $ReadOnlyArray<X> -> ReadonlyArray<X>
             return tsTypeReference(identifier('ReadonlyArray'), tsTypeParameters);
-
         } else if (id.name === '$Exact') {
-            warnOnlyOnce('Exact object type annotation in Flow is ignored. In TypeScript, it\'s always regarded as exact type');
+            warnOnlyOnce("Exact object type annotation in Flow is ignored. In TypeScript, it's always regarded as exact type");
             return tsTypeParameters!.params[0];
-
         } else if (id.name === '$Diff') {
             // $Diff<X, Y> -> Pick<X, Exclude<keyof X, keyof Y>>
             const [tsX, tsY] = tsTypeParameters!.params;
@@ -149,44 +139,44 @@ export function convertFlowType(path: NodePath<FlowType>): TSType {
             tsKeyofY.operator = 'keyof';
             const tsExclude = tsTypeReference(identifier('Exclude'), tsTypeParameterInstantiation([tsKeyofX, tsKeyofY]));
             return tsTypeReference(identifier('Pick'), tsTypeParameterInstantiation([tsX, tsExclude]));
-
         } else if (id.name === '$Rest') {
             throw new UnsupportedError('$Rest in GenericTypeAnnotation');
-
         } else if (id.name === '$PropertyType') {
             // $PropertyType<T, k> -> T[k]
             // TODO: $PropertyType<T, k> -> k extends string ? T[k] : never
             const [tsT, tsK] = tsTypeParameters!.params;
             return tsIndexedAccessType(tsT, tsK);
-
         } else if (id.name === '$ElementType') {
             // $ElementType<T, k> -> T[k]
             const [tsT, tsK] = tsTypeParameters!.params;
             return tsIndexedAccessType(tsT, tsK);
-
         } else if (id.name === '$FlowFixMe') {
             return tsTypeReference(identifier('any'), tsTypeParameters);
-
         } else if (id.name === 'Object') {
-            return tsObjectKeyword()
-        // @ts-ignore
+            return tsAnyKeyword();
+            // @ts-ignore
         } else if (id.type === 'QualifiedTypeIdentifier') {
             // @ts-ignore
-            return tsTypeReference(identifier(`${id.qualification.name}.${id.id.name}`))
+            return tsTypeReference(
+                // @ts-ignore
+                identifier(`${id.qualification.name}.${id.id.name}`),
+                tsTypeParameters
+            );
         } else {
             return tsTypeReference(id, tsTypeParameters);
         }
         //TODO: $ObjMap<T, F>, $TupleMap<T, F>, $Call<F>, Class<T>, $Supertype<T>, $Subtype<T>
-
     }
 
     if (isNodePath(isIntersectionTypeAnnotation, path)) {
         const flowTypes = (path as NodePath<IntersectionTypeAnnotation>).node.types;
-        return tsIntersectionType(flowTypes.map((_, i) => convertFlowType((path as NodePath<IntersectionTypeAnnotation>).get(`types.${i}`) as NodePath<FlowType>)));
+        return tsIntersectionType(
+            flowTypes.map((_, i) => convertFlowType((path as NodePath<IntersectionTypeAnnotation>).get(`types.${i}`) as NodePath<FlowType>))
+        );
     }
 
     if (isNodePath(isMixedTypeAnnotation, path)) {
-        return tsTypeLiteral([]);
+        return tsAnyKeyword();
     }
 
     if (isNodePath(isNullableTypeAnnotation, path)) {
@@ -194,24 +184,25 @@ export function convertFlowType(path: NodePath<FlowType>): TSType {
 
         // Note: for convenience, path stack is stacked in order that parent item is located before child one.
         const pathStack: NodePath[] = [path];
-        while (isFlowType(pathStack[0].node) || isTypeAnnotation(pathStack[0].node) || isIdentifier(pathStack[0].node)) pathStack.unshift(pathStack[0].parentPath);
+        while (isFlowType(pathStack[0].node) || isTypeAnnotation(pathStack[0].node) || isIdentifier(pathStack[0].node))
+            pathStack.unshift(pathStack[0].parentPath);
 
         if (isFunctionDeclaration(pathStack[0].node)) {
             if (pathStack[1].node === (pathStack[0].node as FunctionDeclaration).returnType) {
                 // f(): ?T {} -> f(): T | null | undefined {}
                 return tsUnionType([tsT, tsUndefinedKeyword(), tsNullKeyword()]);
-
             } else {
                 // Type annotation for function parameter
                 const identifierPath = pathStack[1] as NodePath<Identifier>;
                 if (identifierPath.node.optional) {
                     // ( arg?: ?T ) -> ( arg?: T | null )
                     return tsUnionType([tsT, tsNullKeyword()]);
-
                 } else {
                     const argumentIndex = (pathStack[0].node as FunctionDeclaration).params.indexOf(identifierPath.node);
 
-                    if ((pathStack[0].node as FunctionDeclaration).params.slice(argumentIndex).every(node => (node as Identifier).optional!)) {
+                    if (
+                        (pathStack[0].node as FunctionDeclaration).params.slice(argumentIndex).every(node => (node as Identifier).optional!)
+                    ) {
                         // TODO:
                         // In Flow, required parameter which accepts undefined also accepts missing value,
                         // if the missing value is automatically filled with undefined.
@@ -222,7 +213,6 @@ export function convertFlowType(path: NodePath<FlowType>): TSType {
                         //
                         // f( arg: ?T ) -> f( arg?: T | null )
                         return tsUnionType([tsT, tsUndefinedKeyword(), tsNullKeyword()]);
-
                     } else {
                         // Some required parameters are exist after this parameter.
                         // f( arg1: ?T, arg2: U ) -> f( arg1: T | null | undefined, arg2: U )
@@ -236,7 +226,6 @@ export function convertFlowType(path: NodePath<FlowType>): TSType {
             if ((pathStack[0].node as ObjectTypeProperty).optional) {
                 // { key?: ?T } -> { key?: T | null }
                 return tsUnionType([tsT, tsNullKeyword()]);
-
             } else {
                 // { key: ?T } -> { key: T | null | undefined }
                 return tsUnionType([tsT, tsUndefinedKeyword(), tsNullKeyword()]);
@@ -266,8 +255,8 @@ export function convertFlowType(path: NodePath<FlowType>): TSType {
 
         const objectTypeNode = path.node as ObjectTypeAnnotation;
         if (objectTypeNode.exact) {
-            warnOnlyOnce('Exact object type annotation in Flow is ignored. In TypeScript, it\'s always regarded as exact type');
-            objectTypeNode.exact = false
+            warnOnlyOnce("Exact object type annotation in Flow is ignored. In TypeScript, it's always regarded as exact type");
+            objectTypeNode.exact = false;
         }
 
         if (objectTypeNode.properties && objectTypeNode.properties.length > 0) {
@@ -279,6 +268,8 @@ export function convertFlowType(path: NodePath<FlowType>): TSType {
                     );
                     tsPropSignature.optional = property.optional;
                     tsPropSignature.readonly = property.variance && property.variance.kind === 'plus';
+                    // @ts-ignore
+                    tsPropSignature.comments = property.comments;
                     members.push(tsPropSignature);
                 }
 
@@ -293,7 +284,10 @@ export function convertFlowType(path: NodePath<FlowType>): TSType {
             for (const [i, indexer] of objectTypeNode.indexers.entries()) {
                 const tsIndex = indexer.id || identifier('x');
                 tsIndex.typeAnnotation = tsTypeAnnotation(convertFlowType(path.get(`indexers.${i}`).get('key') as NodePath<FlowType>));
-                const member = tsIndexSignature([tsIndex], tsTypeAnnotation(convertFlowType(path.get(`indexers.${i}`).get('value') as NodePath<FlowType>)));
+                const member = tsIndexSignature(
+                    [tsIndex],
+                    tsTypeAnnotation(convertFlowType(path.get(`indexers.${i}`).get('value') as NodePath<FlowType>))
+                );
                 members.push(member);
             }
         }
@@ -336,8 +330,8 @@ export function convertFlowType(path: NodePath<FlowType>): TSType {
 
     if (isNodePath(isTypeofTypeAnnotation, path)) {
         const typeOp = tsTypeOperator(convertFlowType((path as NodePath<TypeofTypeAnnotation>).get('argument')));
-        typeOp.operator = 'typeof'
-        return typeOp
+        typeOp.operator = 'typeof';
+        return typeOp;
     }
 
     if (isNodePath(isUnionTypeAnnotation, path)) {
@@ -368,7 +362,7 @@ export function convertFlowType(path: NodePath<FlowType>): TSType {
 
     if (isNodePath(isTupleTypeAnnotation, path)) {
         const flowTypes = (path as NodePath<TupleTypeAnnotation>).node.types;
-        return tsTupleType(flowTypes.map((_, i) => convertFlowType((path as NodePath<TupleTypeAnnotation>).get(`types.${i}`))))
+        return tsTupleType(flowTypes.map((_, i) => convertFlowType((path as NodePath<TupleTypeAnnotation>).get(`types.${i}`))));
     }
 
     throw new UnsupportedError(`FlowType(type=${path.node.type})`);

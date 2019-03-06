@@ -12,11 +12,13 @@ export function warnOnlyOnce(key: string | number | boolean, message?: string) {
 }
 
 //tslint:disable:no-any
-export function isNodePath<T extends t.BaseNode>(fn: (node: object, ...args: any[]) => node is T, path: NodePath<t.BaseNode>): path is NodePath<T> {
+export function isNodePath<T extends t.BaseNode>(
+    fn: (node: object, ...args: any[]) => node is T,
+    path: NodePath<t.BaseNode>
+): path is NodePath<T> {
     return fn(path.node);
 }
 
-export class UnsupportedError extends Error {
-}
+export class UnsupportedError extends Error {}
 
 UnsupportedError.prototype.name = UnsupportedError.name;

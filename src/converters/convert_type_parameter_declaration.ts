@@ -1,10 +1,5 @@
 import {NodePath} from '@babel/traverse';
-import {
-    TSTypeParameterDeclaration,
-    tsTypeParameterDeclaration,
-    TypeParameter,
-    TypeParameterDeclaration
-} from '@babel/types';
+import {TSTypeParameterDeclaration, tsTypeParameterDeclaration, TypeParameter, TypeParameterDeclaration} from '@babel/types';
 import {convertTypeParameter} from './convert_type_parameter';
 
 export function convertTypeParameterDeclaration(path: NodePath<TypeParameterDeclaration>): TSTypeParameterDeclaration {

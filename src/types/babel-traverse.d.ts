@@ -34,7 +34,7 @@ export class Scope {
     parentBlock: Node;
     parent: Scope;
     hub: Hub;
-    bindings: { [name: string]: Binding; };
+    bindings: {[name: string]: Binding};
 
     /** Traverse node with current scope and path. */
     //tslint:disable:no-any
@@ -134,7 +134,7 @@ export class Scope {
 }
 
 export class Binding {
-    constructor(opts: { existing: Binding; identifier: t.Identifier; scope: Scope; path: NodePath; kind: 'var' | 'let' | 'const'; });
+    constructor(opts: {existing: Binding; identifier: t.Identifier; scope: Scope; path: NodePath; kind: 'var' | 'let' | 'const'});
 
     identifier: t.Identifier;
     scope: Scope;
@@ -404,10 +404,7 @@ export class NodePath<T = Node> {
     getEarliestCommonAncestorFrom(paths: NodePath[]): NodePath[];
 
     /** Get the earliest path in the tree where the provided `paths` intersect. */
-    getDeepestCommonAncestorFrom(
-        paths: NodePath[],
-        filter?: (deepest: Node, i: number, ancestries: NodePath[]) => NodePath
-    ): NodePath;
+    getDeepestCommonAncestorFrom(paths: NodePath[], filter?: (deepest: Node, i: number, ancestries: NodePath[]) => NodePath): NodePath;
 
     /**
      * Build an array of node paths containing the entire ancestry of the current node path.
@@ -485,7 +482,7 @@ export class NodePath<T = Node> {
      *   t.evaluate(parse("!true")) // { confident: true, value: false }
      *   t.evaluate(parse("foo + foo")) // { confident: false, value: undefined }
      */
-    evaluate(): { confident: boolean; value: any };
+    evaluate(): {confident: boolean; value: any};
 
     // ------------------------- introspection -------------------------
     /**
@@ -618,7 +615,7 @@ export class NodePath<T = Node> {
     addComments(type: string, comments: any[]): void;
 
     // ------------------------- isXXX -------------------------
-    isArrayExpression(opts?: object): this is NodePath<t.ArrayExpression> ;
+    isArrayExpression(opts?: object): this is NodePath<t.ArrayExpression>;
 
     isAssignmentExpression(opts?: object): this is NodePath<t.AssignmentExpression>;
 

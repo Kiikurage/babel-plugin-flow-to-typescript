@@ -7,5 +7,5 @@ export function ImportDeclaration(path: NodePath<ImportDeclaration>) {
 }
 
 export function ImportSpecifier(path: NodePath<ImportSpecifier>) {
-    path.node.importKind = null
+    path.node.importKind = null;
 }

@@ -33,7 +33,8 @@
   },
   "dependencies": {
     "@babel/traverse": "^7.2.3",
-    "@babel/types": "^7.2.2"
+    "@babel/types": "^7.2.2",
+    "prettier": "^1.17.1"
   },
   "devDependencies": {
     "@babel/core": "^7.2.2",

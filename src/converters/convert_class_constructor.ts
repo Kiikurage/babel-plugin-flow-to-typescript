@@ -1,10 +1,7 @@
 import {NodePath} from '@babel/traverse';
-import {
-    classMethod,
-    ClassMethod,
-} from '@babel/types';
+import {classMethod, ClassMethod} from '@babel/types';
 
- export function convertClassConstructor(path: NodePath<ClassMethod>): ClassMethod {
+export function convertClassConstructor(path: NodePath<ClassMethod>): ClassMethod {
     const node = path.node;
 
     if (node.returnType === null) return node;
