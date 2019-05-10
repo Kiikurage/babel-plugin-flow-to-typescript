@@ -8,11 +8,12 @@
     "url": "https://github.com/Kiikurage"
   },
   "files": [
-    "dist",
+    "dist/*",
     "README.md"
   ],
   "version": "0.3.0",
   "scripts": {
+    "prepare": "npm run build",
     "test": "jest",
     "test-watch": "jest --watch",
     "build": "tsc",
