@@ -153,7 +153,9 @@ export function convertFlowType(path: NodePath<FlowType>): TSType {
         } else if (id.name === '$FlowFixMe') {
             return tsTypeReference(identifier('any'), tsTypeParameters);
         } else if (id.name === 'Object') {
-            return tsAnyKeyword();
+            const id = identifier('x');
+            id.typeAnnotation = tsTypeAnnotation(tsStringKeyword());
+            return tsTypeLiteral([tsIndexSignature([id], tsTypeAnnotation(tsAnyKeyword()))]);
             // @ts-ignore
         } else if (id.type === 'QualifiedTypeIdentifier') {
             // @ts-ignore
@@ -176,7 +178,8 @@ export function convertFlowType(path: NodePath<FlowType>): TSType {
     }
 
     if (isNodePath(isMixedTypeAnnotation, path)) {
-        return tsAnyKeyword();
+        return tsTypeReference(identifier('FlowMixed'));
+        // return tsTypeAnnotation(tsTypeReference(identifier('FlowMixed')));
     }
 
     if (isNodePath(isNullableTypeAnnotation, path)) {

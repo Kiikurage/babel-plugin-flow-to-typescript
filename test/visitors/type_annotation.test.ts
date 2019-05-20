@@ -1,6 +1,6 @@
 import pluginTester from 'babel-plugin-tester';
-import { buildPlugin } from '../../src/plugin';
-import { TypeAnnotation, TypeAlias } from '../../src/visitors/type_annotation';
+import {buildPlugin} from '../../src/plugin';
+import {TypeAnnotation, TypeAlias} from '../../src/visitors/type_annotation';
 
 pluginTester({
     plugin: buildPlugin([TypeAnnotation, TypeAlias]),
@@ -221,7 +221,14 @@ pluginTester({
         {
             title: 'Object type',
             code: `let a: Object;`,
-            output: `let a: object;`,
+            output: `let a: {
+  [x: string]: any;
+};`,
+        },
+        {
+            title: 'mixed type',
+            code: `let a: mixed;`,
+            output: `let a: FlowMixed;`,
         },
     ],
 });
