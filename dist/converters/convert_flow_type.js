@@ -83,7 +83,9 @@ function convertFlowType(path) {
             return types_1.tsTypeReference(types_1.identifier('any'), tsTypeParameters);
         }
         else if (id.name === 'Object') {
-            return types_1.tsAnyKeyword();
+            const id = types_1.identifier('x');
+            id.typeAnnotation = types_1.tsTypeAnnotation(types_1.tsStringKeyword());
+            return types_1.tsTypeLiteral([types_1.tsIndexSignature([id], types_1.tsTypeAnnotation(types_1.tsAnyKeyword()))]);
             // @ts-ignore
         }
         else if (id.type === 'QualifiedTypeIdentifier') {
@@ -102,7 +104,8 @@ function convertFlowType(path) {
         return types_1.tsIntersectionType(flowTypes.map((_, i) => convertFlowType(path.get(`types.${i}`))));
     }
     if (util_1.isNodePath(types_1.isMixedTypeAnnotation, path)) {
-        return types_1.tsAnyKeyword();
+        return types_1.tsTypeReference(types_1.identifier('FlowMixed'));
+        // return tsTypeAnnotation(tsTypeReference(identifier('FlowMixed')));
     }
     if (util_1.isNodePath(types_1.isNullableTypeAnnotation, path)) {
         const tsT = convertFlowType(path.get('typeAnnotation'));
