@@ -14,8 +14,8 @@ export function convertTypeAnnotation(path: NodePath<TypeAnnotation>): TSTypeAnn
     return tsTypeAnnotation(convertFlowType(path.get('typeAnnotation')));
 }
 export function convertTypeAlias(path: NodePath<TypeAlias>): TSTypeAliasDeclaration {
-    const typeParameters = path.get('typeParameters')
-    const right = path.get('right')
+    const typeParameters = path.get('typeParameters');
+    const right = path.get('right');
     return tsTypeAliasDeclaration(
         path.node.id,
         typeParameters.isTypeParameterDeclaration()

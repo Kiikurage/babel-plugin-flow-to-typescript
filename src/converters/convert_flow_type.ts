@@ -170,8 +170,7 @@ export function convertFlowType(path: NodePath<FlowType>): TSType {
             return tsTypeReference(identifier('any'), tsTypeParameters);
 
         } else if (isIdentifier(id) && id.name === 'Object') {
-            return tsObjectKeyword()
-        // @ts-ignore
+            return tsObjectKeyword();
         } else {
             return tsTypeReference(convertFlowIdentifier(id), tsTypeParameters);
         }
@@ -266,7 +265,7 @@ export function convertFlowType(path: NodePath<FlowType>): TSType {
         const objectTypeNode = path.node as ObjectTypeAnnotation;
         if (objectTypeNode.exact) {
             warnOnlyOnce('Exact object type annotation in Flow is ignored. In TypeScript, it\'s always regarded as exact type');
-            objectTypeNode.exact = false
+            objectTypeNode.exact = false;
         }
 
         if (objectTypeNode.properties && objectTypeNode.properties.length > 0) {
@@ -335,8 +334,8 @@ export function convertFlowType(path: NodePath<FlowType>): TSType {
 
     if (isNodePath(isTypeofTypeAnnotation, path)) {
         const typeOp = tsTypeOperator(convertFlowType((path as NodePath<TypeofTypeAnnotation>).get('argument')));
-        typeOp.operator = 'typeof'
-        return typeOp
+        typeOp.operator = 'typeof';
+        return typeOp;
     }
 
     if (isNodePath(isUnionTypeAnnotation, path)) {
@@ -367,7 +366,7 @@ export function convertFlowType(path: NodePath<FlowType>): TSType {
 
     if (isNodePath(isTupleTypeAnnotation, path)) {
         const flowTypes = (path as NodePath<TupleTypeAnnotation>).node.types;
-        return tsTupleType(flowTypes.map((_, i) => convertFlowType((path as NodePath<TupleTypeAnnotation>).get(`types.${i}`))))
+        return tsTupleType(flowTypes.map((_, i) => convertFlowType((path as NodePath<TupleTypeAnnotation>).get(`types.${i}`))));
     }
 
     throw new UnsupportedError(`FlowType(type=${path.node.type})`);
