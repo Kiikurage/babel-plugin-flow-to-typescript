@@ -64,5 +64,10 @@ export function convert_interface_declaration(path: NodePath<InterfaceDeclaratio
     extending.push(tsExpressionWithTypeArguments(origExtend.node.id as Identifier, parameters));
   });
 
-  return tsInterfaceDeclaration(path.node.id, typeParameters, extending, tsInterfaceBody(members));
+  return tsInterfaceDeclaration(
+    path.node.id,
+    typeParameters,
+    extending.length ? extending : null,
+    tsInterfaceBody(members),
+  );
 }
