@@ -2,6 +2,7 @@ import { ClassMethod, ClassDeclaration } from '@babel/types';
 import { NodePath } from '@babel/traverse';
 import { convertClassConstructor } from '../converters/convert_class_constructor';
 import { convertFlowType } from '../converters/convert_flow_type';
+import { convertTypeParameter } from '../converters/convert_type_parameter';
 
 export function ClassMethod(path: NodePath<ClassMethod>) {
   if (path.node.kind === 'constructor') {
@@ -10,9 +11,14 @@ export function ClassMethod(path: NodePath<ClassMethod>) {
 }
 
 function processTypeParameters(typeParameterPath: any) {
-  typeParameterPath.node.params = typeParameterPath.node.params.map((_: any, i: number) =>
-    convertFlowType(typeParameterPath.get(`params.${i}`)),
-  );
+  typeParameterPath.node.params = typeParameterPath.node.params.map((_: any, i: number) => {
+    const paramPath = typeParameterPath.get(`params.${i}`);
+    if (paramPath.isTypeParameter()) {
+      return convertTypeParameter(paramPath);
+    } else {
+      return convertFlowType(paramPath);
+    }
+  });
 }
 
 export function ClassDeclaration(path: NodePath<ClassDeclaration>) {
