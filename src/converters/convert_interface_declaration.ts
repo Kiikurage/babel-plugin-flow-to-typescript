@@ -54,14 +54,20 @@ export function convert_interface_declaration(path: NodePath<InterfaceDeclaratio
   });
 
   origExtendsCombined.forEach(origExtend => {
-    const origExtendTypeParameters: NodePath<FlowType>[] = origExtend
-      .get('typeParameters')
-      .get('params') as any;
+    const origExtendTypeParameters = origExtend.get('typeParameters') as any;
+    const origExtendTypeParametersParams: NodePath<FlowType>[] = origExtendTypeParameters.node
+      ? origExtendTypeParameters.get('params')
+      : [];
     const parameters = tsTypeParameterInstantiation(
-      origExtendTypeParameters.map(item => convertFlowType(item)),
+      origExtendTypeParametersParams.map(item => convertFlowType(item)),
     );
 
-    extending.push(tsExpressionWithTypeArguments(origExtend.node.id as Identifier, parameters));
+    extending.push(
+      tsExpressionWithTypeArguments(
+        origExtend.node.id as Identifier,
+        origExtendTypeParametersParams.length ? parameters : null,
+      ),
+    );
   });
 
   return tsInterfaceDeclaration(

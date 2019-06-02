@@ -16,6 +16,15 @@ pluginTester({
     },
     {
       title: 'interface decl extend',
+      code: `interface Something extends Another {
+  something: string;
+}`,
+      output: `interface Something extends Another {
+  something: string;
+}`,
+    },
+    {
+      title: 'interface decl extend params',
       code: `interface Something<A> extends Another<A, B> {
   something: string;
 }`,
@@ -25,6 +34,15 @@ pluginTester({
     },
     {
       title: 'interface decl implement',
+      code: `interface Something implements Another {
+  something: string;
+}`,
+      output: `interface Something extends Another {
+  something: string;
+}`,
+    },
+    {
+      title: 'interface decl implement params',
       code: `interface Something<A> implements Another<A, B> {
   something: string;
 }`,
@@ -32,9 +50,17 @@ pluginTester({
   something: string;
 }`,
     },
-
     {
       title: 'interface decl implement extend',
+      code: `interface Something extends What implements Another {
+  something: string;
+}`,
+      output: `interface Something extends What, Another {
+  something: string;
+}`,
+    },
+    {
+      title: 'interface decl implement extend params',
       code: `interface Something<A> extends What<Yes> implements Another<A, B> {
   something: string;
 }`,
