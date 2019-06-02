@@ -17,7 +17,8 @@
     "test": "jest",
     "test-watch": "jest --watch",
     "build": "tsc",
-    "watch": "tsc --watch"
+    "watch": "tsc --watch",
+    "format:check": "prettier --list-different {src,test}/**/*.ts"
   },
   "keywords": [
     "babel",
@@ -45,6 +46,7 @@
     "babel-jest": "^23.6.0",
     "babel-plugin-tester": "^5.0.0",
     "jest": "^23.6.0",
+    "prettier": "^1.17.1",
     "regenerator-runtime": "^0.13.2",
     "ts-jest": "^23.10.5",
     "tslint": "^5.16.0",
