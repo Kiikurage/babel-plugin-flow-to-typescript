@@ -20,13 +20,13 @@ pluginTester({
       title: 'Extending class declaration types are transformed',
       code: `class C extends React.Component<?string, ?(string | boolean)> {}`,
       output:
-        'class C extends React.Component<string | undefined | null, string | boolean | undefined | null> {}',
+        'class C extends React.Component<string | undefined | null, (string | boolean) | undefined | null> {}',
     },
     {
       title: 'Class declaration types are transformed',
       code: `class C implements Something<?string, ?(string | boolean)> {}`,
       output:
-        'class C implements Something<string | undefined | null, string | boolean | undefined | null> {}',
+        'class C implements Something<string | undefined | null, (string | boolean) | undefined | null> {}',
     },
   ],
 });

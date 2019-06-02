@@ -16,7 +16,6 @@
     "baseUrl": "./src",
     "outDir": "./dist",
     "preserveConstEnums": false,
-    "esModuleInterop": true,
     "paths": {
       "babel-plugin-tester": [
         "./types/babel-plugin-tester.d.ts"

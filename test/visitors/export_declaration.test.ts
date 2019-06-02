@@ -10,8 +10,10 @@ pluginTester({
   tests: [
     {
       title: 'Removes type from exports',
-      code: `export type { Something };`,
-      output: `export { Something };`,
+      code: `type Something = A;
+export type { Something };`,
+      output: `type Something = A;
+export { Something };`,
     },
     {
       title:
