@@ -6,17 +6,17 @@ pluginTester({
   plugin: buildPlugin([Program]),
   tests: [
     {
-      title: 'import type statement',
+      title: 'program flow comment single line',
       code: `// @flow\nconst a = 55;\nexport default a;`,
       output: `const a = 55;\nexport default a;`,
     },
     {
-      title: 'import type statement',
+      title: 'program flow comment block statement',
       code: `/* @flow */\nconst a = 55;\nexport default a;`,
       output: `const a = 55;\nexport default a;`,
     },
     {
-      title: 'import type statement',
+      title: 'program flow comment with license',
       code: `// @license MIT\n/* @flow */\nconst a = 55;\nexport default a;`,
       output: `// @license MIT\nconst a = 55;\nexport default a;`,
     },

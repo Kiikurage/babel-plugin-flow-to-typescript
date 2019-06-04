@@ -12,6 +12,7 @@ export function buildPlugin(visitors: Function[]) {
       parserOpts.plugins.push('jsx');
       parserOpts.plugins.push('classProperties');
       parserOpts.plugins.push('objectRestSpread');
+      parserOpts.plugins.push('optionalChaining');
     },
   });
 }

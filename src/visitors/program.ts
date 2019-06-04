@@ -1,7 +1,7 @@
-import { Program as ProgramDecl } from '@babel/types';
+import { Program } from '@babel/types';
 import { NodePath } from '@babel/traverse';
 
-export function Program(path: NodePath<ProgramDecl>) {
+export function Program(path: NodePath<Program>) {
   const [firstNode] = path.node.body;
 
   if (firstNode && firstNode.leadingComments && firstNode.leadingComments.length) {
