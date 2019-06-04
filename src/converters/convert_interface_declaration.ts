@@ -45,7 +45,7 @@ export function convert_interface_declaration(path: NodePath<InterfaceDeclaratio
     if (isObjectTypeProperty(property)) {
       const tsPropSignature = tsPropertySignature(
         property.key,
-        tsTypeAnnotation(convertFlowType(origBody.get(`properties.${i}`).get('value'))),
+        tsTypeAnnotation(convertFlowType(origBody.get(`properties.${i}.value`))),
       );
       tsPropSignature.optional = property.optional;
       tsPropSignature.readonly = property.variance && property.variance.kind === 'plus';
