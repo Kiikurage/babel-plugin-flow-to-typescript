@@ -47,6 +47,7 @@ import {
   tsArrayType,
   tsBooleanKeyword,
   tsFunctionType,
+  tsParenthesizedType,
   tsIndexedAccessType,
   tsIndexSignature,
   tsIntersectionType,
@@ -387,7 +388,7 @@ export function convertFlowType(path: NodePath<FlowType>): TSType {
     const returnType = tsTypeAnnotation(convertFlowType(nodePath.get('returnType')));
     const tsFT = tsFunctionType(null, [], returnType);
     tsFT.parameters = identifiers;
-    return tsFT;
+    return tsParenthesizedType(tsFT);
   }
 
   if (isNodePath(isTupleTypeAnnotation, path)) {

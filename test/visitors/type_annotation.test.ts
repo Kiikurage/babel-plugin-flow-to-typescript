@@ -216,7 +216,7 @@ pluginTester({
     {
       title: 'Function type annotation',
       code: `const f: X<T> => string = (x) => '';`,
-      output: `const f: (x0: X<T>) => string = x => '';`,
+      output: `const f: ((x0: X<T>) => string) = x => '';`,
     },
     {
       title: 'Qualified type',
