@@ -68,5 +68,14 @@ pluginTester({
   something: string;
 }`,
     },
+    {
+      title: 'interface decl method',
+      code: `interface Something<A> extends What<Yes> implements Another<A, B> {
+  something(): string;
+}`,
+      output: `interface Something<A> extends What<Yes>, Another<A, B> {
+  something: (() => string);
+}`,
+    },
   ],
 });

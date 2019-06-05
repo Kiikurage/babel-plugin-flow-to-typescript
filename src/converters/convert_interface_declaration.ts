@@ -20,7 +20,22 @@ import { NodePath } from '@babel/traverse';
 import { convertFlowType } from '../converters/convert_flow_type';
 import { convertTypeParameterDeclaration } from '../converters/convert_type_parameter_declaration';
 
-export function convert_interface_declaration(path: NodePath<InterfaceDeclaration>) {
+export function convertInterfaceExtends(path: NodePath<InterfaceExtends | ClassImplements>) {
+  const pathTypeParameters = path.get('typeParameters') as any;
+  const pathTypeParameterParams: NodePath<FlowType>[] = pathTypeParameters.node
+    ? pathTypeParameters.get('params')
+    : [];
+  const parameters = tsTypeParameterInstantiation(
+    pathTypeParameterParams.map(item => convertFlowType(item)),
+  );
+
+  return tsExpressionWithTypeArguments(
+    path.node.id as Identifier,
+    pathTypeParameterParams.length ? parameters : null,
+  );
+}
+
+export function convertInterfaceDeclaration(path: NodePath<InterfaceDeclaration>) {
   const origBody = path.get('body');
   const origExtends: NodePath<InterfaceExtends>[] = path.get('extends') as any;
   const origImplements: NodePath<ClassImplements>[] = path.get('implements') as any;
@@ -39,7 +54,6 @@ export function convert_interface_declaration(path: NodePath<InterfaceDeclaratio
     : null;
 
   const members: Array<TSTypeElement> = [];
-  const extending: Array<TSExpressionWithTypeArguments> = [];
 
   origBody.node.properties.forEach((property, i) => {
     if (isObjectTypeProperty(property)) {
@@ -55,22 +69,9 @@ export function convert_interface_declaration(path: NodePath<InterfaceDeclaratio
     }
   });
 
-  origExtendsCombined.forEach(origExtend => {
-    const origExtendTypeParameters = origExtend.get('typeParameters') as any;
-    const origExtendTypeParametersParams: NodePath<FlowType>[] = origExtendTypeParameters.node
-      ? origExtendTypeParameters.get('params')
-      : [];
-    const parameters = tsTypeParameterInstantiation(
-      origExtendTypeParametersParams.map(item => convertFlowType(item)),
-    );
-
-    extending.push(
-      tsExpressionWithTypeArguments(
-        origExtend.node.id as Identifier,
-        origExtendTypeParametersParams.length ? parameters : null,
-      ),
-    );
-  });
+  const extending: Array<TSExpressionWithTypeArguments> = origExtendsCombined.map(origExtend =>
+    convertInterfaceExtends(origExtend),
+  );
 
   return tsInterfaceDeclaration(
     path.node.id,
