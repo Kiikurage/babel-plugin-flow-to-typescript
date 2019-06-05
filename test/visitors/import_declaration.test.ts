@@ -1,4 +1,4 @@
-import * as pluginTester from 'babel-plugin-tester';
+import pluginTester from 'babel-plugin-tester';
 import { buildPlugin } from '../../src/plugin';
 import { ImportDeclaration, ImportSpecifier } from '../../src/visitors/import_declaration';
 

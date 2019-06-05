@@ -12,23 +12,15 @@
     "noUnusedLocals": true,
     "strictNullChecks": false,
     "noUnusedParameters": true,
-    "rootDir": "./src",
-    "baseUrl": "./src",
+    "rootDir": "./",
+    "baseUrl": "./",
     "outDir": "./dist",
+    "allowSyntheticDefaultImports": true,
     "preserveConstEnums": false,
-    "paths": {
-      "babel-plugin-tester": [
-        "./types/babel-plugin-tester.d.ts"
-      ],
-      "@babel/traverse": [
-        "./types/babel-traverse.d.ts"
-      ]
-    },
+    "esModuleInterop": true,
     "sourceMap": true,
     "strict": true,
     "target": "es2015"
   },
-  "include": [
-    "./src/**/*.ts"
-  ]
+  "include": ["src", "typings"]
 }

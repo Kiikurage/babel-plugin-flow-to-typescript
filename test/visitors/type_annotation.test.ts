@@ -1,4 +1,4 @@
-import * as pluginTester from 'babel-plugin-tester';
+import pluginTester from 'babel-plugin-tester';
 import { buildPlugin } from '../../src/plugin';
 import { TypeAnnotation, TypeAlias } from '../../src/visitors/type_annotation';
 

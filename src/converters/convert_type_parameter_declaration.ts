@@ -11,7 +11,7 @@ export function convertTypeParameterDeclaration(
   path: NodePath<TypeParameterDeclaration>,
 ): TSTypeParameterDeclaration {
   const params = path.node.params.map((_, i) =>
-    convertTypeParameter(path.get<TypeParameter>(`params.${i}`)),
+    convertTypeParameter(path.get(`params.${i}`) as NodePath<TypeParameter>),
   );
 
   return tsTypeParameterDeclaration(params);
