@@ -12,8 +12,8 @@
     "noUnusedLocals": true,
     "strictNullChecks": false,
     "noUnusedParameters": true,
-    "rootDir": "./",
-    "baseUrl": "./",
+    "rootDir": "./src",
+    "baseUrl": "./src",
     "outDir": "./dist",
     "allowSyntheticDefaultImports": true,
     "preserveConstEnums": false,
@@ -22,5 +22,5 @@
     "strict": true,
     "target": "es2015"
   },
-  "include": ["src", "typings"]
+  "include": ["src"]
 }
