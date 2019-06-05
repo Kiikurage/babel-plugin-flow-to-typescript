@@ -8,6 +8,7 @@ import { ClassMethod, ClassDeclaration } from './visitors/class_declaration';
 import { ExportNamedDeclaration, ExportDefaultDeclaration } from './visitors/export_declaration';
 import { InterfaceDeclaration } from './visitors/interface_declaration';
 import { OptionalMemberExpression } from './visitors/optional_member_expression';
+import { DeclareFunction } from './visitors/declare_function';
 import { Program } from './visitors/program';
 
 export = buildPlugin([
@@ -26,4 +27,5 @@ export = buildPlugin([
   ExportDefaultDeclaration,
   InterfaceDeclaration,
   OptionalMemberExpression,
+  DeclareFunction,
 ]);
