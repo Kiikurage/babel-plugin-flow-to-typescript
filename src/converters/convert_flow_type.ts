@@ -9,34 +9,15 @@ import {
   Identifier,
   identifier,
   IntersectionTypeAnnotation,
-  isAnyTypeAnnotation,
-  isArrayTypeAnnotation,
-  isBooleanLiteralTypeAnnotation,
-  isBooleanTypeAnnotation,
   isEmptyTypeAnnotation,
   isExistsTypeAnnotation,
   isFlowType,
   isFunctionDeclaration,
-  isFunctionTypeAnnotation,
-  isGenericTypeAnnotation,
   isIdentifier,
-  isIntersectionTypeAnnotation,
-  isMixedTypeAnnotation,
-  isNullableTypeAnnotation,
-  isNullLiteralTypeAnnotation,
   isNumberLiteralTypeAnnotation,
-  isNumberTypeAnnotation,
-  isObjectTypeAnnotation,
   isObjectTypeProperty,
   isObjectTypeSpreadProperty,
-  isStringLiteralTypeAnnotation,
-  isStringTypeAnnotation,
-  isThisTypeAnnotation,
-  isTupleTypeAnnotation,
   isTypeAnnotation,
-  isTypeofTypeAnnotation,
-  isUnionTypeAnnotation,
-  isVoidTypeAnnotation,
   NumberLiteralTypeAnnotation,
   numericLiteral,
   ObjectTypeAnnotation,
@@ -76,38 +57,38 @@ import {
   TupleTypeAnnotation,
   UnionTypeAnnotation,
 } from '@babel/types';
-import { isNodePath, UnsupportedError, warnOnlyOnce } from '../util';
+import { UnsupportedError, warnOnlyOnce } from '../util';
 import { convertFlowIdentifier } from './convert_flow_identifier';
 
 export function convertFlowType(path: NodePath<FlowType>): TSType {
-  if (isNodePath(isAnyTypeAnnotation, path)) {
+  if (path.isAnyTypeAnnotation()) {
     return tsAnyKeyword();
   }
 
-  if (isNodePath(isArrayTypeAnnotation, path)) {
+  if (path.isArrayTypeAnnotation()) {
     return tsArrayType(convertFlowType(path.get('elementType')));
   }
 
-  if (isNodePath(isBooleanTypeAnnotation, path)) {
+  if (path.isBooleanTypeAnnotation()) {
     return tsBooleanKeyword();
   }
 
-  if (isNodePath(isBooleanLiteralTypeAnnotation, path)) {
+  if (path.isBooleanLiteralTypeAnnotation()) {
     return tsLiteralType(booleanLiteral(path.node.value!));
   }
 
-  if (isNodePath(isEmptyTypeAnnotation, path)) {
+  if (isEmptyTypeAnnotation(path)) {
     return tsNeverKeyword();
   }
 
-  if (isNodePath(isExistsTypeAnnotation, path)) {
+  if (isExistsTypeAnnotation(path)) {
     warnOnlyOnce(
       'Existential type (*) in Flow is converted to "any" in TypeScript, and this conversion loses some type information.',
     );
     return tsAnyKeyword();
   }
 
-  if (isNodePath(isGenericTypeAnnotation, path)) {
+  if (path.isGenericTypeAnnotation()) {
     const typeParameterPath = path.get('typeParameters');
     let tsTypeParameters: TSTypeParameterInstantiation | null = null;
     if (typeParameterPath.node) {
@@ -173,7 +154,7 @@ export function convertFlowType(path: NodePath<FlowType>): TSType {
     //TODO: $ObjMap<T, F>, $TupleMap<T, F>, $Call<F>, Class<T>, $Supertype<T>, $Subtype<T>
   }
 
-  if (isNodePath(isIntersectionTypeAnnotation, path)) {
+  if (path.isIntersectionTypeAnnotation()) {
     const flowTypes = (path as NodePath<IntersectionTypeAnnotation>).node.types;
     return tsIntersectionType(
       flowTypes.map((_, i) =>
@@ -184,11 +165,11 @@ export function convertFlowType(path: NodePath<FlowType>): TSType {
     );
   }
 
-  if (isNodePath(isMixedTypeAnnotation, path)) {
+  if (path.isMixedTypeAnnotation()) {
     return tsUnknownKeyword();
   }
 
-  if (isNodePath(isNullableTypeAnnotation, path)) {
+  if (path.isNullableTypeAnnotation()) {
     const tsT = convertFlowType(path.get('typeAnnotation') as NodePath<FlowType>);
 
     // Note: for convenience, path stack is stacked in order that parent item is located before child one.
@@ -197,8 +178,9 @@ export function convertFlowType(path: NodePath<FlowType>): TSType {
       isFlowType(pathStack[0].node) ||
       isTypeAnnotation(pathStack[0].node) ||
       isIdentifier(pathStack[0].node)
-    )
+    ) {
       pathStack.unshift(pathStack[0].parentPath);
+    }
 
     if (isFunctionDeclaration(pathStack[0].node)) {
       if (pathStack[1].node === (pathStack[0].node as FunctionDeclaration).returnType) {
@@ -254,21 +236,21 @@ export function convertFlowType(path: NodePath<FlowType>): TSType {
     return tsUnionType([tsT, tsUndefinedKeyword(), tsNullKeyword()]);
   }
 
-  if (isNodePath(isNullLiteralTypeAnnotation, path)) {
+  if (path.isNullLiteralTypeAnnotation()) {
     return tsNullKeyword();
   }
 
-  if (isNodePath(isNumberLiteralTypeAnnotation, path)) {
+  if (isNumberLiteralTypeAnnotation(path)) {
     return tsLiteralType(
       numericLiteral((path as NodePath<NumberLiteralTypeAnnotation>).node.value!),
     );
   }
 
-  if (isNodePath(isNumberTypeAnnotation, path)) {
+  if (path.isNumberTypeAnnotation()) {
     return tsNumberKeyword();
   }
 
-  if (isNodePath(isObjectTypeAnnotation, path)) {
+  if (path.isObjectTypeAnnotation()) {
     const members: TSTypeElement[] = [];
     const spreads: TSType[] = [];
 
@@ -339,21 +321,21 @@ export function convertFlowType(path: NodePath<FlowType>): TSType {
     return ret;
   }
 
-  if (isNodePath(isStringLiteralTypeAnnotation, path)) {
+  if (path.isStringLiteralTypeAnnotation()) {
     return tsLiteralType(
       stringLiteral((path as NodePath<StringLiteralTypeAnnotation>).node.value!),
     );
   }
 
-  if (isNodePath(isStringTypeAnnotation, path)) {
+  if (path.isStringTypeAnnotation()) {
     return tsStringKeyword();
   }
 
-  if (isNodePath(isThisTypeAnnotation, path)) {
+  if (path.isThisTypeAnnotation()) {
     return tsThisType();
   }
 
-  if (isNodePath(isTypeofTypeAnnotation, path)) {
+  if (path.isTypeofTypeAnnotation()) {
     const typeOp = tsTypeOperator(
       convertFlowType((path as NodePath<TypeofTypeAnnotation>).get('argument')),
     );
@@ -361,18 +343,18 @@ export function convertFlowType(path: NodePath<FlowType>): TSType {
     return typeOp;
   }
 
-  if (isNodePath(isUnionTypeAnnotation, path)) {
+  if (path.isUnionTypeAnnotation()) {
     const flowTypes = (path as NodePath<UnionTypeAnnotation>).node.types;
     return tsUnionType(
       flowTypes.map((_, i) => convertFlowType(path.get(`types.${i}`) as NodePath<FlowType>)),
     );
   }
 
-  if (isNodePath(isVoidTypeAnnotation, path)) {
+  if (path.isVoidTypeAnnotation()) {
     return tsVoidKeyword();
   }
 
-  if (isNodePath(isFunctionTypeAnnotation, path)) {
+  if (path.isFunctionTypeAnnotation()) {
     const nodePath = path as NodePath<FunctionTypeAnnotation>;
     const identifiers = path.node.params.map((p, i) => {
       const name = (p.name && p.name.name) || `x${i}`;
@@ -389,7 +371,7 @@ export function convertFlowType(path: NodePath<FlowType>): TSType {
     return tsParenthesizedType(tsFT);
   }
 
-  if (isNodePath(isTupleTypeAnnotation, path)) {
+  if (path.isTupleTypeAnnotation()) {
     const flowTypes = (path as NodePath<TupleTypeAnnotation>).node.types;
     return tsTupleType(
       flowTypes.map((_, i) => convertFlowType(path.get(`types.${i}`) as NodePath<FlowType>)),
