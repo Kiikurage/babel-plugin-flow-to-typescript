@@ -1,4 +1,5 @@
 import {
+  identifier,
   nullLiteral,
   binaryExpression,
   memberExpression,
@@ -30,7 +31,7 @@ function getConditionalExpression(members: MemberType[], index: number): Conditi
 
   return conditionalExpression(
     binaryExpression('==', currentMember, nullLiteral()),
-    nullLiteral(),
+    identifier('undefined'),
     isLastMember ? currentMember : getConditionalExpression(members, index + 1),
   );
 }

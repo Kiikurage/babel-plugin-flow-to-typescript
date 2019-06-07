@@ -8,17 +8,17 @@ pluginTester({
     {
       title: 'optional member expression',
       code: `console.log(a?.b);`,
-      output: `console.log(a == null ? null : a.b == null ? null : a.b);`,
+      output: `console.log(a == null ? undefined : a.b == null ? undefined : a.b);`,
     },
     {
       title: 'optional multi member expression',
       code: `console.log(a?.b?.c);`,
-      output: `console.log(a == null ? null : a.b == null ? null : a.b.c == null ? null : a.b.c);`,
+      output: `console.log(a == null ? undefined : a.b == null ? undefined : a.b.c == null ? undefined : a.b.c);`,
     },
     {
       title: 'optional multi mixed member expression',
       code: `console.log(a.b?.c);`,
-      output: `console.log(a.b == null ? null : a.b.c == null ? null : a.b.c);`,
+      output: `console.log(a.b == null ? undefined : a.b.c == null ? undefined : a.b.c);`,
     },
   ],
 });

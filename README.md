@@ -46,7 +46,7 @@ $ babel --plugins @steelbrain/babel-plugin-flow-to-typescript ${SRC_FLOW_FILE} -
 | ✅         | Type alias            | `type A = string`                 | `type A = string`                               |
 | ✅         | Flow Ignore           | `$FlowFixMe`                      | `any`                                           |
 | ✅         | Interfaces            | `interface X { +prop: string }`   | `interface X { readonly prop: string }`         |
-| ✅         | Optional Members      | `a?.b`                            | `a == null ? null : a.b == null ? null : a.b`   |
+| ✅         | Optional Members      | `a?.b`                            | `...`   |
 | ✅         | Declare functions     | `declare function x(false): true;`| `function x(x0: false): true;`                  |
 | ✅         | Declare Class         | `...`                             | `...`                                           |
 
