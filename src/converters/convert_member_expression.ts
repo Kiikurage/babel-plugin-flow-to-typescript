@@ -6,15 +6,16 @@ import {
   conditionalExpression,
   isOptionalMemberExpression,
   Identifier,
+  NumericLiteral,
   MemberExpression,
   ConditionalExpression,
   OptionalMemberExpression,
 } from '@babel/types';
 import { NodePath } from '@babel/traverse';
 
-type MemberType = Identifier | MemberExpression;
+type MemberType = Identifier | MemberExpression | NumericLiteral;
 
-function getMemberExpression(members: MemberType[]): MemberExpression | Identifier {
+function getMemberExpression(members: MemberType[]): MemberType {
   if (members.length === 1) {
     return members[0];
   }
@@ -23,6 +24,7 @@ function getMemberExpression(members: MemberType[]): MemberExpression | Identifi
   return memberExpression(
     members.length === 1 ? members[0] : getMemberExpression(members),
     lastMember,
+    lastMember.type === 'NumericLiteral',
   );
 }
 function getConditionalExpression(members: MemberType[], index: number): ConditionalExpression {
