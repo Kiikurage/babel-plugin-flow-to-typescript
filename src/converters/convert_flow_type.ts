@@ -362,6 +362,7 @@ export function convertFlowType(path: NodePath<FlowType>): TSType {
       const typeAnn = ftParam.get('typeAnnotation') as NodePath<FlowType>;
 
       const iden = identifier(name);
+      iden.optional = p.optional;
       iden.typeAnnotation = tsTypeAnnotation(convertFlowType(typeAnn));
       return iden;
     });
