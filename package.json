@@ -1,6 +1,7 @@
 {
   "name": "babel-plugin-flow-to-typescript",
   "description": "Babel plugin to convert Flow into TypeScript",
+  "license": "MIT",
   "author": {
     "name": "Yuichiro Kikura",
     "email": "y.kikura@gmail.com",
@@ -14,7 +15,8 @@
   "scripts": {
     "test": "jest",
     "test-watch": "jest --watch",
-    "build": "tsc"
+    "build": "tsc",
+    "watch": "tsc --watch"
   },
   "keywords": [
     "babel",
@@ -26,23 +28,26 @@
     "type": "git",
     "url": "https://github.com/Kiikurage/babel-plugin-flow-to-typescript.git"
   },
+  "peerDependencies": {
+    "@babel/core": "^7.2.2"
+  },
   "dependencies": {
-    "@babel/core": "^7.0.0-beta.44",
-    "@babel/traverse": "^7.0.0-beta.44",
-    "@babel/types": "^7.0.0-beta.44"
+    "@babel/traverse": "^7.2.3",
+    "@babel/types": "^7.2.2"
   },
   "devDependencies": {
+    "@babel/core": "^7.2.2",
     "@types/babel-core": "^6.25.3",
     "@types/babel-types": "^7.0.1",
-    "@types/node": "^9.6.2",
+    "@types/node": "^10.12.18",
     "babel-core": "^7.0.0-bridge.0",
-    "babel-jest": "^22.4.3",
+    "babel-jest": "^23.6.0",
     "babel-plugin-tester": "^5.0.0",
-    "jest": "^22.4.3",
-    "regenerator-runtime": "^0.11.1",
-    "ts-jest": "^22.4.2",
+    "jest": "^23.6.0",
+    "regenerator-runtime": "^0.13.1",
+    "ts-jest": "^23.10.5",
     "tslint": "^5.9.1",
-    "typescript": "^2.8.1"
+    "typescript": "^3.2.4"
   },
   "jest": {
     "testURL": "http://localhost/",
