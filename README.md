@@ -5,8 +5,8 @@
 ## How to use
 
 ```shell
-$ yarn global add @babel/cli
-$ yarn add babel-plugin-flow-to-typescript
+$ npm install -g @babel/cli
+$ npm install babel-plugin-flow-to-typescript
 
 # you must use babel@^7.x.x
 $ babel --version
