@@ -54,6 +54,7 @@ import {
     tsNeverKeyword,
     tsNullKeyword,
     tsNumberKeyword,
+    tsObjectKeyword,
     tsPropertySignature,
     tsStringKeyword,
     tsThisType,
@@ -163,11 +164,19 @@ export function convertFlowType(path: NodePath<FlowType>): TSType {
             const [tsT, tsK] = tsTypeParameters!.params;
             return tsIndexedAccessType(tsT, tsK);
 
-            //TODO: $ObjMap<T, F>, $TupleMap<T, F>, $Call<F>, Class<T>, $Supertype<T>, $Subtype<T>
+        } else if (id.name === '$FlowFixMe') {
+            return tsTypeReference(identifier('any'), tsTypeParameters);
 
+        } else if (id.name === 'Object') {
+            return tsObjectKeyword()
+        // @ts-ignore
+        } else if (id.type === 'QualifiedTypeIdentifier') {
+            // @ts-ignore
+            return tsTypeReference(identifier(`${id.qualification.name}.${id.id.name}`))
         } else {
             return tsTypeReference(id, tsTypeParameters);
         }
+        //TODO: $ObjMap<T, F>, $TupleMap<T, F>, $Call<F>, Class<T>, $Supertype<T>, $Subtype<T>
 
     }
 
