@@ -25,6 +25,10 @@ pluginTester({
         code: `let a: true;`,
         output: `let a: true;`
     }, {
+        title: 'Mixed type',
+        code: `let a: mixed;`,
+        output: `let a: {};`,
+    }, {
         title: 'Null literal',
         code: `let a: null;`,
         output: `let a: null;`,
@@ -177,6 +181,10 @@ pluginTester({
         title: 'Function type annotation',
         code: `const f: X<T> => string = (x) => '';`,
         output: `const f: (x0: X<T>) => string = x => '';`
+    }, {
+        title: 'Qualified type',
+        code: `let a: A.B;`,
+        output: `let a: A.B;`
     }, {
         title: 'Tuple type',
         code: `let a: [number, string, Array<boolean>];`,

@@ -58,6 +58,7 @@ import {
     tsPropertySignature,
     tsStringKeyword,
     tsThisType,
+    tsTupleType,
     TSType,
     tsTypeAnnotation,
     TSTypeElement,
@@ -69,16 +70,16 @@ import {
     tsUndefinedKeyword,
     tsUnionType,
     tsVoidKeyword,
-    tsTupleType,
+    TupleTypeAnnotation,
     TypeofTypeAnnotation,
-    UnionTypeAnnotation,
-    TupleTypeAnnotation
+    UnionTypeAnnotation
 } from '@babel/types';
 import {
     isNodePath,
     UnsupportedError,
     warnOnlyOnce
 } from '../util';
+import {convertFlowIdentifier} from './convert_flow_identifier';
 
 export function convertFlowType(path: NodePath<FlowType>): TSType {
     if (isNodePath(isAnyTypeAnnotation, path)) {
@@ -115,32 +116,32 @@ export function convertFlowType(path: NodePath<FlowType>): TSType {
         }
 
         const id = (path as NodePath<GenericTypeAnnotation>).node.id;
-        if (id.name === '$Keys') {
+        if (isIdentifier(id) && id.name === '$Keys') {
             // $Keys -> keyof
             const ret = tsTypeOperator(tsTypeParameters!.params[0]);
             ret.operator = 'keyof';
             return ret;
 
-        } else if (id.name === '$Values') {
+        } else if (isIdentifier(id) && id.name === '$Values') {
             // $Values<X> -> X[keyof X]
             const tsType = tsTypeParameters!.params[0];
             const tsKey = tsTypeOperator(tsType);
             tsKey.operator = 'keyof';
             return tsIndexedAccessType(tsType, tsKey);
 
-        } else if (id.name === '$ReadOnly') {
+        } else if (isIdentifier(id) && id.name === '$ReadOnly') {
             // $ReadOnly<X> -> Readonly<X>
             return tsTypeReference(identifier('Readonly'), tsTypeParameters);
 
-        } else if (id.name === '$ReadOnlyArray') {
+        } else if (isIdentifier(id) && id.name === '$ReadOnlyArray') {
             // $ReadOnlyArray<X> -> ReadonlyArray<X>
             return tsTypeReference(identifier('ReadonlyArray'), tsTypeParameters);
 
-        } else if (id.name === '$Exact') {
+        } else if (isIdentifier(id) && id.name === '$Exact') {
             warnOnlyOnce('Exact object type annotation in Flow is ignored. In TypeScript, it\'s always regarded as exact type');
             return tsTypeParameters!.params[0];
 
-        } else if (id.name === '$Diff') {
+        } else if (isIdentifier(id) && id.name === '$Diff') {
             // $Diff<X, Y> -> Pick<X, Exclude<keyof X, keyof Y>>
             const [tsX, tsY] = tsTypeParameters!.params;
             const tsKeyofX = tsTypeOperator(tsX);
@@ -150,16 +151,16 @@ export function convertFlowType(path: NodePath<FlowType>): TSType {
             const tsExclude = tsTypeReference(identifier('Exclude'), tsTypeParameterInstantiation([tsKeyofX, tsKeyofY]));
             return tsTypeReference(identifier('Pick'), tsTypeParameterInstantiation([tsX, tsExclude]));
 
-        } else if (id.name === '$Rest') {
+        } else if (isIdentifier(id) && id.name === '$Rest') {
             throw new UnsupportedError('$Rest in GenericTypeAnnotation');
 
-        } else if (id.name === '$PropertyType') {
+        } else if (isIdentifier(id) && id.name === '$PropertyType') {
             // $PropertyType<T, k> -> T[k]
             // TODO: $PropertyType<T, k> -> k extends string ? T[k] : never
             const [tsT, tsK] = tsTypeParameters!.params;
             return tsIndexedAccessType(tsT, tsK);
 
-        } else if (id.name === '$ElementType') {
+        } else if (isIdentifier(id) && id.name === '$ElementType') {
             // $ElementType<T, k> -> T[k]
             const [tsT, tsK] = tsTypeParameters!.params;
             return tsIndexedAccessType(tsT, tsK);
@@ -174,7 +175,7 @@ export function convertFlowType(path: NodePath<FlowType>): TSType {
             // @ts-ignore
             return tsTypeReference(identifier(`${id.qualification.name}.${id.id.name}`))
         } else {
-            return tsTypeReference(id, tsTypeParameters);
+            return tsTypeReference(convertFlowIdentifier(id), tsTypeParameters);
         }
         //TODO: $ObjMap<T, F>, $TupleMap<T, F>, $Call<F>, Class<T>, $Supertype<T>, $Subtype<T>
 
