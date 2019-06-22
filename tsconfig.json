@@ -15,12 +15,10 @@
     "rootDir": "./src",
     "baseUrl": "./src",
     "outDir": "./dist",
-    "allowSyntheticDefaultImports": true,
     "preserveConstEnums": false,
-    "esModuleInterop": true,
     "paths": {
       "babel-plugin-tester": [
-        "./typings/babel-plugin-tester.d.ts"
+        "./types/babel-plugin-tester.d.ts"
       ]
     },
     "sourceMap": true,

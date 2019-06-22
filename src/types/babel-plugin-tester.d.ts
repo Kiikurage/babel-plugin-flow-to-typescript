@@ -1,4 +1,4 @@
-declare module 'babel-plugin-tester' {
+declare namespace pluginTester {
   // tslint:disable:no-any
   export interface TesterOption {
     plugin: any;
@@ -14,8 +14,8 @@ declare module 'babel-plugin-tester' {
     fixture?: string;
     outputFixture?: string;
   }
-
-  function pluginTester(option: TesterOption): void;
-
-  export default pluginTester;
 }
+
+declare function pluginTester(option: pluginTester.TesterOption): void;
+
+export = pluginTester;

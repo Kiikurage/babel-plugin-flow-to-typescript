@@ -1,4 +1,4 @@
-import pluginTester from 'babel-plugin-tester';
+import * as pluginTester from 'babel-plugin-tester';
 import { buildPlugin } from '../../src/plugin';
 import { ClassMethod, ClassDeclaration, DeclareClass } from '../../src/visitors/class_declaration';
 
