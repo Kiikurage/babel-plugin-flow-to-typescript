@@ -19,7 +19,8 @@
     "build": "tsc",
     "watch": "tsc --watch",
     "lint": "tslint --project .",
-    "cover": "jest --coverage"
+    "cover": "jest --coverage",
+    "prettify": "./node_modules/.bin/prettier --write \"{src,test}/**/*.{js,ts,tsx}\""
   },
   "keywords": [
     "babel",
@@ -42,14 +43,18 @@
     "@babel/core": "^7.2.2",
     "@types/babel-core": "^6.25.3",
     "@types/babel-types": "^7.0.1",
+    "@types/babel__traverse": "^7.0.6",
     "@types/node": "^12.0.10",
     "babel-core": "^7.0.0-bridge.0",
     "babel-jest": "^24.8.0",
     "babel-plugin-tester": "^6.4.0",
     "jest": "^24.8.0",
-    "regenerator-runtime": "^0.13.1",
+    "prettier": "^1.17.1",
+    "regenerator-runtime": "^0.13.2",
     "ts-jest": "^24.0.2",
     "tslint": "^5.18.0",
+    "tslint-config-prettier": "^1.18.0",
+    "tslint-plugin-prettier": "^2.0.1",
     "typescript": "^3.2.4"
   },
   "jest": {

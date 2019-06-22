@@ -1,5 +1,10 @@
 {
+  "extends": [
+    "tslint-config-prettier"
+  ],
+  "rulesDirectory": ["tslint-plugin-prettier"],
   "rules": {
+    "prettier": true,
     "arrow-return-shorthand": true,
     "ban": [
       true,
