@@ -73,7 +73,6 @@ import {
   tsVoidKeyword,
   TupleTypeAnnotation,
   TypeofTypeAnnotation,
-  UnionTypeAnnotation,
 } from '@babel/types';
 import { isNodePath, UnsupportedError, warnOnlyOnce } from '../util';
 import { convertFlowIdentifier } from './convert_flow_identifier';
@@ -111,7 +110,7 @@ export function convertFlowType(path: NodePath<FlowType>): TSType {
     let tsTypeParameters: TSTypeParameterInstantiation | null = null;
     if (typeParameterPath.node) {
       const tsParams = typeParameterPath.node.params.map((_, i) =>
-        convertFlowType(typeParameterPath.get(`params.${i}`)),
+        convertFlowType(typeParameterPath.get(`params.${i}`) as NodePath<FlowType>),
       );
       tsTypeParameters = tsTypeParameterInstantiation(tsParams);
     }
@@ -293,7 +292,9 @@ export function convertFlowType(path: NodePath<FlowType>): TSType {
         if (isObjectTypeProperty(property)) {
           const tsPropSignature = tsPropertySignature(
             property.key,
-            tsTypeAnnotation(convertFlowType(path.get(`properties.${i}`).get('value'))),
+            tsTypeAnnotation(
+              convertFlowType(path.get(`properties.${i}.value`) as NodePath<FlowType>),
+            ),
           );
           tsPropSignature.optional = property.optional;
           tsPropSignature.readonly = property.variance && property.variance.kind === 'plus';
@@ -302,7 +303,7 @@ export function convertFlowType(path: NodePath<FlowType>): TSType {
 
         if (isObjectTypeSpreadProperty(property)) {
           // {p1:T, ...U} -> {p1:T} | U
-          spreads.push(convertFlowType(path.get(`properties.${i}`).get('argument')));
+          spreads.push(convertFlowType(path.get(`properties.${i}.argument`) as NodePath<FlowType>));
         }
       }
     }
@@ -311,13 +312,11 @@ export function convertFlowType(path: NodePath<FlowType>): TSType {
       for (const [i, indexer] of objectTypeNode.indexers.entries()) {
         const tsIndex = indexer.id || identifier('x');
         tsIndex.typeAnnotation = tsTypeAnnotation(
-          convertFlowType(path.get(`indexers.${i}`).get('key') as NodePath<FlowType>),
+          convertFlowType(path.get(`indexers.${i}.key`) as NodePath<FlowType>),
         );
         const member = tsIndexSignature(
           [tsIndex],
-          tsTypeAnnotation(
-            convertFlowType(path.get(`indexers.${i}`).get('value') as NodePath<FlowType>),
-          ),
+          tsTypeAnnotation(convertFlowType(path.get(`indexers.${i}.value`) as NodePath<FlowType>)),
         );
         members.push(member);
       }
@@ -370,11 +369,9 @@ export function convertFlowType(path: NodePath<FlowType>): TSType {
   }
 
   if (isNodePath(isUnionTypeAnnotation, path)) {
-    const flowTypes = (path as NodePath<UnionTypeAnnotation>).node.types;
+    const flowTypes = path.node.types;
     return tsUnionType(
-      flowTypes.map((_, i) =>
-        convertFlowType((path as NodePath<UnionTypeAnnotation>).get(`types.${i}`)),
-      ),
+      flowTypes.map((_, i) => convertFlowType(path.get(`types.${i}`) as NodePath<FlowType>)),
     );
   }
 
@@ -402,7 +399,9 @@ export function convertFlowType(path: NodePath<FlowType>): TSType {
     const flowTypes = (path as NodePath<TupleTypeAnnotation>).node.types;
     return tsTupleType(
       flowTypes.map((_, i) =>
-        convertFlowType((path as NodePath<TupleTypeAnnotation>).get(`types.${i}`)),
+        convertFlowType((path as NodePath<TupleTypeAnnotation>).get(`types.${i}`) as NodePath<
+          FlowType
+        >),
       ),
     );
   }

@@ -18,9 +18,6 @@
     "paths": {
       "babel-plugin-tester": [
         "./types/babel-plugin-tester.d.ts"
-      ],
-      "@babel/traverse": [
-        "./types/babel-traverse.d.ts"
       ]
     },
     "sourceMap": true,
