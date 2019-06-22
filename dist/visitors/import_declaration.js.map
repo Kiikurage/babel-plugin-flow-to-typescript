@@ -1,1 +1,0 @@
-{"version":3,"file":"import_declaration.js","sourceRoot":"","sources":["../../src/visitors/import_declaration.ts"],"names":[],"mappings":";;AAEA,yFAAkF;AAElF,SAAgB,iBAAiB,CAAC,IAAiC;IAC/D,IAAI,CAAC,WAAW,CAAC,qDAAwB,CAAC,IAAI,CAAC,CAAC,CAAC;AACrD,CAAC;AAFD,8CAEC;AAED,SAAgB,eAAe,CAAC,IAA+B;IAC3D,IAAI,CAAC,IAAI,CAAC,UAAU,GAAG,IAAI,CAAC;AAChC,CAAC;AAFD,0CAEC"}
