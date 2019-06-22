@@ -170,7 +170,7 @@ export function convertFlowType(path: NodePath<FlowType>): TSType {
   }
 
   if (path.isNullableTypeAnnotation()) {
-    const tsT = convertFlowType(path.get('typeAnnotation') as NodePath<FlowType>);
+    const tsT = convertFlowType(path.get('typeAnnotation'));
 
     // Note: for convenience, path stack is stacked in order that parent item is located before child one.
     const pathStack: NodePath[] = [path];

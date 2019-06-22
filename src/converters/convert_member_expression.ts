@@ -40,7 +40,7 @@ function getConditionalExpression(members: MemberType[], index: number): Conditi
 
 export function convertMemberExpression(path: NodePath<OptionalMemberExpression>) {
   const objChainReverse = [];
-  let current: any = path.node;
+  let current = path.node;
 
   do {
     objChainReverse.push(current.property);

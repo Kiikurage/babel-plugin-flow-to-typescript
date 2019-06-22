@@ -1,3 +1,4 @@
+// tslint:disable:no-any
 import {
   Identifier,
   DeclareClass,

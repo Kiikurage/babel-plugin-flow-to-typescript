@@ -17,11 +17,11 @@ import {
 } from '@babel/types';
 import { NodePath } from '@babel/traverse';
 
-import { convertFlowType } from '../converters/convert_flow_type';
-import { convertTypeParameterDeclaration } from '../converters/convert_type_parameter_declaration';
+import { convertFlowType } from './convert_flow_type';
+import { convertTypeParameterDeclaration } from './convert_type_parameter_declaration';
 
 export function convertInterfaceExtends(path: NodePath<InterfaceExtends | ClassImplements>) {
-  const pathTypeParameters = path.get('typeParameters') as any;
+  const pathTypeParameters = path.get('typeParameters');
   const pathTypeParameterParams: NodePath<FlowType>[] = pathTypeParameters.node
     ? pathTypeParameters.get('params')
     : [];
@@ -37,8 +37,8 @@ export function convertInterfaceExtends(path: NodePath<InterfaceExtends | ClassI
 
 export function convertInterfaceDeclaration(path: NodePath<InterfaceDeclaration>) {
   const origBody = path.get('body');
-  const origExtends: NodePath<InterfaceExtends>[] = path.get('extends') as any;
-  const origImplements: NodePath<ClassImplements>[] = path.get('implements') as any;
+  const origExtends: NodePath<InterfaceExtends>[] = path.get('extends');
+  const origImplements: NodePath<ClassImplements>[] = path.get('implements');
   const origTypeParameters = path.get('typeParameters');
 
   let origExtendsCombined: Array<NodePath<InterfaceExtends | ClassImplements>> = [];
