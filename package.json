@@ -14,7 +14,8 @@
     "prepare": "npm run build",
     "test": "jest",
     "test-watch": "jest --watch",
-    "build": "tsc"
+    "build": "tsc",
+    "lint": "tslint --project ."
   },
   "keywords": [
     "babel",
@@ -39,10 +40,13 @@
     "babel-jest": "^22.4.3",
     "babel-plugin-tester": "^5.0.0",
     "jest": "^22.4.3",
+    "prettier": "^1.17.1",
     "regenerator-runtime": "^0.11.1",
     "ts-jest": "^22.4.2",
-    "tslint": "^5.9.1",
-    "typescript": "^2.8.1"
+    "typescript": "^2.8.1",
+    "tslint": "^5.18.0",
+    "tslint-config-prettier": "^1.18.0",
+    "tslint-plugin-prettier": "^2.0.1"
   },
   "jest": {
     "transform": {
