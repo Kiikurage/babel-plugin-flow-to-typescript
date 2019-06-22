@@ -18,7 +18,8 @@
     "test-watch": "jest --watch",
     "build": "tsc",
     "watch": "tsc --watch",
-    "lint": "tslint --project ."
+    "lint": "tslint --project .",
+    "cover": "jest --coverage"
   },
   "keywords": [
     "babel",
