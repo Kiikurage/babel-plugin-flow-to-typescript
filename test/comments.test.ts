@@ -1,4 +1,4 @@
-import pluginTester from 'babel-plugin-tester';
+import * as pluginTester from 'babel-plugin-tester';
 import plugin from '../src/index';
 
 pluginTester({
@@ -6,18 +6,19 @@ pluginTester({
   tests: [
     {
       title: 'preserves comments above imports',
-      code: `// @flow\nimport * as React from "react";`,
-      output: `// @flow
+      code: `// not flow comment
+import * as React from "react";`,
+      output: `// not flow comment
 import * as React from "react";
 `,
     },
     {
       title: 'preserves comments within typedefs',
       code: `type Props = {
-      children?: React.Node,
-      // The vertical alignment of the content before it starts to scroll
-      verticalAlignWithoutScroll?: "top" | "center",
-    };`,
+  children?: React.Node,
+  // The vertical alignment of the content before it starts to scroll
+  verticalAlignWithoutScroll?: "top" | "center",
+};`,
       output: `type Props = {
   children?: React.Node;
   // The vertical alignment of the content before it starts to scroll

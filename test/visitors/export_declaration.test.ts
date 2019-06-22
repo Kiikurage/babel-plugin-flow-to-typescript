@@ -1,4 +1,4 @@
-import pluginTester from 'babel-plugin-tester';
+import * as pluginTester from 'babel-plugin-tester';
 import { buildPlugin } from '../../src/plugin';
 import {
   ExportNamedDeclaration,
@@ -10,8 +10,10 @@ pluginTester({
   tests: [
     {
       title: 'Removes type from exports',
-      code: `export type { Something };`,
-      output: `export { Something };`,
+      code: `type Something = void;
+export type { Something };`,
+      output: `type Something = void;
+export { Something };`,
     },
     {
       title:

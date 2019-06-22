@@ -1,4 +1,4 @@
-import pluginTester from 'babel-plugin-tester';
+import * as pluginTester from 'babel-plugin-tester';
 import { buildPlugin } from '../../src/plugin';
 import { TypeAnnotation, TypeAlias } from '../../src/visitors/type_annotation';
 
@@ -29,6 +29,11 @@ pluginTester({
       title: 'Boolean literal',
       code: `let a: true;`,
       output: `let a: true;`,
+    },
+    {
+      title: 'Mixed type',
+      code: `let a: mixed;`,
+      output: `let a: unknown;`,
     },
     {
       title: 'Null literal',
@@ -211,7 +216,12 @@ pluginTester({
     {
       title: 'Function type annotation',
       code: `const f: X<T> => string = (x) => '';`,
-      output: `const f: (x0: X<T>) => string = x => '';`,
+      output: `const f: ((x0: X<T>) => string) = x => '';`,
+    },
+    {
+      title: 'Qualified type',
+      code: `let a: A.B;`,
+      output: `let a: A.B;`,
     },
     {
       title: 'Tuple type',
@@ -224,11 +234,6 @@ pluginTester({
       output: `let a: {
   [x: string]: any;
 };`,
-    },
-    {
-      title: 'mixed type',
-      code: `let a: mixed;`,
-      output: `let a: FlowMixed;`,
     },
   ],
 });
