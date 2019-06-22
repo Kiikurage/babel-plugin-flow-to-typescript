@@ -19,6 +19,7 @@
     "build": "tsc",
     "watch": "tsc --watch",
     "lint": "tslint --project .",
+    "cover": "jest --coverage",
     "prettify": "./node_modules/.bin/prettier --write \"{src,test}/**/*.{js,ts,tsx}\""
   },
   "keywords": [
@@ -54,7 +55,7 @@
     "typescript": "^3.2.4"
   },
   "jest": {
-    "testURL": "http://localhost/",
+    "testEnvironment": "node",
     "transform": {
       "^.+\\.tsx?$": "ts-jest"
     },
