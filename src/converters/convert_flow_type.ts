@@ -54,8 +54,6 @@ import {
   tsUnknownKeyword,
   tsVoidKeyword,
   TypeofTypeAnnotation,
-  TupleTypeAnnotation,
-  UnionTypeAnnotation,
 } from '@babel/types';
 import { UnsupportedError, warnOnlyOnce } from '../util';
 import { convertFlowIdentifier } from './convert_flow_identifier';
@@ -148,6 +146,9 @@ export function convertFlowType(path: NodePath<FlowType>): TSType {
       return tsTypeReference(identifier('any'), tsTypeParameters);
     } else if (isIdentifier(id) && id.name === 'Object') {
       return tsObjectKeyword();
+    } else if (id.type === 'QualifiedTypeIdentifier') {
+      // @ts-ignore
+      return tsTypeReference(identifier(`${id.qualification.name}.${id.id.name}`));
     } else {
       return tsTypeReference(convertFlowIdentifier(id), tsTypeParameters);
     }
@@ -344,7 +345,7 @@ export function convertFlowType(path: NodePath<FlowType>): TSType {
   }
 
   if (path.isUnionTypeAnnotation()) {
-    const flowTypes = (path as NodePath<UnionTypeAnnotation>).node.types;
+    const flowTypes = path.node.types;
     return tsUnionType(
       flowTypes.map((_, i) => convertFlowType(path.get(`types.${i}`) as NodePath<FlowType>)),
     );
@@ -374,7 +375,7 @@ export function convertFlowType(path: NodePath<FlowType>): TSType {
   }
 
   if (path.isTupleTypeAnnotation()) {
-    const flowTypes = (path as NodePath<TupleTypeAnnotation>).node.types;
+    const flowTypes = path.node.types;
     return tsTupleType(
       flowTypes.map((_, i) => convertFlowType(path.get(`types.${i}`) as NodePath<FlowType>)),
     );
