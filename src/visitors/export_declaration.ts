@@ -8,7 +8,7 @@ import {
   identifier,
 } from '@babel/types';
 import {NodePath} from '@babel/traverse';
-import {convertTypeAnnotation} from '../converters/convert_type_annotation'
+import {convertTypeAnnotation} from '../converters/convert_type_annotation';
 
 export function ExportNamedDeclaration(path: NodePath<ExportNamedDeclaration>) {
   // @ts-ignore
