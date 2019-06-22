@@ -6,8 +6,10 @@ pluginTester({
     plugin: buildPlugin([ExportNamedDeclaration, ExportDefaultDeclaration]),
     tests: [{
         title: 'Removes type from exports',
-        code: `export type { Something };`,
-        output: `export { Something };`
+        code: `type Something = void;
+export type { Something };`,
+        output: `type Something = void;
+export { Something };`
     }, {
         title: 'Assigns type cast on default exports to a temporary variable then exports the variable',
         code: `export default ("some": Thing);`,

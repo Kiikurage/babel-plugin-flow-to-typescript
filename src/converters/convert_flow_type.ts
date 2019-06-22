@@ -166,9 +166,11 @@ export function convertFlowType(path: NodePath<FlowType>): TSType {
             const [tsT, tsK] = tsTypeParameters!.params;
             return tsIndexedAccessType(tsT, tsK);
 
+            // @ts-ignore
         } else if (id.name === '$FlowFixMe') {
             return tsTypeReference(identifier('any'), tsTypeParameters);
 
+            // @ts-ignore
         } else if (id.name === 'Object') {
             return tsObjectKeyword()
         // @ts-ignore
@@ -363,8 +365,7 @@ export function convertFlowType(path: NodePath<FlowType>): TSType {
             return iden;
         });
         const returnType = tsTypeAnnotation(convertFlowType(nodePath.get('returnType')));
-        const tsFT = tsFunctionType(null, returnType);
-        tsFT.parameters = identifiers;
+        const tsFT = tsFunctionType(null, identifiers, returnType);
         return tsFT;
     }
 
