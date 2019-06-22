@@ -58,7 +58,7 @@
     "typescript": "^3.2.4"
   },
   "jest": {
-    "testURL": "http://localhost/",
+    "testEnvironment": "node",
     "transform": {
       "^.+\\.tsx?$": "ts-jest"
     },
