@@ -18,6 +18,11 @@
     "allowSyntheticDefaultImports": true,
     "preserveConstEnums": false,
     "esModuleInterop": true,
+    "paths": {
+      "babel-plugin-tester": [
+        "./typings/babel-plugin-tester.d.ts"
+      ]
+    },
     "sourceMap": true,
     "strict": true,
     "target": "es2015"
