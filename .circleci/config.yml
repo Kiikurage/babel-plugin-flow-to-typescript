@@ -23,7 +23,8 @@ jobs:
             - node_modules
           key: v{{ .Environment.CIRCLECI_CACHE_VERSION }}-dependencies-{{ checksum "package-lock.json" }}
       - run: npm run lint
-      - run: npm run test
+      - run: npm run cover
+      - run: npm run report-coverage
       - run: npm run build
   node-v8:
     <<: *base
