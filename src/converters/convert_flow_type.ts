@@ -164,8 +164,11 @@ export function convertFlowType(path: NodePath<FlowType>): TSType {
     } else if (isIdentifier(id) && id.name === 'Object') {
       return tsObjectKeyword();
     } else if (id.type === 'QualifiedTypeIdentifier') {
-      // @ts-ignore
-      return tsTypeReference(identifier(`${id.qualification.name}.${id.id.name}`));
+      return tsTypeReference(
+        // @ts-ignore
+        identifier(`${id.qualification.name}.${id.id.name}`),
+        tsTypeParameters,
+      );
     } else if (isQualifiedTypeIdentifier(id)) {
       // todo:
       if (isQualifiedTypeIdentifier(id.qualification)) {
@@ -298,6 +301,9 @@ export function convertFlowType(path: NodePath<FlowType>): TSType {
           );
           tsPropSignature.optional = property.optional;
           tsPropSignature.readonly = property.variance && property.variance.kind === 'plus';
+          tsPropSignature.innerComments = property.innerComments;
+          tsPropSignature.leadingComments = property.leadingComments;
+          tsPropSignature.trailingComments = property.trailingComments;
           members.push(tsPropSignature);
         }
 
@@ -340,7 +346,7 @@ export function convertFlowType(path: NodePath<FlowType>): TSType {
 
     if (spreads.length > 0) {
       spreads.unshift(ret);
-      ret = tsUnionType(spreads);
+      ret = tsIntersectionType(spreads);
     }
 
     return ret;
