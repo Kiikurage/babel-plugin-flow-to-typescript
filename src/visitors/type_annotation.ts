@@ -4,11 +4,11 @@ import { convertTypeAnnotation, convertTypeAlias } from '../converters/convert_t
 import { convertFlowType } from '../converters/convert_flow_type';
 
 export function TypeAnnotation(path: NodePath<TypeAnnotation>) {
-  path.replaceWith(convertTypeAnnotation(path));
+  path.replaceWith(convertTypeAnnotation(path.node));
 }
 export function TypeAlias(path: NodePath<TypeAlias>) {
-  path.replaceWith(convertTypeAlias(path));
+  path.replaceWith(convertTypeAlias(path.node));
 }
 export function NullableTypeAnnotation(path: NodePath<NullableTypeAnnotation>) {
-  path.replaceWith(convertFlowType(path));
+  path.replaceWith(convertFlowType(path.node));
 }

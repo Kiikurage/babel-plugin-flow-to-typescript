@@ -1,14 +1,13 @@
-import { NodePath } from '@babel/traverse';
-import { FlowType, TSTypeParameter, tsTypeParameter, TypeParameter } from '@babel/types';
+import { TSTypeParameter, tsTypeParameter, TypeParameter } from '@babel/types';
 import { convertFlowType } from './convert_flow_type';
 
-export function convertTypeParameter(path: NodePath<TypeParameter>): TSTypeParameter {
+export function convertTypeParameter(node: TypeParameter): TSTypeParameter {
   const tsNode = tsTypeParameter();
 
-  if (path.node.bound) {
-    tsNode.constraint = convertFlowType(path.get('bound.typeAnnotation') as NodePath<FlowType>);
+  if (node.bound) {
+    tsNode.constraint = convertFlowType(node.bound.typeAnnotation);
   }
-  tsNode.name = path.node.name;
+  tsNode.name = node.name;
 
   return tsNode;
 }

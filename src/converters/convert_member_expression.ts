@@ -11,7 +11,6 @@ import {
   ConditionalExpression,
   OptionalMemberExpression,
 } from '@babel/types';
-import { NodePath } from '@babel/traverse';
 
 type MemberType = Identifier | MemberExpression | NumericLiteral;
 
@@ -39,9 +38,9 @@ function getConditionalExpression(members: MemberType[], index: number): Conditi
   );
 }
 
-export function convertMemberExpression(path: NodePath<OptionalMemberExpression>) {
+export function convertMemberExpression(node: OptionalMemberExpression) {
   const objChainReverse = [];
-  let current = path.node;
+  let current = node;
 
   do {
     objChainReverse.push(current.property);

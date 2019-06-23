@@ -12,7 +12,7 @@ declare function something(something: boolean): string;
 declare function something(string): null;`,
       output: `function something(): boolean;
 function something(something: boolean): string;
-function something(x0: string): null;`,
+function something(a: string): null;`,
     },
   ],
 });

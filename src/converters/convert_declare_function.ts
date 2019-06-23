@@ -1,29 +1,20 @@
 import {
-  FlowType,
-  FunctionTypeParam,
-  FunctionTypeAnnotation,
   DeclareFunction,
   tsDeclareFunction,
-  tsTypeAnnotation,
-  identifier,
+  isTypeAnnotation,
+  isFunctionTypeAnnotation,
 } from '@babel/types';
-import { NodePath } from '@babel/traverse';
 
-import { convertFlowType } from './convert_flow_type';
+import { convertFunctionTypeAnnotation } from './convert_function_type_annotation';
 
-export function convertDeclareFunction(path: NodePath<DeclareFunction>) {
+export function convertDeclareFunction(node: DeclareFunction) {
   // todo: partially duplicated logic from convert_flow_type.ts, which was already updated
-  const nodePath = path.get('id.typeAnnotation.typeAnnotation') as NodePath<FunctionTypeAnnotation>;
-  const identifiers = nodePath.node.params.map((p, i) => {
-    const name = (p.name && p.name.name) || `x${i}`;
-    const ftParam = nodePath.get(`params.${i}`) as NodePath<FunctionTypeParam>;
-    const typeAnn = ftParam.get('typeAnnotation') as NodePath<FlowType>;
+  if (!isTypeAnnotation(node.id.typeAnnotation)) return node;
 
-    const iden = identifier(name);
-    iden.typeAnnotation = tsTypeAnnotation(convertFlowType(typeAnn));
-    return iden;
-  });
-  const returnType = tsTypeAnnotation(convertFlowType(nodePath.get('returnType')));
+  const typeAnnotation = node.id.typeAnnotation.typeAnnotation;
+  if (!isFunctionTypeAnnotation(typeAnnotation)) return node;
 
-  return tsDeclareFunction(path.node.id, null, identifiers, returnType);
+  const { typeParams, parameters, returnType } = convertFunctionTypeAnnotation(typeAnnotation);
+
+  return tsDeclareFunction(node.id, typeParams, parameters, returnType);
 }

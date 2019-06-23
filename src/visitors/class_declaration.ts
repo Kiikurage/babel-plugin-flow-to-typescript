@@ -26,7 +26,7 @@ const SYM_MADE_INTERNALLY = Symbol('Class Made Interanally by flow-to-ts');
 
 export function ClassMethod(path: NodePath<ClassMethod>) {
   if (path.node.kind === 'constructor') {
-    path.replaceWith(convertClassConstructor(path));
+    path.replaceWith(convertClassConstructor(path.node));
   }
 }
 
@@ -34,9 +34,9 @@ function processTypeParameters(typeParameterPath: any) {
   typeParameterPath.node.params = typeParameterPath.node.params.map((_: any, i: number) => {
     const paramPath = typeParameterPath.get(`params.${i}`);
     if (paramPath.isTypeParameter()) {
-      return convertTypeParameter(paramPath);
+      return convertTypeParameter(paramPath.node);
     } else {
-      return convertFlowType(paramPath);
+      return convertFlowType(paramPath.node);
     }
   });
 }
@@ -80,7 +80,7 @@ export function DeclareClass(path: NodePath<DeclareClass>) {
     const property = propertyPath.node;
 
     let convertedProperty: any;
-    convertedProperty = convertFlowType(propertyPath.get('value')) as any;
+    convertedProperty = convertFlowType(property.value);
     if (isTSFunctionType(convertedProperty)) {
       convertedProperty = tsParenthesizedType(convertedProperty);
     }
@@ -125,7 +125,7 @@ export function DeclareClass(path: NodePath<DeclareClass>) {
     }
 
     // @ts-ignore
-    const firstExtend = convertInterfaceExtends(extendsPath[0]);
+    const firstExtend = convertInterfaceExtends(extendsPath[0].node);
     decl.superClass = firstExtend.expression as Identifier;
     decl.superTypeParameters = firstExtend.typeParameters;
   }

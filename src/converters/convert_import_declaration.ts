@@ -1,10 +1,9 @@
-import { NodePath } from '@babel/traverse';
 import { importDeclaration, ImportDeclaration } from '@babel/types';
 
-export function convertImportDeclaration(path: NodePath<ImportDeclaration>): ImportDeclaration {
-  if (path.node.importKind === null) return path.node;
+export function convertImportDeclaration(node: ImportDeclaration): ImportDeclaration {
+  if (node.importKind === null) return node;
 
-  const ret = importDeclaration(path.node.specifiers, path.node.source);
+  const ret = importDeclaration(node.specifiers, node.source);
   ret.importKind = null;
 
   return ret;

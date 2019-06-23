@@ -12,36 +12,32 @@ import {
   ClassImplements,
   InterfaceExtends,
   InterfaceDeclaration,
-  TypeParameterDeclaration,
   TSExpressionWithTypeArguments,
 } from '@babel/types';
-import { NodePath } from '@babel/traverse';
 
 import { convertFlowType } from './convert_flow_type';
 import { convertTypeParameterDeclaration } from './convert_type_parameter_declaration';
 
-export function convertInterfaceExtends(path: NodePath<InterfaceExtends | ClassImplements>) {
-  const pathTypeParameters = path.get('typeParameters');
-  const pathTypeParameterParams: NodePath<FlowType>[] = pathTypeParameters.node
-    ? (pathTypeParameters.get('params') as NodePath<FlowType>[])
-    : [];
+export function convertInterfaceExtends(node: InterfaceExtends | ClassImplements) {
+  const pathTypeParameters = node.typeParameters;
+  const pathTypeParameterParams: FlowType[] = pathTypeParameters ? pathTypeParameters.params : [];
   const parameters = tsTypeParameterInstantiation(
     pathTypeParameterParams.map(item => convertFlowType(item)),
   );
 
   return tsExpressionWithTypeArguments(
-    path.node.id as Identifier,
+    node.id as Identifier,
     pathTypeParameterParams.length ? parameters : null,
   );
 }
 
-export function convertInterfaceDeclaration(path: NodePath<InterfaceDeclaration>) {
-  const origBody = path.get('body');
-  const origExtends: NodePath<InterfaceExtends>[] = path.get('extends');
-  const origImplements: NodePath<ClassImplements>[] = path.get('implements');
-  const origTypeParameters = path.get('typeParameters');
+export function convertInterfaceDeclaration(node: InterfaceDeclaration) {
+  const origBody = node.body;
+  const origExtends = node.extends;
+  const origImplements = node.implements;
+  const origTypeParameters = node.typeParameters;
 
-  let origExtendsCombined: Array<NodePath<InterfaceExtends | ClassImplements>> = [];
+  let origExtendsCombined: Array<InterfaceExtends | ClassImplements> = [];
   if (Array.isArray(origExtends)) {
     origExtendsCombined = origExtendsCombined.concat(origExtends);
   }
@@ -49,19 +45,17 @@ export function convertInterfaceDeclaration(path: NodePath<InterfaceDeclaration>
     origExtendsCombined = origExtendsCombined.concat(origImplements);
   }
 
-  const typeParameters = origTypeParameters.node
-    ? convertTypeParameterDeclaration(origTypeParameters as NodePath<TypeParameterDeclaration>)
+  const typeParameters = origTypeParameters
+    ? convertTypeParameterDeclaration(origTypeParameters)
     : null;
 
   const members: Array<TSTypeElement> = [];
 
-  origBody.node.properties.forEach((property, i) => {
+  origBody.properties.forEach(property => {
     if (isObjectTypeProperty(property)) {
       const tsPropSignature = tsPropertySignature(
         property.key,
-        tsTypeAnnotation(
-          convertFlowType(origBody.get(`properties.${i}.value`) as NodePath<FlowType>),
-        ),
+        tsTypeAnnotation(convertFlowType(property.value)),
       );
       tsPropSignature.optional = property.optional;
       tsPropSignature.readonly = property.variance && property.variance.kind === 'plus';
@@ -74,7 +68,7 @@ export function convertInterfaceDeclaration(path: NodePath<InterfaceDeclaration>
   );
 
   return tsInterfaceDeclaration(
-    path.node.id,
+    node.id,
     typeParameters,
     extending.length ? extending : null,
     tsInterfaceBody(members),

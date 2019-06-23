@@ -23,7 +23,7 @@ export function ExportDefaultDeclaration(path: NodePath<ExportDefaultDeclaration
   // ex: export default ('some': Thing)
   const exportVariableName = path.scope.generateUidIdentifier('moduleExport');
   // @ts-ignore
-  exportVariableName.typeAnnotation = convertTypeAnnotation(declaration.get('typeAnnotation'));
+  exportVariableName.typeAnnotation = convertTypeAnnotation(declaration.get('typeAnnotation').node);
 
   path.insertBefore(
     variableDeclaration('const', [
