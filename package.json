@@ -7,6 +7,11 @@
     "email": "y.kikura@gmail.com",
     "url": "https://github.com/Kiikurage"
   },
+  "contributors": [
+    {
+      "name": "CureApp"
+    }
+  ],
   "files": [
     "dist",
     "README.md"
