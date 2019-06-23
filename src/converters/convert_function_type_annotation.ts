@@ -21,16 +21,18 @@ export function convertFunctionTypeAnnotation(node: FunctionTypeAnnotation) {
   // https://github.com/bcherny/flow-to-typescript/blob/f1dbe3d1f97b97d655ea6c5f1f5caaaa9f1e0c9f/src/convert.ts
   let typeParams = undefined;
 
-  if (node.typeParameters) {
+  if (node.typeParameters !== null) {
     typeParams = tsTypeParameterDeclaration(
-      node.typeParameters.params.map((_, i) => {
+      node.typeParameters.params.map(_ => {
         // TODO: How is this possible?
         if (isTSTypeParameter(_)) {
           return _;
         }
 
-        // @ts-ignore
-        const param = tsTypeParameter(convertFlowType(node.typeParameters.params[i].bound));
+        if (!_.bound) {
+          //todo:
+        }
+        const param = tsTypeParameter(_.bound ? convertFlowType(_.bound.typeAnnotation) : null);
         param.name = _.name;
         return param;
       }),

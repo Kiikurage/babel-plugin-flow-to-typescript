@@ -203,7 +203,7 @@ pluginTester({
       code: `function f(arg: ?string) {}`,
       output: `function f(arg: string | undefined | null) {}`,
     },
-    // todo:
+    // todo: should be in separate visitor for FunctionDeclaration
     // {
     //   title: 'Maybe type: optional parameter in function declaration',
     //   code: `function f(arg?: ?string) {}`,

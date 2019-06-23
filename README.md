@@ -5,12 +5,12 @@
 ## How to use
 
 ```shell
-$ npm install -g @babel/cli
+$ npm install -g @babel/cli @babel/core
 $ npm install babel-plugin-flow-to-typescript
 
 # you must use babel@^7.x.x
 $ babel --version
-7.0.0-beta.44 (@babel/core 7.0.0-beta.44)
+7.4.4 (@babel/core 7.4.5)
 
 $ babel --plugins babel-plugin-flow-to-typescript ${SRC_FLOW_FILE} -o ${DEST_TS_FILE}
 ```
@@ -44,7 +44,6 @@ $ babel --plugins babel-plugin-flow-to-typescript ${SRC_FLOW_FILE} -o ${DEST_TS_
 | ✅         | typeof operator       | `typeof foo`                      | `typeof foo`                                    |
 | ✅         | JSX                   | -                                 | -                                               |
 | ✅         | Tuple type            | `[number, string]`                | `[number, string]`                              |
-| ✅         | Exact type            | `{|a: T|}`                        | `{a: T}`                                        |
 | ✅         | Type alias            | `type A = string`                 | `type A = string`                               |
 | ✅         | Flow Ignore           | `$FlowFixMe`                      | `any`                                           |
 | ✅         | Interfaces            | `interface X { +prop: string }`   | `interface X { readonly prop: string }`         |
