@@ -10,7 +10,6 @@
     "noFallthroughCasesInSwitch": true,
     "noImplicitAny": true,
     "noUnusedLocals": true,
-    "strictNullChecks": false,
     "noUnusedParameters": true,
     "rootDir": "./src",
     "baseUrl": "./src",

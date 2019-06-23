@@ -12,6 +12,7 @@ import {
   tsTypeAnnotation,
   tsParenthesizedType,
   isTSFunctionType,
+  InterfaceExtends,
 } from '@babel/types';
 import { NodePath } from '@babel/traverse';
 
@@ -70,7 +71,7 @@ export function ClassDeclaration(path: NodePath<ClassDeclaration>) {
 
 export function DeclareClass(path: NodePath<DeclareClass>) {
   const typeParameterPath = path.get('typeParameters');
-  const extendsPath = path.get('extends');
+  const extendsPath = path.get('extends') as NodePath<Array<InterfaceExtends> | null>;
   const propertiesPaths = path.get('body.properties') as NodePath<ObjectTypeProperty>[];
 
   const classProperties: any = [];
@@ -113,13 +114,17 @@ export function DeclareClass(path: NodePath<DeclareClass>) {
     decl.typeParameters = typeParameterPath.node;
   }
 
+  // @ts-ignore
   if (extendsPath.length) {
+    // @ts-ignore
     if (extendsPath.length > 1) {
       warnOnlyOnce(
         'declare-class-many-parents',
         'Declare Class definitions in TS can only have one super class. Dropping extras.',
       );
     }
+
+    // @ts-ignore
     const firstExtend = convertInterfaceExtends(extendsPath[0]);
     decl.superClass = firstExtend.expression as Identifier;
     decl.superTypeParameters = firstExtend.typeParameters;
