@@ -327,7 +327,7 @@ export function convertFlowType(path: NodePath<FlowType>): TSType {
 
     if (spreads.length > 0) {
       spreads.unshift(ret);
-      ret = tsUnionType(spreads);
+      ret = tsIntersectionType(spreads);
     }
 
     return ret;

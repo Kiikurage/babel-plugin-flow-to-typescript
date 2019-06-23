@@ -158,7 +158,7 @@ pluginTester({
       code: `let a: { b: string, ...T };`,
       output: `let a: {
   b: string;
-} | T;`,
+} & T;`,
     },
     {
       title: 'Type literal: deep type literal with spread operator',
@@ -166,7 +166,7 @@ pluginTester({
       output: `let a: {
   b: {
     c: T;
-  } | U;
+  } & U;
 };`,
     },
     {
