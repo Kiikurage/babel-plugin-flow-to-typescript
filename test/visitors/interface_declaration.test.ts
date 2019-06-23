@@ -74,7 +74,7 @@ pluginTester({
   something(): string;
 }`,
       output: `interface Something<A> extends What<Yes>, Another<A, B> {
-  something: (() => string);
+  something: () => string;
 }`,
     },
   ],

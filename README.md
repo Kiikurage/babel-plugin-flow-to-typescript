@@ -5,14 +5,14 @@
 ## How to use
 
 ```shell
-$ yarn global add @babel/cli
-$ yarn add @steelbrain/babel-plugin-flow-to-typescript
+$ npm install -g @babel/cli
+$ npm install babel-plugin-flow-to-typescript
 
 # you must use babel@^7.x.x
 $ babel --version
 7.0.0-beta.44 (@babel/core 7.0.0-beta.44)
 
-$ babel --plugins @steelbrain/babel-plugin-flow-to-typescript ${SRC_FLOW_FILE} -o ${DEST_TS_FILE}
+$ babel --plugins babel-plugin-flow-to-typescript ${SRC_FLOW_FILE} -o ${DEST_TS_FILE}
 ```
 
 ## Implementation status
@@ -39,6 +39,8 @@ $ babel --plugins @steelbrain/babel-plugin-flow-to-typescript ${SRC_FLOW_FILE} -
 | ✅         | \$Diff                | `$Diff<X, Y>`                     | `Pick<X, Exclude<keyof X, keyof Y>>`            |
 | ✅         | \$PropertyType        | `$PropertyType<T, k>`             | `T[k]`                                          |
 | ✅         | \$ElementType         | `$ElementType<T, k>`              | `T[k]`                                          |
+| ✅         | $Shape                | `$Shape<T>`                       | `Partial<T>`                                    |
+| ✅         | Class                 | `Class<T>`                        | `typeof T`                                      |
 | ✅         | typeof operator       | `typeof foo`                      | `typeof foo`                                    |
 | ✅         | JSX                   | -                                 | -                                               |
 | ✅         | Tuple type            | `[number, string]`                | `[number, string]`                              |

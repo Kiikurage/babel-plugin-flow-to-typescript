@@ -68,7 +68,7 @@ pluginTester({
   F: X<Z> | undefined | null;
   g(): H;
   get getterX(): string;
-  set setterY(x0: boolean): number;
+  set setterY(a: boolean): number;
 }`,
     },
   ],

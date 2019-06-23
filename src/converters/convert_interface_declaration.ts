@@ -23,7 +23,7 @@ import { convertTypeParameterDeclaration } from './convert_type_parameter_declar
 export function convertInterfaceExtends(path: NodePath<InterfaceExtends | ClassImplements>) {
   const pathTypeParameters = path.get('typeParameters');
   const pathTypeParameterParams: NodePath<FlowType>[] = pathTypeParameters.node
-    ? pathTypeParameters.get('params')
+    ? (pathTypeParameters.get('params') as NodePath<FlowType>[])
     : [];
   const parameters = tsTypeParameterInstantiation(
     pathTypeParameterParams.map(item => convertFlowType(item)),
