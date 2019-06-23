@@ -4,7 +4,6 @@ import {
   FlowType,
   FunctionDeclaration,
   FunctionTypeAnnotation,
-  FunctionTypeParam,
   GenericTypeAnnotation,
   Identifier,
   identifier,
@@ -17,16 +16,21 @@ import {
   isNumberLiteralTypeAnnotation,
   isObjectTypeProperty,
   isObjectTypeSpreadProperty,
+  isQualifiedTypeIdentifier,
+  isTSTypeParameter,
   isTypeAnnotation,
   NumberLiteralTypeAnnotation,
   numericLiteral,
   ObjectTypeAnnotation,
   ObjectTypeProperty,
+  restElement,
+  RestElement,
   stringLiteral,
   StringLiteralTypeAnnotation,
   tsAnyKeyword,
   tsArrayType,
   tsBooleanKeyword,
+  TSEntityName,
   tsFunctionType,
   tsParenthesizedType,
   tsIndexedAccessType,
@@ -38,14 +42,18 @@ import {
   tsNumberKeyword,
   tsObjectKeyword,
   tsPropertySignature,
+  tsQualifiedName,
   tsStringKeyword,
   tsThisType,
   tsTupleType,
   TSType,
   tsTypeAnnotation,
+  TSTypeAnnotation,
   TSTypeElement,
   tsTypeLiteral,
   tsTypeOperator,
+  tsTypeParameter,
+  tsTypeParameterDeclaration,
   TSTypeParameterInstantiation,
   tsTypeParameterInstantiation,
   tsTypeReference,
@@ -55,7 +63,7 @@ import {
   tsVoidKeyword,
   TypeofTypeAnnotation,
 } from '@babel/types';
-import { UnsupportedError, warnOnlyOnce } from '../util';
+import { generateFreeIdentifier, UnsupportedError, warnOnlyOnce } from '../util';
 import { convertFlowIdentifier } from './convert_flow_identifier';
 
 export function convertFlowType(path: NodePath<FlowType>): TSType {
@@ -142,6 +150,16 @@ export function convertFlowType(path: NodePath<FlowType>): TSType {
       // $ElementType<T, k> -> T[k]
       const [tsT, tsK] = tsTypeParameters!.params;
       return tsIndexedAccessType(tsT, tsK);
+    } else if (isIdentifier(id) && id.name === '$Shape') {
+      // $Shape<T> -> Partial<T>
+      return tsTypeReference(identifier('Partial'), tsTypeParameters);
+    } else if (isIdentifier(id) && id.name === 'Class') {
+      // Class<T> -> typeof T
+      const tsType = tsTypeParameters!.params[0];
+      const tsTypeofT = tsTypeOperator(tsType);
+      tsTypeofT.operator = 'typeof';
+      return tsTypeofT;
+      // @ts-ignore
     } else if (isIdentifier(id) && id.name === '$FlowFixMe') {
       return tsTypeReference(identifier('any'), tsTypeParameters);
     } else if (isIdentifier(id) && id.name === 'Object') {
@@ -149,10 +167,17 @@ export function convertFlowType(path: NodePath<FlowType>): TSType {
     } else if (id.type === 'QualifiedTypeIdentifier') {
       // @ts-ignore
       return tsTypeReference(identifier(`${id.qualification.name}.${id.id.name}`));
+    } else if (isQualifiedTypeIdentifier(id)) {
+      // todo:
+      if (isQualifiedTypeIdentifier(id.qualification)) {
+        throw path.buildCodeFrameError('Nested qualification is not supported', UnsupportedError);
+      }
+      const tsQ = tsQualifiedName(id.qualification as TSEntityName, id.id);
+      return tsTypeReference(tsQ, tsTypeParameters);
     } else {
       return tsTypeReference(convertFlowIdentifier(id), tsTypeParameters);
     }
-    //TODO: $ObjMap<T, F>, $TupleMap<T, F>, $Call<F>, Class<T>, $Supertype<T>, $Subtype<T>
+    //TODO: $ObjMap<T, F>, $TupleMap<T, F>, $Call<F>, $Supertype<T>, $Subtype<T>
   }
 
   if (path.isIntersectionTypeAnnotation()) {
@@ -356,21 +381,74 @@ export function convertFlowType(path: NodePath<FlowType>): TSType {
   }
 
   if (path.isFunctionTypeAnnotation()) {
-    const nodePath = path as NodePath<FunctionTypeAnnotation>;
-    const identifiers = path.node.params.map((p, i) => {
-      const name = (p.name && p.name.name) || `x${i}`;
-      const ftParam = nodePath.get(`params.${i}`) as NodePath<FunctionTypeParam>;
-      const typeAnn = ftParam.get('typeAnnotation') as NodePath<FlowType>;
+    // https://github.com/bcherny/flow-to-typescript/blob/f1dbe3d1f97b97d655ea6c5f1f5caaaa9f1e0c9f/src/convert.ts
+    const node = (path as NodePath<FunctionTypeAnnotation>).node;
+    let typeParams = undefined;
 
-      const iden = identifier(name);
-      iden.optional = p.optional;
-      iden.typeAnnotation = tsTypeAnnotation(convertFlowType(typeAnn));
-      return iden;
-    });
-    const returnType = tsTypeAnnotation(convertFlowType(nodePath.get('returnType')));
-    const tsFT = tsFunctionType(null, [], returnType);
-    tsFT.parameters = identifiers;
+    if (node.typeParameters) {
+      typeParams = tsTypeParameterDeclaration(
+        node.typeParameters.params.map((_, i) => {
+          // TODO: How is this possible?
+          if (isTSTypeParameter(_)) {
+            return _;
+          }
 
+          const param = tsTypeParameter(
+            convertFlowType(path.get(`typeParameters.params.${i}.bound`) as NodePath<FlowType>),
+          );
+          param.name = _.name;
+          return param;
+        }),
+      );
+    }
+
+    let parameters: Array<Identifier | RestElement> = [];
+    let typeAnnotation: TSTypeAnnotation | null = null;
+
+    // Params
+    if (node.params) {
+      const paramNames = node.params
+        .map(_ => _.name)
+        .filter(_ => _ !== null)
+        .map(_ => (_ as Identifier).name);
+      parameters = node.params.map((_, i) => {
+        let name = _.name && _.name.name;
+
+        // Generate param name? (Required in TS, optional in Flow)
+        if (name == null) {
+          // todo: generate it from type?
+          name = generateFreeIdentifier(paramNames);
+          paramNames.push(name);
+        }
+
+        const id = identifier(name);
+        id.optional = _.optional;
+        if (_.typeAnnotation) {
+          id.typeAnnotation = tsTypeAnnotation(
+            convertFlowType(path.get(`params.${i}.typeAnnotation`) as NodePath<FlowType>),
+          );
+        }
+
+        return id;
+      });
+    }
+
+    // rest parameters
+    if (node.rest) {
+      if (node.rest.name) {
+        const id = restElement(node.rest.name);
+        id.typeAnnotation = tsTypeAnnotation(
+          convertFlowType(path.get(`rest.typeAnnotation`) as NodePath<FlowType>),
+        );
+        parameters.push(id);
+      }
+    }
+
+    // Return type
+    if (node.returnType) {
+      typeAnnotation = tsTypeAnnotation(convertFlowType(path.get('returnType')));
+    }
+    const tsFT = tsFunctionType(typeParams, parameters, typeAnnotation);
     return tsParenthesizedType(tsFT);
   }
 
