@@ -10,6 +10,8 @@ import {
   classProperty,
   tsDeclareMethod,
   tsTypeAnnotation,
+  tsParenthesizedType,
+  isTSFunctionType,
 } from '@babel/types';
 import { NodePath } from '@babel/traverse';
 
@@ -76,7 +78,11 @@ export function DeclareClass(path: NodePath<DeclareClass>) {
   propertiesPaths.forEach(propertyPath => {
     const property = propertyPath.node;
 
-    const convertedProperty = convertFlowType(propertyPath.get('value')) as any;
+    let convertedProperty: any;
+    convertedProperty = convertFlowType(propertyPath.get('value')) as any;
+    if (isTSFunctionType(convertedProperty)) {
+      convertedProperty = tsParenthesizedType(convertedProperty);
+    }
     if ((property as any).method) {
       const converted = tsDeclareMethod(
         null,
