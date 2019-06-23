@@ -447,8 +447,7 @@ export function convertFlowType(path: NodePath<FlowType>): TSType {
     if (node.returnType) {
       typeAnnotation = tsTypeAnnotation(convertFlowType(path.get('returnType')));
     }
-    const tsFT = tsFunctionType(typeParams, parameters, typeAnnotation);
-    return tsFT;
+    return tsFunctionType(typeParams, parameters, typeAnnotation);
   }
 
   if (path.isTupleTypeAnnotation()) {
