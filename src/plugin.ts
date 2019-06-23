@@ -9,6 +9,9 @@ export function buildPlugin(visitors: Function[]) {
     //tslint:disable:no-any
     manipulateOptions(_opts: any, parserOpts: any) {
       parserOpts.plugins.push('flow');
+      parserOpts.plugins.push('jsx');
+      parserOpts.plugins.push('objectRestSpread');
+      parserOpts.plugins.push('classProperties');
     },
   });
 }

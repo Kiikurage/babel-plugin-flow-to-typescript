@@ -1,8 +1,8 @@
 .DS_Store
-/dist
+/src
 node_modules
 .idea
 *.log
 __snapshots__
-/yarn.lock
+/package-lock.json
 /coverage
