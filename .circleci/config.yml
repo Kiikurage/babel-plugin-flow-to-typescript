@@ -15,13 +15,13 @@ jobs:
       - checkout
       - restore_cache:
           keys:
-            - v{{ .Environment.CIRCLECI_CACHE_VERSION }}-dependencies-{{ checksum "package-lock.json" }}
-            - v{{ .Environment.CIRCLECI_CACHE_VERSION }}-dependencies-
-      - run: yarn
+            - v{{ .Environment.CIRCLECI_CACHE_VERSION }}-dependencies1-{{ checksum "package-lock.json" }}
+            - v{{ .Environment.CIRCLECI_CACHE_VERSION }}-dependencies1-
+      - run: npm install
       - save_cache:
           paths:
             - node_modules
-          key: v{{ .Environment.CIRCLECI_CACHE_VERSION }}-dependencies-{{ checksum "package-lock.json" }}
+          key: v{{ .Environment.CIRCLECI_CACHE_VERSION }}-dependencies1-{{ checksum "package-lock.json" }}
       - run: npm run lint
       - run: npm run cover
       - run: npm run report-coverage
