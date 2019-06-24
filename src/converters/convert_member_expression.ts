@@ -23,8 +23,7 @@ function getMemberExpression(members: MemberType[]): MemberType {
   return memberExpression(
     members.length === 1 ? members[0] : getMemberExpression(members),
     lastMember,
-    // @ts-ignore
-    lastMember.type === 'NumericLiteral',
+    lastMember!.type === 'NumericLiteral',
   );
 }
 function getConditionalExpression(members: MemberType[], index: number): ConditionalExpression {

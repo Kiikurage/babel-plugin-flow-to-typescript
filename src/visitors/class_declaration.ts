@@ -4,7 +4,6 @@ import {
   DeclareClass,
   ClassMethod,
   ClassDeclaration,
-  ObjectTypeProperty,
   classDeclaration,
   classBody,
   classProperty,
@@ -12,7 +11,9 @@ import {
   tsTypeAnnotation,
   tsParenthesizedType,
   isTSFunctionType,
-  InterfaceExtends,
+  TSType,
+  isObjectTypeSpreadProperty,
+  isTypeParameter,
 } from '@babel/types';
 import { NodePath } from '@babel/traverse';
 
@@ -30,39 +31,39 @@ export function ClassMethod(path: NodePath<ClassMethod>) {
   }
 }
 
-function processTypeParameters(typeParameterPath: any) {
-  typeParameterPath.node.params = typeParameterPath.node.params.map((_: any, i: number) => {
-    const paramPath = typeParameterPath.get(`params.${i}`);
-    if (paramPath.isTypeParameter()) {
-      return convertTypeParameter(paramPath.node);
+function processTypeParameters(typeParameter: any) {
+  typeParameter.params = typeParameter.params.map((p: any) => {
+    if (isTypeParameter(p)) {
+      return convertTypeParameter(p);
     } else {
-      return convertFlowType(paramPath.node);
+      return convertFlowType(p);
     }
   });
 }
 
-export function ClassDeclaration(path: NodePath<ClassDeclaration>) {
-  // @ts-ignore
-  if (path.node[SYM_MADE_INTERNALLY]) {
+export function ClassDeclaration(
+  path: NodePath<ClassDeclaration & { [SYM_MADE_INTERNALLY]?: boolean }>,
+) {
+  const node = path.node;
+  if (node[SYM_MADE_INTERNALLY]) {
     return;
   }
 
-  const superTypeParametersPath = path.get('superTypeParameters');
-  if (superTypeParametersPath.node) {
+  const superTypeParametersPath = node.superTypeParameters;
+  if (superTypeParametersPath) {
     processTypeParameters(superTypeParametersPath);
   }
 
-  const typeParameterPath = path.get('typeParameters');
-  if (typeParameterPath.node) {
+  const typeParameterPath = node.typeParameters;
+  if (typeParameterPath) {
     processTypeParameters(typeParameterPath);
   }
 
-  const classImplements = path.get('implements');
+  const classImplements = node.implements;
   if (Array.isArray(classImplements)) {
-    // @ts-ignore
     classImplements.forEach(classImplementsPath => {
-      const typeParameterPath = classImplementsPath.get('typeParameters');
-      if (typeParameterPath.node) {
+      const typeParameterPath = classImplementsPath.typeParameters;
+      if (typeParameterPath) {
         processTypeParameters(typeParameterPath);
       }
     });
@@ -70,16 +71,22 @@ export function ClassDeclaration(path: NodePath<ClassDeclaration>) {
 }
 
 export function DeclareClass(path: NodePath<DeclareClass>) {
-  const typeParameterPath = path.get('typeParameters');
-  const extendsPath = path.get('extends') as NodePath<Array<InterfaceExtends> | null>;
-  const propertiesPaths = path.get('body.properties') as NodePath<ObjectTypeProperty>[];
+  const node = path.node;
+  const typeParameterPath = node.typeParameters;
+  const extendsPath = node.extends;
+  const propertiesPaths = node.body.properties;
 
   const classProperties: any = [];
 
   propertiesPaths.forEach(propertyPath => {
-    const property = propertyPath.node;
+    const property = propertyPath;
 
-    let convertedProperty: any;
+    if (isObjectTypeSpreadProperty(property)) {
+      // todo:
+      return;
+    }
+
+    let convertedProperty: TSType;
     convertedProperty = convertFlowType(property.value);
     if (isTSFunctionType(convertedProperty)) {
       convertedProperty = tsParenthesizedType(convertedProperty);
@@ -109,14 +116,12 @@ export function DeclareClass(path: NodePath<DeclareClass>) {
   decl[SYM_MADE_INTERNALLY] = true;
 
   decl.declare = true;
-  if (typeParameterPath.node) {
+  if (typeParameterPath) {
     processTypeParameters(typeParameterPath);
-    decl.typeParameters = typeParameterPath.node;
+    decl.typeParameters = typeParameterPath;
   }
 
-  // @ts-ignore
-  if (extendsPath.length) {
-    // @ts-ignore
+  if (extendsPath && extendsPath.length) {
     if (extendsPath.length > 1) {
       warnOnlyOnce(
         'declare-class-many-parents',
@@ -124,8 +129,7 @@ export function DeclareClass(path: NodePath<DeclareClass>) {
       );
     }
 
-    // @ts-ignore
-    const firstExtend = convertInterfaceExtends(extendsPath[0].node);
+    const firstExtend = convertInterfaceExtends(extendsPath[0]);
     decl.superClass = firstExtend.expression as Identifier;
     decl.superTypeParameters = firstExtend.typeParameters;
   }
