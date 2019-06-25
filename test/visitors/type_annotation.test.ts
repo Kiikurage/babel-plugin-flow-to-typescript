@@ -1,9 +1,9 @@
 import * as pluginTester from 'babel-plugin-tester';
 import { buildPlugin } from '../../src/plugin';
-import { TypeAnnotation, TypeAlias } from '../../src/visitors/type_annotation';
+import { TypeAnnotation } from '../../src/visitors/type_annotation';
 
 pluginTester({
-  plugin: buildPlugin([TypeAnnotation, TypeAlias]),
+  plugin: buildPlugin([TypeAnnotation]),
   tests: [
     {
       title: 'Any type',
@@ -118,13 +118,6 @@ pluginTester({
 };`,
     },
     {
-      title: 'Object type alias: exact=true',
-      code: `type a = {| a: T |};`,
-      output: `type a = {
-  a: T;
-};`,
-    },
-    {
       title: 'Intersection type',
       code: `let a: {x: number} & {y: string};`,
       output: `let a: {
@@ -203,12 +196,6 @@ pluginTester({
       code: `function f(arg: ?string) {}`,
       output: `function f(arg: string | undefined | null) {}`,
     },
-    // todo: should be in separate visitor for FunctionDeclaration
-    // {
-    //   title: 'Maybe type: optional parameter in function declaration',
-    //   code: `function f(arg?: ?string) {}`,
-    //   output: `function f(arg?: string | null) {}`,
-    // },
     {
       title: 'Maybe type: generic type instantiation',
       code: `let a: X<?T>;`,
@@ -302,25 +289,6 @@ import * as React from "react";`,
       output: `// not flow comment
 import * as React from "react";
 `,
-    },
-    {
-      title: 'preserves comments within typedefs',
-      code: `type Props = {
-  children?: React.Node,
-  // The vertical alignment of the content before it starts to scroll
-  verticalAlignWithoutScroll?: "top" | "center",
-};`,
-      output: `type Props = {
-  children?: React.Node;
-  // The vertical alignment of the content before it starts to scroll
-  verticalAlignWithoutScroll?: "top" | "center";
-};
-`,
-    },
-    {
-      title: 'preserves generics above imports',
-      code: `export type UIOverlayType = React.Element<typeof Foo>;`,
-      output: `export type UIOverlayType = React.Element<typeof Foo>;`,
     },
   ],
 });
