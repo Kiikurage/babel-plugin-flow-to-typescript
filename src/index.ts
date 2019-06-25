@@ -10,8 +10,9 @@ import { InterfaceDeclaration } from './visitors/interface_declaration';
 import { OptionalMemberExpression } from './visitors/optional_member_expression';
 import { DeclareFunction } from './visitors/declare_function';
 import { Program } from './visitors/program';
+import { FunctionDeclaration } from './visitors/function_declaration';
 
-export = buildPlugin([
+export default buildPlugin([
   Program,
   TypeAnnotation,
   TypeAlias,
@@ -29,4 +30,5 @@ export = buildPlugin([
   InterfaceDeclaration,
   OptionalMemberExpression,
   DeclareFunction,
+  FunctionDeclaration,
 ]);

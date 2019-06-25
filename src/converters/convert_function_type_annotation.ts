@@ -3,40 +3,24 @@ import {
   identifier,
   Identifier,
   isNullableTypeAnnotation,
-  isTSTypeParameter,
   restElement,
   RestElement,
   tsNullKeyword,
   TSType,
   tsTypeAnnotation,
   TSTypeAnnotation,
-  tsTypeParameter,
-  tsTypeParameterDeclaration,
   tsUnionType,
 } from '@babel/types';
 import { generateFreeIdentifier } from '../util';
 import { convertFlowType } from './convert_flow_type';
+import { convertTypeParameterDeclaration } from './convert_type_parameter_declaration';
 
 export function convertFunctionTypeAnnotation(node: FunctionTypeAnnotation) {
   // https://github.com/bcherny/flow-to-typescript/blob/f1dbe3d1f97b97d655ea6c5f1f5caaaa9f1e0c9f/src/convert.ts
   let typeParams = undefined;
 
   if (node.typeParameters !== null) {
-    typeParams = tsTypeParameterDeclaration(
-      node.typeParameters.params.map(_ => {
-        // TODO: How is this possible?
-        if (isTSTypeParameter(_)) {
-          return _;
-        }
-
-        if (!_.bound) {
-          //todo:
-        }
-        const param = tsTypeParameter(_.bound ? convertFlowType(_.bound.typeAnnotation) : null);
-        param.name = _.name;
-        return param;
-      }),
-    );
+    typeParams = convertTypeParameterDeclaration(node.typeParameters);
   }
 
   let parameters: Array<Identifier | RestElement> = [];
