@@ -34,6 +34,7 @@ import {
   tsAnyKeyword,
   tsArrayType,
   tsBooleanKeyword,
+  tsCallSignatureDeclaration,
   TSEntityName,
   tsFunctionType,
   tsIndexedAccessType,
@@ -273,15 +274,19 @@ export function convertFlowType(node: FlowType): TSType {
     }
 
     if (objectTypeNode.callProperties && objectTypeNode.callProperties.length > 0) {
-      throw new UnsupportedError('TSCallSignatureDeclaration');
-      // TODO
-      // for (const [i, callProperty] of objectTypeNode.callProperties.entries()) {
-      //     //parameters: Array<Identifier>, typeAnnotation?: TSTypeAnnotation | null, readonly?: boolean | null
-      //     const tsIndex = indexer.id || identifier('x');
-      //     tsIndex.typeAnnotation = tsTypeAnnotation(convertFlowType(path.get(`indexers.${i}`).get('key') as NodePath<FlowType>));
-      //     const member = tsCallSignatureDeclaration([tsIndex], tsTypeAnnotation(convertFlowType(path.get(`indexers.${i}`).get('value') as NodePath<FlowType>)));
-      //     members.push(member);
-      // }
+      members.push(
+        ...objectTypeNode.callProperties.map(callPropperty => {
+          if (isFunctionTypeAnnotation(callPropperty.value)) {
+            const { typeParams, parameters, returnType } = convertFunctionTypeAnnotation(
+              callPropperty.value,
+            );
+
+            return tsCallSignatureDeclaration(typeParams, parameters, returnType);
+          } else {
+            throw new Error('ObjectCallTypeProperty case not implemented');
+          }
+        }),
+      );
     }
 
     // TSCallSignatureDeclaration | TSConstructSignatureDeclaration | TSMethodSignature ;

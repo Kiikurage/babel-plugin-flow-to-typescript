@@ -31,5 +31,18 @@ pluginTester({
       code: `export type UIOverlayType = React.Element<typeof Foo>;`,
       output: `export type UIOverlayType = React.Element<typeof Foo>;`,
     },
+    {
+      title: 'ObjectTypeCallProperty simple case',
+      code: `
+type T = {
+  (string, string): string,
+};
+`,
+      output: `
+type T = {
+  (a: string, b: string): string
+};
+`,
+    },
   ],
 });
