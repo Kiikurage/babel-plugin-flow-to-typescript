@@ -12,6 +12,7 @@ import { DeclareFunction } from './visitors/declare_function';
 import { Program } from './visitors/program';
 import { TypeAlias } from './visitors/type_alias';
 import { FunctionDeclaration } from './visitors/function_declaration';
+import { CallExpression } from './visitors/call_expression';
 
 export default buildPlugin([
   Program,
@@ -31,4 +32,5 @@ export default buildPlugin([
   OptionalMemberExpression,
   DeclareFunction,
   FunctionDeclaration,
+  CallExpression,
 ]);
