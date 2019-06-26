@@ -35,7 +35,6 @@ import {
   tsArrayType,
   tsBooleanKeyword,
   tsCallSignatureDeclaration,
-  TSEntityName,
   tsFunctionType,
   tsIndexedAccessType,
   tsIndexSignature,
@@ -46,7 +45,6 @@ import {
   tsNumberKeyword,
   tsObjectKeyword,
   tsPropertySignature,
-  tsQualifiedName,
   tsStringKeyword,
   tsThisType,
   tsTupleType,
@@ -172,14 +170,6 @@ export function convertFlowType(node: FlowType): TSType {
         // todo:
         throw new Error('Not implemented');
       }
-    } else if (isQualifiedTypeIdentifier(id)) {
-      // todo:
-      if (isQualifiedTypeIdentifier(id.qualification)) {
-        // todo: move buildCodeFrameError thingy outside
-        // throw path.buildCodeFrameError('Nested qualification is not supported', UnsupportedError);
-      }
-      const tsQ = tsQualifiedName(id.qualification as TSEntityName, id.id);
-      return tsTypeReference(tsQ, tsTypeParameters);
     } else {
       return tsTypeReference(convertFlowIdentifier(id), tsTypeParameters);
     }
