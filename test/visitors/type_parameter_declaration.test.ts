@@ -1,19 +1,53 @@
 import * as pluginTester from 'babel-plugin-tester';
-import { buildPlugin } from '../../src/plugin';
-import { TypeParameterDeclaration } from '../../src/visitors/type_parameter_declaration';
+import plugin from '../../src';
 
 pluginTester({
-  plugin: buildPlugin([TypeParameterDeclaration]),
+  plugin: plugin,
   tests: [
     {
-      title: 'function, no constraints',
-      code: `function test<T>(a: T): T {}`,
-      output: `function test<T>(a: T): T {}`,
+      title: 'no constraints',
+      code: `type A<T> = T;`,
+      output: `type A<T> = T;`,
     },
     {
-      title: 'function with constraints',
-      code: `function test<T: number>(a: T): T {}`,
-      output: `function test<T extends number>(a: T): T {}`,
+      title: 'with constraints',
+      code: `type A<T: number> = T;`,
+      output: `type A<T extends number> = T;`,
+    },
+    {
+      title: 'with constraints having default',
+      code: `type A<T: {} = R> = T;`,
+      output: `type A<T extends {} = R> = T;`,
+    },
+    {
+      title: 'with comments',
+      code: `type A<
+/* 1 */
+T: {} = R
+/* 2 */
+> = T;`,
+      output: `type A<
+/* 1 */
+T extends {} = R
+/* 2 */
+> = T;`,
+    },
+    {
+      title: 'with more comments',
+      code: `type A/*0*/</* 1 */T/* 2 */=/* 3 */F/* 4 */>/*5*/= T`,
+      output: `type A
+/*0*/
+<
+/* 1 */
+T =
+/* 2 */
+
+/* 3 */
+F
+/* 4 */
+> =
+/*5*/
+T;`,
     },
   ],
 });

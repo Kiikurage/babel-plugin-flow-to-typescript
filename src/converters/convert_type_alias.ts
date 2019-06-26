@@ -6,6 +6,7 @@ import {
 } from '@babel/types';
 import { convertFlowType } from './convert_flow_type';
 import { convertTypeParameterDeclaration } from './convert_type_parameter_declaration';
+import { baseNodeProps } from '../utils/baseNodeProps';
 
 export function convertTypeAlias(node: TypeAlias): TSTypeAliasDeclaration {
   const typeParameters = node.typeParameters;
@@ -15,6 +16,6 @@ export function convertTypeAlias(node: TypeAlias): TSTypeAliasDeclaration {
     isTypeParameterDeclaration(typeParameters)
       ? convertTypeParameterDeclaration(typeParameters)
       : null,
-    convertFlowType(right),
+    { ...baseNodeProps(right), ...convertFlowType(right) },
   );
 }

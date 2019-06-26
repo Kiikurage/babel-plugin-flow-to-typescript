@@ -10,5 +10,18 @@ pluginTester({
       code: `(a: A);`,
       output: `(a as A);`,
     },
+    {
+      title: 'type case expression, with comments',
+      code: `(/*1*/a/*2*/:/*3*/A/*4*/);`,
+      output: `(
+/*1*/
+a
+/*2*/
+as
+/*3*/
+A
+/*4*/
+);`,
+    },
   ],
 });

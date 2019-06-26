@@ -1,13 +1,15 @@
-import { TSTypeParameter, tsTypeParameter, TypeParameter } from '@babel/types';
+import { tsTypeParameter, TSTypeParameter, TypeParameter } from '@babel/types';
 import { convertFlowType } from './convert_flow_type';
+import { baseNodeProps } from '../utils/baseNodeProps';
 
 export function convertTypeParameter(node: TypeParameter): TSTypeParameter {
-  const tsNode = tsTypeParameter();
-
-  if (node.bound) {
-    tsNode.constraint = convertFlowType(node.bound.typeAnnotation);
-  }
-  tsNode.name = node.name;
-
-  return tsNode;
+  return {
+    ...tsTypeParameter(),
+    constraint: node.bound && {
+      ...baseNodeProps(node.bound.typeAnnotation),
+      ...convertFlowType(node.bound.typeAnnotation),
+    },
+    default: node.default && { ...baseNodeProps(node.default), ...convertFlowType(node.default) },
+    name: node.name,
+  };
 }
