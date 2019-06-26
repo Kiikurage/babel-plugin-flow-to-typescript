@@ -6,7 +6,6 @@ import {
   tsPropertySignature,
   tsTypeParameterInstantiation,
   tsExpressionWithTypeArguments,
-  FlowType,
   Identifier,
   TSTypeElement,
   ClassImplements,
@@ -19,15 +18,15 @@ import { convertFlowType } from './convert_flow_type';
 import { convertTypeParameterDeclaration } from './convert_type_parameter_declaration';
 
 export function convertInterfaceExtends(node: InterfaceExtends | ClassImplements) {
-  const pathTypeParameters = node.typeParameters;
-  const pathTypeParameterParams: FlowType[] = pathTypeParameters ? pathTypeParameters.params : [];
+  const typeParameters = node.typeParameters;
+  const typeParameterParams = typeParameters ? typeParameters.params : [];
   const parameters = tsTypeParameterInstantiation(
-    pathTypeParameterParams.map(item => convertFlowType(item)),
+    typeParameterParams.map(item => convertFlowType(item)),
   );
 
   return tsExpressionWithTypeArguments(
     node.id as Identifier,
-    pathTypeParameterParams.length ? parameters : null,
+    typeParameterParams.length ? parameters : null,
   );
 }
 

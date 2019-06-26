@@ -20,14 +20,13 @@ import { NodePath } from '@babel/traverse';
 import { warnOnlyOnce } from '../util';
 import { convertFlowType } from '../converters/convert_flow_type';
 import { convertTypeParameter } from '../converters/convert_type_parameter';
-import { convertClassConstructor } from '../converters/convert_class_constructor';
 import { convertInterfaceExtends } from '../converters/convert_interface_declaration';
 
 const SYM_MADE_INTERNALLY = Symbol('Class Made Interanally by flow-to-ts');
 
 export function ClassMethod(path: NodePath<ClassMethod>) {
   if (path.node.kind === 'constructor') {
-    path.replaceWith(convertClassConstructor(path.node));
+    path.get('returnType').remove();
   }
 }
 
