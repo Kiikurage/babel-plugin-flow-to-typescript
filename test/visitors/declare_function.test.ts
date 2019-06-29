@@ -1,9 +1,8 @@
 import * as pluginTester from 'babel-plugin-tester';
-import { buildPlugin } from '../../src/plugin';
-import { DeclareFunction } from '../../src/visitors/declare_function';
+import plugin from '../../src';
 
 pluginTester({
-  plugin: buildPlugin([DeclareFunction]),
+  plugin,
   tests: [
     {
       title: 'declare function',

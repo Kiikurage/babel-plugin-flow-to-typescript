@@ -1,9 +1,8 @@
 import * as pluginTester from 'babel-plugin-tester';
-import { buildPlugin } from '../../src/plugin';
-import { TypeAlias } from '../../src/visitors/type_alias';
+import plugin from '../../src';
 
 pluginTester({
-  plugin: buildPlugin([TypeAlias]),
+  plugin,
   tests: [
     {
       title: 'Object type alias: exact=true',

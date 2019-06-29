@@ -1,9 +1,8 @@
 import * as pluginTester from 'babel-plugin-tester';
-import { buildPlugin } from '../../src/plugin';
-import { TypeAnnotation } from '../../src/visitors/type_annotation';
+import plugin from '../../src';
 
 pluginTester({
-  plugin: buildPlugin([TypeAnnotation]),
+  plugin,
   tests: [
     {
       title: 'Any type',

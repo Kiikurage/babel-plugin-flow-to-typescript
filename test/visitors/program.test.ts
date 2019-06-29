@@ -1,9 +1,8 @@
 import * as pluginTester from 'babel-plugin-tester';
-import { buildPlugin } from '../../src/plugin';
-import { Program } from '../../src/visitors/program';
+import plugin from '../../src';
 
 pluginTester({
-  plugin: buildPlugin([Program]),
+  plugin,
   tests: [
     {
       title: 'program flow comment single line',

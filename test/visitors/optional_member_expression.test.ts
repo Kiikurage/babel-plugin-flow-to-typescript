@@ -1,9 +1,8 @@
 import * as pluginTester from 'babel-plugin-tester';
-import { buildPlugin } from '../../src/plugin';
-import { OptionalMemberExpression } from '../../src/visitors/optional_member_expression';
+import plugin from '../../src';
 
 pluginTester({
-  plugin: buildPlugin([OptionalMemberExpression]),
+  plugin,
   tests: [
     {
       title: 'optional member expression',

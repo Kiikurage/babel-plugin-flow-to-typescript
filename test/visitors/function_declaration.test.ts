@@ -2,7 +2,7 @@ import * as pluginTester from 'babel-plugin-tester';
 import plugin from '../../src';
 
 pluginTester({
-  plugin: plugin,
+  plugin,
   tests: [
     {
       title: 'empty',

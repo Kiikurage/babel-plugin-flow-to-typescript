@@ -1,9 +1,8 @@
 import * as pluginTester from 'babel-plugin-tester';
-import { buildPlugin } from '../../src/plugin';
-import { OpaqueType } from '../../src/visitors/opaque_type';
+import plugin from '../../src';
 
 pluginTester({
-  plugin: buildPlugin([OpaqueType]),
+  plugin,
   tests: [
     {
       title: 'opaque type',

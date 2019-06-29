@@ -1,9 +1,8 @@
 import * as pluginTester from 'babel-plugin-tester';
-import { buildPlugin } from '../../src/plugin';
-import { TypeCastExpression } from '../../src/visitors/type_cast_expression';
+import plugin from '../../src';
 
 pluginTester({
-  plugin: buildPlugin([TypeCastExpression]),
+  plugin,
   tests: [
     {
       title: 'type case expression',

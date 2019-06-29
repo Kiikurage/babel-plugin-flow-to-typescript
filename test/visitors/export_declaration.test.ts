@@ -1,12 +1,8 @@
 import * as pluginTester from 'babel-plugin-tester';
-import { buildPlugin } from '../../src/plugin';
-import {
-  ExportNamedDeclaration,
-  ExportDefaultDeclaration,
-} from '../../src/visitors/export_declaration';
+import plugin from '../../src';
 
 pluginTester({
-  plugin: buildPlugin([ExportNamedDeclaration, ExportDefaultDeclaration]),
+  plugin,
   tests: [
     {
       title: 'Removes type from exports',

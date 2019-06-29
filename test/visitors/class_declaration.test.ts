@@ -1,9 +1,8 @@
 import * as pluginTester from 'babel-plugin-tester';
-import { buildPlugin } from '../../src/plugin';
-import { ClassMethod, ClassDeclaration, DeclareClass } from '../../src/visitors/class_declaration';
+import plugin from '../../src';
 
 pluginTester({
-  plugin: buildPlugin([ClassMethod, ClassDeclaration, DeclareClass]),
+  plugin,
   tests: [
     {
       title: 'empty class',

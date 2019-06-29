@@ -1,9 +1,8 @@
 import * as pluginTester from 'babel-plugin-tester';
-import { buildPlugin } from '../../src/plugin';
-import { InterfaceDeclaration } from '../../src/visitors/interface_declaration';
+import plugin from '../../src';
 
 pluginTester({
-  plugin: buildPlugin([InterfaceDeclaration]),
+  plugin,
   tests: [
     {
       title: 'interface decl basic',
