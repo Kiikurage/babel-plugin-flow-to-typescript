@@ -8,10 +8,12 @@ import {
 import { convertFunctionTypeAnnotation } from './convert_function_type_annotation';
 
 export function convertDeclareFunction(node: DeclareFunction) {
-  if (!isTypeAnnotation(node.id.typeAnnotation)) return node;
+  if (!isTypeAnnotation(node.id.typeAnnotation)) throw new Error('typeAnnotation is missing');
 
   const typeAnnotation = node.id.typeAnnotation.typeAnnotation;
-  if (!isFunctionTypeAnnotation(typeAnnotation)) return node;
+  if (!isFunctionTypeAnnotation(typeAnnotation)) {
+    throw new Error('typeAnnotation is not FunctionTypeAnnotation');
+  }
 
   const { typeParams, parameters, returnType } = convertFunctionTypeAnnotation(typeAnnotation);
 

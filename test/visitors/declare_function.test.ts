@@ -9,14 +9,14 @@ pluginTester({
       code: `declare function something(): boolean;
 declare function something(something: boolean): string;
 declare function something(string): null;`,
-      output: `function something(): boolean;
-function something(something: boolean): string;
-function something(a: string): null;`,
+      output: `declare function something(): boolean;
+declare function something(something: boolean): string;
+declare function something(a: string): null;`,
     },
     {
       title: 'tsParenthesizedType for function types in unions',
       code: `declare function A(create: {} | () => void): void;`,
-      output: `function A(create: {} | (() => void)): void;`,
+      output: `declare function A(create: {} | (() => void)): void;`,
     },
   ],
 });
