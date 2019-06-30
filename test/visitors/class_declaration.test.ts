@@ -50,27 +50,6 @@ pluginTester({
         'class C<X> implements Something<X, string | undefined | null, (string | boolean) | undefined | null> {}',
     },
     {
-      title: 'declare class',
-      code: `declare class A<X,Y,Z> extends B<X<Y<Z>>> {
-  static C: D<X, Y>;
-  constructor(abc: boolean): A;
-  E: boolean;
-  F: ?X<Z>;
-  g(): H;
-  get getterX(): string;
-  set setterY(boolean): number;
-}`,
-      output: `declare class A<X, Y, Z> extends B<X<Y<Z>>> {
-  static C: D<X, Y>;
-  constructor(abc: boolean): A;
-  E: boolean;
-  F: X<Z> | undefined | null;
-  g(): H;
-  get getterX(): string;
-  set setterY(a: boolean): number;
-}`,
-    },
-    {
       title: 'ThisTypeAnnotation',
       code: `class Foo {
   bar(): this {

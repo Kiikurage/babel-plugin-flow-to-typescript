@@ -18,6 +18,7 @@ import { warnOnlyOnce } from '../util';
 import { convertFlowType } from '../converters/convert_flow_type';
 import { convertInterfaceExtends } from '../converters/convert_interface_declaration';
 import { convertTypeParameterDeclaration } from '../converters/convert_type_parameter_declaration';
+import { convertObjectTypeIndexer } from '../converters/convert_object_type_indexer';
 
 declare module '@babel/types' {
   interface ObjectTypeProperty {
@@ -30,7 +31,7 @@ export function DeclareClass(path: NodePath<DeclareClass>) {
   const extendsNode = node.extends;
   const properties = node.body.properties;
 
-  const classProperties: ClassBody['body'] = [];
+  const bodyElements: ClassBody['body'] = [];
 
   for (const property of properties) {
     if (isObjectTypeSpreadProperty(property)) {
@@ -56,15 +57,29 @@ export function DeclareClass(path: NodePath<DeclareClass>) {
       converted.static = property.static;
       // @ts-ignore
       converted.kind = property.kind;
-      classProperties.push(converted);
+      bodyElements.push(converted);
     } else if (property.kind === 'init') {
       const converted = classProperty(property.key, null, tsTypeAnnotation(convertedProperty));
       converted.static = property.static;
-      classProperties.push(converted);
+      bodyElements.push(converted);
     }
   }
 
-  const decl = classDeclaration(path.node.id, null, classBody(classProperties), []);
+  // todo:
+  // if (node.body.callProperties) {
+  //   bodyElements.push(...node.body.callProperties.map(convertObjectTypeCallProperty));
+  // }
+
+  if (node.body.indexers) {
+    bodyElements.push(...node.body.indexers.map(convertObjectTypeIndexer));
+  }
+
+  // todo:
+  // if (node.body.internalSlots) {
+  //   bodyElements.push(...node.body.internalSlots.map(convertObjectTypeInternalSlot));
+  // }
+
+  const decl = classDeclaration(path.node.id, null, classBody(bodyElements), []);
 
   decl.declare = true;
   if (isTypeParameterDeclaration(node.typeParameters)) {

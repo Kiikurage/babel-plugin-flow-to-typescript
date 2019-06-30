@@ -1,9 +1,4 @@
-import {
-  identifier,
-  ObjectTypeIndexer,
-  tsIndexSignature,
-  tsTypeAnnotation,
-} from '@babel/types';
+import { identifier, ObjectTypeIndexer, tsIndexSignature, tsTypeAnnotation } from '@babel/types';
 
 import { convertFlowType } from './convert_flow_type';
 
