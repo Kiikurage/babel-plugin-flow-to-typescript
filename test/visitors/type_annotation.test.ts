@@ -30,6 +30,16 @@ pluginTester({
       output: `let a: true;`,
     },
     {
+      title: 'numerical literal',
+      code: `let a: 42;`,
+      output: `let a: 42;`,
+    },
+    {
+      title: 'string literal',
+      code: `let a: "42";`,
+      output: `let a: "42";`,
+    },
+    {
       title: 'Mixed type',
       code: `let a: mixed;`,
       output: `let a: unknown;`,
@@ -269,6 +279,13 @@ pluginTester({
       title: 'Qualified type',
       code: `let a: A.B;`,
       output: `let a: A.B;`,
+    },
+    {
+      title: 'recursively qualified type',
+      code: `import * as A from "a";
+type B = A.A.A;`,
+      output: `import * as A from "a";
+type B = A.A.A;`,
     },
     {
       title: 'Tuple type',

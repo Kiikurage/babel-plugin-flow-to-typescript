@@ -16,6 +16,7 @@ export default {
   },
   exit(path: NodePath<Program>) {
     path.traverse({
+      /* istanbul ignore next */
       Flow(path: NodePath<Flow>) {
         throw path.buildCodeFrameError('not converted flow node: ' + path.node.type);
       },

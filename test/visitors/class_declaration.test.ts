@@ -70,5 +70,20 @@ pluginTester({
   set setterY(a: boolean): number;
 }`,
     },
+    {
+      title: 'ThisTypeAnnotation',
+      code: `class Foo {
+  bar(): this {
+    return this;
+  }
+
+}`,
+      output: `class Foo {
+  bar(): this {
+    return this;
+  }
+
+}`,
+    },
   ],
 });

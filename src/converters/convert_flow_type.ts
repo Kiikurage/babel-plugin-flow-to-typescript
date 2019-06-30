@@ -160,17 +160,7 @@ export function convertFlowType(node: FlowType): TSType {
       return tsTypeReference(identifier('any'), tsTypeParameters);
     } else if (isIdentifier(id) && id.name === 'Object') {
       return tsObjectKeyword();
-    } else if (isQualifiedTypeIdentifier(id)) {
-      if (isIdentifier(id.qualification)) {
-        return tsTypeReference(
-          identifier(`${id.qualification.name}.${id.id.name}`),
-          tsTypeParameters,
-        );
-      } else {
-        // todo:
-        throw new Error('Not implemented');
-      }
-    } else {
+    } else if (isQualifiedTypeIdentifier(id) || isIdentifier(id)) {
       return tsTypeReference(convertFlowIdentifier(id), tsTypeParameters);
     }
     //TODO: $ObjMap<T, F>, $TupleMap<T, F>, $Call<F>, $Supertype<T>, $Subtype<T>
