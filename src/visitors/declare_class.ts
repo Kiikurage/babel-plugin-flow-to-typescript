@@ -1,5 +1,4 @@
 import {
-  Identifier,
   DeclareClass,
   classDeclaration,
   classBody,
@@ -11,6 +10,7 @@ import {
   isObjectTypeSpreadProperty,
   ClassBody,
   isTypeParameterDeclaration,
+  isIdentifier,
 } from '@babel/types';
 import { NodePath } from '@babel/traverse';
 
@@ -19,6 +19,7 @@ import { convertFlowType } from '../converters/convert_flow_type';
 import { convertInterfaceExtends } from '../converters/convert_interface_declaration';
 import { convertTypeParameterDeclaration } from '../converters/convert_type_parameter_declaration';
 import { convertObjectTypeIndexer } from '../converters/convert_object_type_indexer';
+import { baseNodeProps } from '../utils/baseNodeProps';
 
 declare module '@babel/types' {
   interface ObjectTypeProperty {
@@ -28,12 +29,10 @@ declare module '@babel/types' {
 
 export function DeclareClass(path: NodePath<DeclareClass>) {
   const node = path.node;
-  const extendsNode = node.extends;
-  const properties = node.body.properties;
 
   const bodyElements: ClassBody['body'] = [];
 
-  for (const property of properties) {
+  for (const property of node.body.properties) {
     if (isObjectTypeSpreadProperty(property)) {
       throw path.buildCodeFrameError('ObjectTypeSpreadProperty is unexpected in DeclareClass');
     }
@@ -61,7 +60,7 @@ export function DeclareClass(path: NodePath<DeclareClass>) {
     } else if (property.kind === 'init') {
       const converted = classProperty(property.key, null, tsTypeAnnotation(convertedProperty));
       converted.static = property.static;
-      bodyElements.push(converted);
+      bodyElements.push({ ...converted, ...baseNodeProps(property) });
     }
   }
 
@@ -71,7 +70,8 @@ export function DeclareClass(path: NodePath<DeclareClass>) {
   // }
 
   if (node.body.indexers) {
-    bodyElements.push(...node.body.indexers.map(convertObjectTypeIndexer));
+    // tslint:disable-next-line:prettier
+    bodyElements.push(...node.body.indexers.map(i => ({...convertObjectTypeIndexer(i), ...baseNodeProps(i)})));
   }
 
   // todo:
@@ -79,24 +79,54 @@ export function DeclareClass(path: NodePath<DeclareClass>) {
   //   bodyElements.push(...node.body.internalSlots.map(convertObjectTypeInternalSlot));
   // }
 
-  const decl = classDeclaration(path.node.id, null, classBody(bodyElements), []);
+  let superClass = null;
+  let superTypeParameters = null;
 
-  decl.declare = true;
-  if (isTypeParameterDeclaration(node.typeParameters)) {
-    decl.typeParameters = convertTypeParameterDeclaration(node.typeParameters);
-  }
-
-  if (extendsNode && extendsNode.length) {
-    if (extendsNode.length > 1) {
+  if (node.extends && node.extends.length) {
+    if (node.extends.length > 1) {
       warnOnlyOnce(
         'declare-class-many-parents',
         'Declare Class definitions in TS can only have one super class. Dropping extras.',
       );
     }
 
-    const firstExtend = convertInterfaceExtends(extendsNode[0]);
-    decl.superClass = firstExtend.expression as Identifier;
-    decl.superTypeParameters = firstExtend.typeParameters;
+    const firstExtend = convertInterfaceExtends(node.extends[0]);
+    if (isIdentifier(firstExtend.expression)) {
+      superClass = { ...firstExtend.expression, ...baseNodeProps(node.extends[0].id) };
+      if (firstExtend.typeParameters && node.extends[0].typeParameters) {
+        superTypeParameters = {
+          ...firstExtend.typeParameters,
+          ...baseNodeProps(node.extends[0].typeParameters),
+        };
+      }
+    } else {
+      throw new Error('not implemented');
+    }
   }
+
+  let typeParameters = null;
+  if (isTypeParameterDeclaration(node.typeParameters)) {
+    typeParameters = {
+      ...convertTypeParameterDeclaration(node.typeParameters),
+      ...baseNodeProps(node.typeParameters),
+    };
+  }
+
+  const body = { ...classBody(bodyElements), ...baseNodeProps(node.body) };
+  let _implements = null;
+  if (node.implements && node.implements.length) {
+    _implements = node.implements.map(i => ({
+      ...convertInterfaceExtends(i),
+      ...baseNodeProps(i),
+    }));
+  }
+
+  const decl = classDeclaration(path.node.id, superClass, body, []);
+
+  decl.implements = _implements;
+  decl.superTypeParameters = superTypeParameters;
+  decl.typeParameters = typeParameters;
+  decl.declare = true;
+
   path.replaceWith(decl);
 }
