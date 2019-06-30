@@ -24,6 +24,7 @@ import {
   isStringLiteralTypeAnnotation,
   isStringTypeAnnotation,
   isThisTypeAnnotation,
+  isTSFunctionType,
   isTupleTypeAnnotation,
   isTypeofTypeAnnotation,
   isUnionTypeAnnotation,
@@ -42,6 +43,7 @@ import {
   tsNullKeyword,
   tsNumberKeyword,
   tsObjectKeyword,
+  tsParenthesizedType,
   tsPropertySignature,
   tsStringKeyword,
   tsThisType,
@@ -284,7 +286,14 @@ export function convertFlowType(node: FlowType): TSType {
 
   if (isUnionTypeAnnotation(node)) {
     const flowTypes = node.types;
-    return tsUnionType(flowTypes.map(_ => convertFlowType(_)));
+    return tsUnionType(
+      flowTypes.map(v => {
+        const tsType = convertFlowType(v);
+        if (isTSFunctionType(tsType)) {
+          return tsParenthesizedType(tsType);
+        } else return tsType;
+      }),
+    );
   }
 
   if (isVoidTypeAnnotation(node)) {

@@ -5,10 +5,10 @@ import {
 } from '@babel/types';
 import { convertFunctionTypeAnnotation } from './convert_function_type_annotation';
 
-export function convertObjectTypeCallProperty(callPropperty: ObjectTypeCallProperty) {
-  if (isFunctionTypeAnnotation(callPropperty.value)) {
+export function convertObjectTypeCallProperty(callProperty: ObjectTypeCallProperty) {
+  if (isFunctionTypeAnnotation(callProperty.value)) {
     const { typeParams, parameters, returnType } = convertFunctionTypeAnnotation(
-      callPropperty.value,
+      callProperty.value,
     );
 
     return tsCallSignatureDeclaration(typeParams, parameters, returnType);

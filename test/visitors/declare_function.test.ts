@@ -13,5 +13,10 @@ declare function something(string): null;`,
 function something(something: boolean): string;
 function something(a: string): null;`,
     },
+    {
+      title: 'tsParenthesizedType for function types in unions',
+      code: `declare function A(create: {} | () => void): void;`,
+      output: `function A(create: {} | (() => void)): void;`,
+    },
   ],
 });

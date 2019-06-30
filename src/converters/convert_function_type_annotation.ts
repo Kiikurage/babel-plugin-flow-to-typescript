@@ -14,13 +14,17 @@ import {
 import { generateFreeIdentifier } from '../util';
 import { convertFlowType } from './convert_flow_type';
 import { convertTypeParameterDeclaration } from './convert_type_parameter_declaration';
+import { baseNodeProps } from '../utils/baseNodeProps';
 
 export function convertFunctionTypeAnnotation(node: FunctionTypeAnnotation) {
   // https://github.com/bcherny/flow-to-typescript/blob/f1dbe3d1f97b97d655ea6c5f1f5caaaa9f1e0c9f/src/convert.ts
   let typeParams = undefined;
 
   if (node.typeParameters !== null) {
-    typeParams = convertTypeParameterDeclaration(node.typeParameters);
+    typeParams = {
+      ...convertTypeParameterDeclaration(node.typeParameters),
+      ...baseNodeProps(node.typeParameters),
+    };
   }
 
   let parameters: Array<Identifier | RestElement> = [];
@@ -84,10 +88,13 @@ export function convertFunctionTypeAnnotation(node: FunctionTypeAnnotation) {
         } else {
           typeAnnotation = convertFlowType(param.typeAnnotation);
         }
-        id.typeAnnotation = tsTypeAnnotation(typeAnnotation);
+        id.typeAnnotation = {
+          ...tsTypeAnnotation(typeAnnotation),
+          ...baseNodeProps(param.typeAnnotation),
+        };
       }
 
-      return id;
+      return { ...id, ...baseNodeProps(param) };
     });
   }
 
@@ -96,13 +103,16 @@ export function convertFunctionTypeAnnotation(node: FunctionTypeAnnotation) {
     if (node.rest.name) {
       const id = restElement(node.rest.name);
       id.typeAnnotation = tsTypeAnnotation(convertFlowType(node.rest.typeAnnotation));
-      parameters.push(id);
+      parameters.push({ ...id, ...baseNodeProps(node.rest) });
     }
   }
 
   // Return type
   if (node.returnType) {
-    returnType = tsTypeAnnotation(convertFlowType(node.returnType));
+    returnType = tsTypeAnnotation({
+      ...convertFlowType(node.returnType),
+      ...baseNodeProps(node.returnType),
+    });
   }
   return { typeParams, parameters, returnType };
 }
