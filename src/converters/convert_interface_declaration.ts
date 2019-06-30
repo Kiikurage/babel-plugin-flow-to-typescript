@@ -1,25 +1,32 @@
 import {
-  isObjectTypeProperty,
-  tsInterfaceDeclaration,
-  tsInterfaceBody,
-  tsTypeParameterInstantiation,
-  tsExpressionWithTypeArguments,
-  Identifier,
   ClassImplements,
-  InterfaceExtends,
+  DeclareInterface,
+  Identifier,
   InterfaceDeclaration,
-  TSExpressionWithTypeArguments,
+  InterfaceExtends,
+  isObjectTypeProperty,
+  tsExpressionWithTypeArguments,
+  tsInterfaceBody,
+  tsInterfaceDeclaration,
+  tsTypeParameterInstantiation,
 } from '@babel/types';
 
 import { convertFlowType } from './convert_flow_type';
 import { convertTypeParameterDeclaration } from './convert_type_parameter_declaration';
 import { convertObjectTypeProperty } from './convert_object_type_property';
+import { baseNodeProps } from '../utils/baseNodeProps';
+import { convertObjectTypeCallProperty } from './convert_object_type_call_property';
+import { convertObjectTypeIndexer } from './convert_object_type_indexer';
+import { convertObjectTypeInternalSlot } from './convert_object_type_internal_slot';
 
 export function convertInterfaceExtends(node: InterfaceExtends | ClassImplements) {
   const typeParameters = node.typeParameters;
   const typeParameterParams = typeParameters ? typeParameters.params : [];
   const parameters = tsTypeParameterInstantiation(
-    typeParameterParams.map(item => convertFlowType(item)),
+    typeParameterParams.map(item => ({
+      ...convertFlowType(item),
+      ...baseNodeProps(item),
+    })),
   );
 
   return tsExpressionWithTypeArguments(
@@ -28,39 +35,79 @@ export function convertInterfaceExtends(node: InterfaceExtends | ClassImplements
   );
 }
 
-export function convertInterfaceDeclaration(node: InterfaceDeclaration) {
-  const origBody = node.body;
-  const origExtends = node.extends;
-  const origImplements = node.implements;
-  const origTypeParameters = node.typeParameters;
-
-  let origExtendsCombined: Array<InterfaceExtends | ClassImplements> = [];
-  if (Array.isArray(origExtends)) {
-    origExtendsCombined = origExtendsCombined.concat(origExtends);
+export function convertInterfaceDeclaration(node: InterfaceDeclaration | DeclareInterface) {
+  let typeParameters = null;
+  if (node.typeParameters) {
+    typeParameters = {
+      ...convertTypeParameterDeclaration(node.typeParameters),
+      ...baseNodeProps(node.typeParameters),
+    };
   }
-  if (Array.isArray(origImplements)) {
-    origExtendsCombined = origExtendsCombined.concat(origImplements);
-  }
-
-  const typeParameters = origTypeParameters
-    ? convertTypeParameterDeclaration(origTypeParameters)
-    : null;
-
-  const members = [];
-  for (const property of origBody.properties) {
-    if (isObjectTypeProperty(property)) {
-      members.push(convertObjectTypeProperty(property));
+  let extendsCombined: Array<InterfaceExtends | ClassImplements> = [];
+  if (node.extends && node.implements) {
+    if (
+      node.extends.length &&
+      node.implements.length &&
+      node.extends[0].start &&
+      node.implements[0].start &&
+      node.extends[0].start < node.implements[0].start
+    ) {
+      extendsCombined = [...node.extends, ...node.implements];
+    } else {
+      extendsCombined = [...node.implements, ...node.extends];
+    }
+  } else {
+    if (node.extends) {
+      extendsCombined = node.extends;
+    }
+    if (node.implements) {
+      extendsCombined = node.implements;
     }
   }
+  let _extends = undefined;
 
-  const extending: Array<TSExpressionWithTypeArguments> = origExtendsCombined.map(origExtend =>
-    convertInterfaceExtends(origExtend),
-  );
+  if (extendsCombined.length > 0) {
+    _extends = extendsCombined.map(v => ({
+      ...convertInterfaceExtends(v),
+      ...baseNodeProps(v),
+    }));
+  }
 
-  return tsInterfaceDeclaration(
-    node.id,
-    typeParameters,
-    extending.length ? extending : null,
-    tsInterfaceBody(members),
-  );
+  const bodyElements = [];
+
+  for (const property of node.body.properties) {
+    if (isObjectTypeProperty(property)) {
+      bodyElements.push({
+        ...convertObjectTypeProperty(property),
+        ...baseNodeProps(property),
+      });
+    }
+  }
+  if (node.body.callProperties) {
+    bodyElements.push(
+      ...node.body.callProperties.map(v => ({
+        ...convertObjectTypeCallProperty(v),
+        ...baseNodeProps(v),
+      })),
+    );
+  }
+  if (node.body.indexers) {
+    bodyElements.push(
+      ...node.body.indexers.map(v => ({ ...convertObjectTypeIndexer(v), ...baseNodeProps(v) })),
+    );
+  }
+  if (node.body.internalSlots) {
+    bodyElements.push(
+      ...node.body.internalSlots.map(v => ({
+        ...convertObjectTypeInternalSlot(v),
+        ...baseNodeProps(v),
+      })),
+    );
+  }
+  const body = {
+    ...tsInterfaceBody(bodyElements),
+    ...baseNodeProps(node.body),
+  };
+
+  return tsInterfaceDeclaration(node.id, typeParameters, _extends, body);
 }
