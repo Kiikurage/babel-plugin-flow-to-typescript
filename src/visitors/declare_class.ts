@@ -60,6 +60,7 @@ export function DeclareClass(path: NodePath<DeclareClass>) {
     } else if (property.kind === 'init') {
       const converted = classProperty(property.key, null, tsTypeAnnotation(convertedProperty));
       converted.static = property.static;
+      converted.readonly = property.variance && property.variance.kind === 'plus';
       bodyElements.push({ ...converted, ...baseNodeProps(property) });
     }
   }

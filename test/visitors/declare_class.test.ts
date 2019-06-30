@@ -25,7 +25,17 @@ pluginTester({
   set setterY(a: boolean): number;
 }`,
     },
-
+    {
+      title: 'declare class',
+      code: `declare class A extends B implements C {
+  static +C: D;
+  +F: D;
+}`,
+      output: `declare class A extends B implements C {
+  static readonly C: D;
+  readonly F: D;
+}`,
+    },
     {
       title: 'declare class',
       code: `declare class A extends B implements C {

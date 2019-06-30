@@ -15,12 +15,14 @@ export function ClassDeclaration(path: NodePath<ClassDeclaration>) {
 
   const superTypeParameters = node.superTypeParameters;
   if (isTypeParameterInstantiation(superTypeParameters)) {
-    node.superTypeParameters = convertTypeParameterInstantiation(superTypeParameters);
+    path
+      .get('superTypeParameters')
+      .replaceWith(convertTypeParameterInstantiation(superTypeParameters));
   }
 
   const typeParameters = node.typeParameters;
   if (isTypeParameterDeclaration(typeParameters)) {
-    node.typeParameters = convertTypeParameterDeclaration(typeParameters);
+    path.get('typeParameters').replaceWith(convertTypeParameterDeclaration(typeParameters));
   }
 
   const classImplements = node.implements;
