@@ -64,7 +64,7 @@ import { convertFlowIdentifier } from './convert_flow_identifier';
 import { convertFunctionTypeAnnotation } from './convert_function_type_annotation';
 import { convertObjectTypeCallProperty } from './convert_object_type_call_property';
 import { convertObjectTypeIndexer } from './convert_object_type_indexer';
-import {convertObjectTypeInternalSlot} from "./convert_object_type_internal_slot";
+import { convertObjectTypeInternalSlot } from './convert_object_type_internal_slot';
 
 export function convertFlowType(node: FlowType): TSType {
   if (isAnyTypeAnnotation(node)) {

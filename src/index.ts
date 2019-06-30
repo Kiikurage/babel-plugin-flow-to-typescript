@@ -18,6 +18,9 @@ import { CallExpression } from './visitors/call_expression';
 import { DeclareVariable } from './visitors/declare_variable';
 import { DeclareTypeAlias } from './visitors/declare_type_alias';
 import { DeclareInterface } from './visitors/declare_interface';
+import { DeclareOpaqueType } from './visitors/declare_opaque_type';
+import { DeclareModuleExports } from './visitors/declare_module_exports';
+import { DeclareModule } from './visitors/declare_module';
 
 const visitor: Visitor = {
   Program,
@@ -41,6 +44,9 @@ const visitor: Visitor = {
   DeclareVariable,
   DeclareTypeAlias,
   DeclareInterface,
+  DeclareOpaqueType,
+  DeclareModuleExports,
+  DeclareModule,
 };
 
 export default () =>
