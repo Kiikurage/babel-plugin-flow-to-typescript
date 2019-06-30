@@ -7,8 +7,8 @@ pluginTester({
     {
       title: 'simple case',
       code: `// @flow
-createPlugin<number>();`,
-      output: `createPlugin<number>();`,
+new A<number>();`,
+      output: `new A<number>();`,
     },
   ],
 });
