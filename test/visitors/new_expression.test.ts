@@ -10,11 +10,5 @@ pluginTester({
 createPlugin<number>();`,
       output: `createPlugin<number>();`,
     },
-    {
-      title: 'more complicated case',
-      code: `// @flow
-createPlugin<*, mixed>();`,
-      output: `createPlugin<any, unknown>();`,
-    },
   ],
 });
