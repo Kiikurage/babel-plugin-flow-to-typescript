@@ -137,8 +137,6 @@ export function convertFlowType(node: FlowType): TSType {
         tsTypeParameterInstantiation([tsKeyofX, tsKeyofY]),
       );
       return tsTypeReference(identifier('Pick'), tsTypeParameterInstantiation([tsX, tsExclude]));
-    } else if (isIdentifier(id) && id.name === '$Rest') {
-      throw new UnsupportedError('$Rest in GenericTypeAnnotation');
     } else if (isIdentifier(id) && id.name === '$PropertyType') {
       // $PropertyType<T, k> -> T[k]
       // TODO: $PropertyType<T, k> -> k extends string ? T[k] : never
