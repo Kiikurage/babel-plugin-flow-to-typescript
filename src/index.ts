@@ -21,6 +21,7 @@ import { DeclareInterface } from './visitors/declare_interface';
 import { DeclareOpaqueType } from './visitors/declare_opaque_type';
 import { DeclareModuleExports } from './visitors/declare_module_exports';
 import { DeclareModule } from './visitors/declare_module';
+import { DeclareExportDeclaration } from './visitors/declare_export_declaration';
 
 const visitor: Visitor = {
   Program,
@@ -47,6 +48,7 @@ const visitor: Visitor = {
   DeclareOpaqueType,
   DeclareModuleExports,
   DeclareModule,
+  DeclareExportDeclaration,
 };
 
 export default () =>
