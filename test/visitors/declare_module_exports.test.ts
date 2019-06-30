@@ -6,22 +6,23 @@ pluginTester({
   tests: [
     {
       title: 'declare empty named module',
-      code: `declare module React {
+      code: `declare module 'react' {
   declare module.exports: A;
 }`,
-      output: `declare namespace React {
-  export = A;
+      output: `declare module 'react' {
+  const __exports: A;
+  export = __exports;
 }`,
     },
     {
       title: 'declare empty named module',
-      code: `declare module React {
+      code: `declare module 'react' {
   declare module.exports: {
     a: number,
   };
 }`,
-      output: `declare namespace React {
-  type __exports = {
+      output: `declare module 'react' {
+  const __exports: {
     a: number;
   };
   export = __exports;
