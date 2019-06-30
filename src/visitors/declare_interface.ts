@@ -1,5 +1,4 @@
 import {
-  clone,
   DeclareInterface,
   isObjectTypeProperty,
   tsInterfaceBody,
@@ -16,7 +15,7 @@ import { convertObjectTypeInternalSlot } from '../converters/convert_object_type
 
 export function DeclareInterface(path: NodePath<DeclareInterface>) {
   const node = path.node;
-  const id = clone(node.id);
+  const id = node.id;
   let tp = null;
   if (node.typeParameters) {
     tp = {
@@ -26,12 +25,18 @@ export function DeclareInterface(path: NodePath<DeclareInterface>) {
   }
   let ext = undefined;
   if (node.extends && node.extends.length > 0) {
-    ext = node.extends.map(convertInterfaceExtends);
+    ext = node.extends.map(v => ({
+      ...convertInterfaceExtends(v),
+      ...baseNodeProps(v),
+    }));
   }
   const bodyElements = [];
   for (const property of node.body.properties) {
     if (isObjectTypeProperty(property)) {
-      bodyElements.push(convertObjectTypeProperty(property));
+      bodyElements.push({
+        ...convertObjectTypeProperty(property),
+        ...baseNodeProps(property),
+      });
     }
   }
   if (node.body.callProperties) {
@@ -44,7 +49,10 @@ export function DeclareInterface(path: NodePath<DeclareInterface>) {
     bodyElements.push(...node.body.internalSlots.map(convertObjectTypeInternalSlot));
   }
 
-  const body = tsInterfaceBody(bodyElements);
+  const body = {
+    ...tsInterfaceBody(bodyElements),
+    ...baseNodeProps(node.body),
+  };
 
   const replacement = tsInterfaceDeclaration(id, tp, ext, body);
   replacement.declare = true;

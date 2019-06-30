@@ -42,5 +42,27 @@ pluginTester({
   [foo]: T;
 }`,
     },
+    {
+      title: 'comments',
+      code: `/**
+ * bla bla bla
+ */
+declare interface A {
+  // fields
+  props: Props;
+  // state
+  state: State;
+}
+`,
+      output: `/**
+ * bla bla bla
+ */
+declare interface A {
+  // fields
+  props: Props;
+  // state
+  state: State;
+}`,
+    },
   ],
 });
