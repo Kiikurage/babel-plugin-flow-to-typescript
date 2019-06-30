@@ -15,6 +15,7 @@ import { FunctionDeclaration } from './visitors/function_declaration';
 import { CallExpression } from './visitors/call_expression';
 import { DeclareVariable } from './visitors/declare_variable';
 import { DeclareTypeAlias } from './visitors/declare_type_alias';
+import { DeclareInterface } from './visitors/declare_interface';
 
 const visitor: Visitor = {
   Program,
@@ -37,6 +38,7 @@ const visitor: Visitor = {
   CallExpression,
   DeclareVariable,
   DeclareTypeAlias,
+  DeclareInterface,
 };
 
 export default () =>

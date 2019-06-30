@@ -2,12 +2,9 @@ import {
   isObjectTypeProperty,
   tsInterfaceDeclaration,
   tsInterfaceBody,
-  tsTypeAnnotation,
-  tsPropertySignature,
   tsTypeParameterInstantiation,
   tsExpressionWithTypeArguments,
   Identifier,
-  TSTypeElement,
   ClassImplements,
   InterfaceExtends,
   InterfaceDeclaration,
@@ -16,6 +13,7 @@ import {
 
 import { convertFlowType } from './convert_flow_type';
 import { convertTypeParameterDeclaration } from './convert_type_parameter_declaration';
+import { convertObjectTypeProperty } from './convert_object_type_property';
 
 export function convertInterfaceExtends(node: InterfaceExtends | ClassImplements) {
   const typeParameters = node.typeParameters;
@@ -48,19 +46,12 @@ export function convertInterfaceDeclaration(node: InterfaceDeclaration) {
     ? convertTypeParameterDeclaration(origTypeParameters)
     : null;
 
-  const members: Array<TSTypeElement> = [];
-
-  origBody.properties.forEach(property => {
+  const members = [];
+  for (const property of origBody.properties) {
     if (isObjectTypeProperty(property)) {
-      const tsPropSignature = tsPropertySignature(
-        property.key,
-        tsTypeAnnotation(convertFlowType(property.value)),
-      );
-      tsPropSignature.optional = property.optional;
-      tsPropSignature.readonly = property.variance && property.variance.kind === 'plus';
-      members.push(tsPropSignature);
+      members.push(convertObjectTypeProperty(property));
     }
-  });
+  }
 
   const extending: Array<TSExpressionWithTypeArguments> = origExtendsCombined.map(origExtend =>
     convertInterfaceExtends(origExtend),

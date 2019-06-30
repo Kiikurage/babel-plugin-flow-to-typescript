@@ -34,10 +34,8 @@ import {
   tsAnyKeyword,
   tsArrayType,
   tsBooleanKeyword,
-  tsCallSignatureDeclaration,
   tsFunctionType,
   tsIndexedAccessType,
-  tsIndexSignature,
   tsIntersectionType,
   tsLiteralType,
   tsNeverKeyword,
@@ -64,6 +62,9 @@ import {
 import { UnsupportedError, warnOnlyOnce } from '../util';
 import { convertFlowIdentifier } from './convert_flow_identifier';
 import { convertFunctionTypeAnnotation } from './convert_function_type_annotation';
+import { convertObjectTypeCallProperty } from './convert_object_type_call_property';
+import { convertObjectTypeIndexer } from './convert_object_type_indexer';
+import {convertObjectTypeInternalSlot} from "./convert_object_type_internal_slot";
 
 export function convertFlowType(node: FlowType): TSType {
   if (isAnyTypeAnnotation(node)) {
@@ -242,31 +243,15 @@ export function convertFlowType(node: FlowType): TSType {
     }
 
     if (objectTypeNode.indexers && objectTypeNode.indexers.length > 0) {
-      for (const indexer of objectTypeNode.indexers) {
-        const tsIndex = indexer.id || identifier('x');
-        tsIndex.typeAnnotation = tsTypeAnnotation(convertFlowType(indexer.key));
-        const member = tsIndexSignature(
-          [tsIndex],
-          tsTypeAnnotation(convertFlowType(indexer.value)),
-        );
-        members.push(member);
-      }
+      members.push(...objectTypeNode.indexers.map(convertObjectTypeIndexer));
     }
 
-    if (objectTypeNode.callProperties && objectTypeNode.callProperties.length > 0) {
-      members.push(
-        ...objectTypeNode.callProperties.map(callPropperty => {
-          if (isFunctionTypeAnnotation(callPropperty.value)) {
-            const { typeParams, parameters, returnType } = convertFunctionTypeAnnotation(
-              callPropperty.value,
-            );
+    if (objectTypeNode.callProperties) {
+      members.push(...objectTypeNode.callProperties.map(convertObjectTypeCallProperty));
+    }
 
-            return tsCallSignatureDeclaration(typeParams, parameters, returnType);
-          } else {
-            throw new Error('ObjectCallTypeProperty case not implemented');
-          }
-        }),
-      );
+    if (objectTypeNode.internalSlots) {
+      members.push(...objectTypeNode.internalSlots.map(convertObjectTypeInternalSlot));
     }
 
     // TSCallSignatureDeclaration | TSConstructSignatureDeclaration | TSMethodSignature ;
