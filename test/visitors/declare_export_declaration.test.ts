@@ -5,7 +5,7 @@ pluginTester({
   plugin,
   tests: [
     {
-      title: 'declare empty named module',
+      title: 'declare module with a bit of everything',
       code: `declare module 'react' {
   declare export var a: number;
   declare export function isValidElement(element: any): boolean;
@@ -22,6 +22,17 @@ pluginTester({
     a: number;
   };
   export default __default;
+}`,
+    },
+    {
+      title: 'export default',
+      code: `declare module 'react' {
+  declare export default function isValidElement(element: any): boolean;
+  declare export default class A {}
+}`,
+      output: `declare module 'react' {
+  export default function isValidElement(element: any): boolean;
+  export default class A {}
 }`,
     },
   ],

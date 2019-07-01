@@ -14,14 +14,11 @@ export function convertObjectTypeInternalSlot(property: ObjectTypeInternalSlot) 
       throw new Error('FunctionTypeAnnotation expected');
     }
     const { typeParams, parameters, returnType } = convertFunctionTypeAnnotation(property.value);
-    return tsMethodSignature(
-      property.id,
-      typeParams,
-      parameters,
-      returnType,
-      true,
-      property.optional,
-    );
+    const methodSignature = tsMethodSignature(property.id, typeParams, parameters, returnType);
+
+    methodSignature.computed = true;
+    methodSignature.optional = property.optional;
+    return methodSignature;
   } else {
     const tsPropSignature = tsPropertySignature(
       property.id,

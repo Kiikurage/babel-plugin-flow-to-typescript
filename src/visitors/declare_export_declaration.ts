@@ -4,13 +4,10 @@ import {
   exportDefaultDeclaration,
   exportNamedDeclaration,
   identifier,
-  isClassDeclaration,
+  isDeclareClass,
   isDeclareFunction,
   isDeclareVariable,
-  isExpression,
   isFlowType,
-  isFunctionDeclaration,
-  isTSDeclareFunction,
   isTypeAlias,
   tsTypeAnnotation,
   variableDeclaration,
@@ -21,36 +18,28 @@ import { convertFlowType } from '../converters/convert_flow_type';
 import { convertDeclareVariable } from '../converters/convert_declare_variable';
 import { convertDeclareFunction } from '../converters/convert_declare_function';
 import { convertDeclareTypeAlias } from '../converters/convert_declare_type_alias';
+import { convertDeclareClass } from '../converters/convert_declare_class';
 
 export function DeclareExportDeclaration(path: NodePath<DeclareExportDeclaration>) {
   const node = path.node;
 
-  /*
-  type: "DeclareExportDeclaration";
-  declaration: Flow | null;
-  specifiers: Array<ExportSpecifier | ExportNamespaceSpecifier> | null;
-  source: StringLiteral | null;
-  default: boolean | null;
-  */
   let replacement;
   if (node.default) {
     if (!node.declaration) {
       throw path.buildCodeFrameError('todo: declaration is missing');
     }
-    if (!isFlowType(node.declaration)) {
-      throw path.buildCodeFrameError('todo: declaration is missing');
-    }
-    const declaration = convertFlowType(node.declaration);
-    if (
-      isFunctionDeclaration(declaration) ||
-      isTSDeclareFunction(declaration) ||
-      isClassDeclaration(declaration) ||
-      isExpression(declaration)
-    ) {
-      // @ts-ignore
-      replacement = exportDefaultDeclaration(declaration);
+    if (isDeclareFunction(node.declaration)) {
+      replacement = exportDefaultDeclaration(convertDeclareFunction(node.declaration));
+      path.replaceWith(replacement);
+    } else if (isDeclareClass(node.declaration)) {
+      replacement = exportDefaultDeclaration(convertDeclareClass(node.declaration));
       path.replaceWith(replacement);
     } else {
+      if (!isFlowType(node.declaration)) {
+        throw path.buildCodeFrameError('not implemented');
+      }
+      const declaration = convertFlowType(node.declaration);
+
       const aliasId = identifier('__default');
 
       path.replaceWithMultiple([
@@ -68,8 +57,7 @@ export function DeclareExportDeclaration(path: NodePath<DeclareExportDeclaration
       declaration = convertDeclareFunction(node.declaration);
     } else if (isTypeAlias(node.declaration)) {
       declaration = convertDeclareTypeAlias(node.declaration);
-    }
-    if (node.declaration !== null && declaration === null) {
+    } else {
       throw path.buildCodeFrameError('declaration not converted');
     }
     replacement = exportNamedDeclaration(

@@ -37,9 +37,11 @@ pluginTester({
       title: 'declare interface with internal slot',
       code: `declare interface C {
   [[foo]]: T;
+  [[bar]](): T;
 }`,
       output: `declare interface C {
   [foo]: T;
+  [bar](): T;
 }`,
     },
     {
