@@ -23,6 +23,7 @@ import { DeclareModuleExports } from './visitors/declare_module_exports';
 import { DeclareModule } from './visitors/declare_module';
 import { DeclareExportDeclaration } from './visitors/declare_export_declaration';
 import { NewExpression } from './visitors/new_expression';
+import { ArrowFunctionExpression } from './visitors/arrow_function_expression';
 
 const visitor: Visitor = {
   Program,
@@ -51,6 +52,7 @@ const visitor: Visitor = {
   DeclareModule,
   DeclareExportDeclaration,
   NewExpression,
+  ArrowFunctionExpression,
 };
 
 export default () =>
