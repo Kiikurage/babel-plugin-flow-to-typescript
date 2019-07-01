@@ -22,7 +22,7 @@ import { DeclareOpaqueType } from './visitors/declare_opaque_type';
 import { DeclareModuleExports } from './visitors/declare_module_exports';
 import { DeclareModule } from './visitors/declare_module';
 import { DeclareExportDeclaration } from './visitors/declare_export_declaration';
-import {NewExpression} from "./visitors/new_expression";
+import { NewExpression } from './visitors/new_expression';
 
 const visitor: Visitor = {
   Program,
@@ -64,5 +64,6 @@ export default () =>
       parserOpts.plugins.push('classProperties');
       parserOpts.plugins.push('objectRestSpread');
       parserOpts.plugins.push('optionalChaining');
+      parserOpts.plugins.push('dynamicImport');
     },
   } as PluginObj);
