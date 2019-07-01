@@ -2,7 +2,6 @@ workflows:
   version: 2
   node-multi-build:
     jobs:
-      - node-v8
       - node-latest
 
 version: 2
@@ -23,13 +22,9 @@ jobs:
             - node_modules
           key: v{{ .Environment.CIRCLECI_CACHE_VERSION }}-dependencies1-{{ checksum "package-lock.json" }}
       - run: npm run lint
-      - run: npm run cover
+      - run: npm run cover -- --runInBand
       - run: npm run report-coverage
       - run: npm run build
-  node-v8:
-    <<: *base
-    docker:
-      - image: node:8
   node-latest:
     <<: *base
     docker:
