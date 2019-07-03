@@ -11,12 +11,5 @@ export type { Something };`,
       output: `type Something = void;
 export { Something };`,
     },
-    {
-      title:
-        'Assigns type cast on default exports to a temporary variable then exports the variable',
-      code: `export default ("some": Thing);`,
-      output: `const _moduleExport: Thing = "some";
-export default _moduleExport;`,
-    },
   ],
 });

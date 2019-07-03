@@ -7,7 +7,7 @@ import { TypeParameterDeclaration } from './visitors/type_parameter_declaration'
 import { ClassMethod } from './visitors/class_method';
 import { ClassDeclaration } from './visitors/class_declaration';
 import { DeclareClass } from './visitors/declare_class';
-import { ExportNamedDeclaration, ExportDefaultDeclaration } from './visitors/export_declaration';
+import { ExportNamedDeclaration } from './visitors/export_declaration';
 import { InterfaceDeclaration } from './visitors/interface_declaration';
 import { OptionalMemberExpression } from './visitors/optional_member_expression';
 import { DeclareFunction } from './visitors/declare_function';
@@ -38,7 +38,6 @@ const visitor: Visitor = {
   DeclareClass,
   ClassDeclaration,
   ExportNamedDeclaration,
-  ExportDefaultDeclaration,
   InterfaceDeclaration,
   OptionalMemberExpression,
   DeclareFunction,
