@@ -32,7 +32,7 @@ pluginTester({
     {
       title: 'maybe argument',
       code: `function f(arg: ?string) {}`,
-      output: `function f(arg: string | undefined | null) {}`,
+      output: `function f(arg?: string | null) {}`,
     },
     {
       title: 'optional maybe argument',
@@ -43,6 +43,23 @@ pluginTester({
       title: 'rest parameters',
       code: `function f(...args) {}`,
       output: `function f(...args) {}`,
+    },
+    {
+      title: 'function argument type',
+      code: `function f(a: () => void) {}`,
+      output: `function f(a: () => void) {}`,
+    },
+    {
+      title: 'maybe function argument type',
+      code: `function f(a: ?(() => void)){}`,
+      output: `function f(a?: (() => void) | null) {}`,
+    },
+    {
+      title: 'maybe function argument type with pattern after it',
+      code: `function f(a: ?number, { b }){}`,
+      output: `function f(a: number | undefined | null, {
+  b
+}) {}`,
     },
   ],
 });

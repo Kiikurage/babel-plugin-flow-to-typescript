@@ -30,7 +30,6 @@ import {
   isUnionTypeAnnotation,
   isVoidTypeAnnotation,
   numericLiteral,
-  ObjectTypeAnnotation,
   stringLiteral,
   tsAnyKeyword,
   tsArrayType,
@@ -177,11 +176,14 @@ export function convertFlowType(node: FlowType): TSType {
   }
 
   if (isNullableTypeAnnotation(node)) {
-    const tsT = convertFlowType(node.typeAnnotation);
+    let tsType = convertFlowType(node.typeAnnotation);
+    if (isTSFunctionType(tsType)) {
+      tsType = tsParenthesizedType(tsType);
+    }
     // f(): ?T {} -> f(): T | null | undefined {}
     // var x: X<?T> -> var x: X<T | null | undefined>
     // var x:?T -> var x:T | null | undefined
-    return tsUnionType([tsT, tsUndefinedKeyword(), tsNullKeyword()]);
+    return tsUnionType([tsType, tsUndefinedKeyword(), tsNullKeyword()]);
   }
 
   if (isNullLiteralTypeAnnotation(node)) {
@@ -200,23 +202,24 @@ export function convertFlowType(node: FlowType): TSType {
     const members: TSTypeElement[] = [];
     const spreads: TSType[] = [];
 
-    // todo: useless typecast
-    const objectTypeNode = node as ObjectTypeAnnotation;
-    if (objectTypeNode.exact) {
+    if (node.exact) {
       warnOnlyOnce(
         "Exact object type annotation in Flow is ignored. In TypeScript, it's always regarded as exact type",
       );
-      objectTypeNode.exact = false;
+      node.exact = false;
     }
 
-    if (objectTypeNode.properties && objectTypeNode.properties.length > 0) {
-      for (const property of objectTypeNode.properties) {
+    if (node.properties && node.properties.length > 0) {
+      for (const property of node.properties) {
         if (isObjectTypeProperty(property)) {
-          let tsT: TSType;
+          let tsT;
           if (!isNullableTypeAnnotation(property.value)) {
             tsT = convertFlowType(property.value);
           } else {
-            const tsValueT = convertFlowType(property.value.typeAnnotation);
+            let tsValueT = convertFlowType(property.value.typeAnnotation);
+            if (isTSFunctionType(tsValueT)) {
+              tsValueT = tsParenthesizedType(tsValueT);
+            }
             if (property.optional) {
               // { key?: ?T } -> { key?: T | null }
               tsT = tsUnionType([tsValueT, tsNullKeyword()]);
@@ -242,16 +245,16 @@ export function convertFlowType(node: FlowType): TSType {
       }
     }
 
-    if (objectTypeNode.indexers && objectTypeNode.indexers.length > 0) {
-      members.push(...objectTypeNode.indexers.map(convertObjectTypeIndexer));
+    if (node.indexers && node.indexers.length > 0) {
+      members.push(...node.indexers.map(convertObjectTypeIndexer));
     }
 
-    if (objectTypeNode.callProperties) {
-      members.push(...objectTypeNode.callProperties.map(convertObjectTypeCallProperty));
+    if (node.callProperties) {
+      members.push(...node.callProperties.map(convertObjectTypeCallProperty));
     }
 
-    if (objectTypeNode.internalSlots) {
-      members.push(...objectTypeNode.internalSlots.map(convertObjectTypeInternalSlot));
+    if (node.internalSlots) {
+      members.push(...node.internalSlots.map(convertObjectTypeInternalSlot));
     }
 
     // TSCallSignatureDeclaration | TSConstructSignatureDeclaration | TSMethodSignature ;

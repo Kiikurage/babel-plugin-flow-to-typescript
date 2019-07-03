@@ -203,7 +203,7 @@ pluginTester({
     {
       title: 'Maybe type: required parameter in function declaration',
       code: `function f(arg: ?string) {}`,
-      output: `function f(arg: string | undefined | null) {}`,
+      output: `function f(arg?: string | null) {}`,
     },
     {
       title: 'Maybe type: generic type instantiation',
@@ -255,6 +255,31 @@ pluginTester({
       title: 'Arrow Function type (multi params)',
       code: `let test: (a: number, b: string) => string;`,
       output: `let test: (a: number, b: string) => string;`,
+    },
+    {
+      title: 'function type annotation with type parameters',
+      code: `let test: <T>(a: number) => T;`,
+      output: `let test: <T>(a: number) => T;`,
+    },
+    {
+      title: 'maybe argument',
+      code: `let test: (a: ?number) => T;`,
+      output: `let test: (a?: number | null) => T;`,
+    },
+    {
+      title: 'maybe argument with not null after it',
+      code: `let test: (a: ?number, b: number) => T;`,
+      output: `let test: (a: number | undefined | null, b: number) => T;`,
+    },
+    {
+      title: 'function maybe argument',
+      code: `let test: (a: ?(number=>number)) => T;`,
+      output: `let test: (a?: ((a: number) => number) | null) => T;`,
+    },
+    {
+      title: 'maybe function type annotation',
+      code: `let test: ?(a: number) => T;`,
+      output: `let test: ((a: number) => T) | undefined | null;`,
     },
     {
       title: 'Generic Function type',

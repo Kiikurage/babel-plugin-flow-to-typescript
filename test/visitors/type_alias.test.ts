@@ -12,6 +12,15 @@ pluginTester({
 };`,
     },
     {
+      title: 'maybe function type',
+      code: `type a = {
+  a: ?()=>void;
+};`,
+      output: `type a = {
+  a: (() => void) | undefined | null;
+};`,
+    },
+    {
       title: 'preserves comments within typedefs',
       code: `type Props = {
   children?: React.Node,
@@ -39,7 +48,7 @@ type T = {
 `,
       output: `
 type T = {
-  (a: string, b: string): string
+  (b: string, a: string): string
 };
 `,
     },

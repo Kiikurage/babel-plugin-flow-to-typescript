@@ -32,7 +32,7 @@ pluginTester({
     {
       title: 'maybe argument',
       code: `const f = (arg: ?string) => {};`,
-      output: `const f = (arg: string | undefined | null) => {};`,
+      output: `const f = (arg?: string | null) => {};`,
     },
     {
       title: 'optional maybe argument',
