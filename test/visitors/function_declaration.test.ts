@@ -61,5 +61,10 @@ pluginTester({
   b
 }) {}`,
     },
+    {
+      title: 'function with default param value',
+      code: 'function a(c?: string = "v") {}',
+      output: 'function a(c: string = "v") {}',
+    },
   ],
 });

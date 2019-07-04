@@ -1,6 +1,7 @@
 import { NodePath } from '@babel/traverse';
 import {
   Identifier,
+  isIdentifier,
   isNullableTypeAnnotation,
   isTSFunctionType,
   isTypeAnnotation,
@@ -21,6 +22,10 @@ export function transformFunctionParams(
   for (let i = params.length - 1; i >= 0; i--) {
     const paramNode = params[i];
     if (paramNode.isPattern()) {
+      if (paramNode.isAssignmentPattern() && isIdentifier(paramNode.node.left)) {
+        // argument with default value can not be optional in typescript
+        paramNode.node.left.optional = false;
+      }
       hasRequiredAfter = true;
     }
     if (paramNode.isIdentifier()) {
