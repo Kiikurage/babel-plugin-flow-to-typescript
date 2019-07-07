@@ -79,5 +79,14 @@ pluginTester({
     //   [foo]: T;
     // }`,
     //     },
+    {
+      title: 'declare class with with generic method',
+      code: `declare class A {
+  map<T>(fn: (node: this, index: number) => T): Array<T>;
+}`,
+      output: `declare class A {
+  map<T>(fn: (node: this, index: number) => T): Array<T>;
+}`,
+    },
   ],
 });

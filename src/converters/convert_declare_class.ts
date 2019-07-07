@@ -7,6 +7,7 @@ import {
   isIdentifier,
   isObjectTypeSpreadProperty,
   isTSFunctionType,
+  isTSParenthesizedType,
   isTypeParameterDeclaration,
   tsDeclareMethod,
   tsParenthesizedType,
@@ -33,13 +34,18 @@ export function convertDeclareClass(node: DeclareClass) {
     }
 
     if (property.method) {
+      if (
+        !isTSParenthesizedType(convertedProperty) ||
+        !isTSFunctionType(convertedProperty.typeAnnotation)
+      ) {
+        throw new Error('incorrect method');
+      }
+
       const converted = tsDeclareMethod(
         null,
         property.key,
-        null, // todo: convertedProperty.typeParameters,
-        // @ts-ignore
+        convertedProperty.typeAnnotation.typeParameters,
         convertedProperty.typeAnnotation.parameters,
-        // @ts-ignore
         convertedProperty.typeAnnotation.typeAnnotation,
       );
 
