@@ -73,7 +73,16 @@ pluginTester({
   something(): string;
 }`,
       output: `interface Something<A> extends What<Yes>, Another<A, B> {
-  something: () => string;
+  something(): string;
+}`,
+    },
+    {
+      title: 'interface with generic method',
+      code: `interface A {
+  map<T>(fn: (node: this, index: number) => T): Array<T>;
+}`,
+      output: `interface A {
+  map<T>(fn: (node: this, index: number) => T): Array<T>;
 }`,
     },
   ],
