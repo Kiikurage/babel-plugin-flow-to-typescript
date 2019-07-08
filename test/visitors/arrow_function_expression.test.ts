@@ -49,5 +49,13 @@ pluginTester({
       code: `const a = <T, R>(v: T) => v;`,
       output: `const a = <T extends any, R>(v: T) => v;`,
     },
+    {
+      title: 'arrow function with type parameters for JSX context',
+      code: `export const a = <T>(
+  a?: A<T>,
+  b: B,
+): ?T => {};`,
+      output: `export const a = <T extends any>(a: A<T> | undefined | null, b: B): T | undefined | null => {};`,
+    },
   ],
 });

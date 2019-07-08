@@ -10,7 +10,7 @@ import {
   tsNullKeyword,
   TSParameterProperty,
   tsParenthesizedType,
-  tsTypeAnnotation,
+  tsTypeAnnotation, tsUndefinedKeyword,
   tsUnionType,
 } from '@babel/types';
 import { convertFlowType } from '../converters/convert_flow_type';
@@ -33,9 +33,7 @@ export function transformFunctionParams(
 
       if (param.typeAnnotation && isTypeAnnotation(param.typeAnnotation)) {
         if (isNullableTypeAnnotation(param.typeAnnotation.typeAnnotation)) {
-          if (!hasRequiredAfter) {
-            param.optional = true;
-          }
+          param.optional = !hasRequiredAfter;
           if (param.optional) {
             let tsType = convertFlowType(param.typeAnnotation.typeAnnotation.typeAnnotation);
             if (isTSFunctionType(tsType)) {
@@ -47,6 +45,15 @@ export function transformFunctionParams(
             hasRequiredAfter = true;
           }
         } else {
+          if (param.optional && hasRequiredAfter) {
+            param.optional = false;
+            let tsType = convertFlowType(param.typeAnnotation.typeAnnotation);
+            if (isTSFunctionType(tsType)) {
+              tsType = tsParenthesizedType(tsType);
+            }
+            const typeAnnotation = tsUnionType([tsType, tsUndefinedKeyword(), tsNullKeyword()]);
+            paramNode.get('typeAnnotation').replaceWith(tsTypeAnnotation(typeAnnotation));
+          }
           hasRequiredAfter = true;
         }
       }
