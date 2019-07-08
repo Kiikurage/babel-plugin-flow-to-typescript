@@ -10,7 +10,8 @@ import {
   tsNullKeyword,
   TSParameterProperty,
   tsParenthesizedType,
-  tsTypeAnnotation, tsUndefinedKeyword,
+  tsTypeAnnotation,
+  tsUndefinedKeyword,
   tsUnionType,
 } from '@babel/types';
 import { convertFlowType } from '../converters/convert_flow_type';
