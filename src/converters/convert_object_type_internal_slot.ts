@@ -7,6 +7,7 @@ import {
 } from '@babel/types';
 import { convertFlowType } from './convert_flow_type';
 import { convertFunctionTypeAnnotation } from './convert_function_type_annotation';
+import { baseNodeProps } from '../utils/baseNodeProps';
 
 export function convertObjectTypeInternalSlot(property: ObjectTypeInternalSlot) {
   if (property.method) {
@@ -22,7 +23,7 @@ export function convertObjectTypeInternalSlot(property: ObjectTypeInternalSlot) 
   } else {
     const tsPropSignature = tsPropertySignature(
       property.id,
-      tsTypeAnnotation(convertFlowType(property.value)),
+      tsTypeAnnotation({ ...convertFlowType(property.value), ...baseNodeProps(property.value) }),
     );
     tsPropSignature.optional = property.optional;
     tsPropSignature.computed = true;

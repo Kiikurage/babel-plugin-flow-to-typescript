@@ -66,6 +66,7 @@ import { convertFunctionTypeAnnotation } from './convert_function_type_annotatio
 import { convertObjectTypeCallProperty } from './convert_object_type_call_property';
 import { convertObjectTypeIndexer } from './convert_object_type_indexer';
 import { convertObjectTypeInternalSlot } from './convert_object_type_internal_slot';
+import { baseNodeProps } from '../utils/baseNodeProps';
 
 export function convertFlowType(node: FlowType): TSType {
   if (isAnyTypeAnnotation(node)) {
@@ -73,7 +74,10 @@ export function convertFlowType(node: FlowType): TSType {
   }
 
   if (isArrayTypeAnnotation(node)) {
-    return tsArrayType(convertFlowType(node.elementType));
+    return tsArrayType({
+      ...convertFlowType(node.elementType),
+      ...baseNodeProps(node.elementType),
+    });
   }
 
   if (isBooleanTypeAnnotation(node)) {
@@ -99,7 +103,10 @@ export function convertFlowType(node: FlowType): TSType {
     const typeParameters = node.typeParameters;
     let tsTypeParameters: TSTypeParameterInstantiation | null = null;
     if (typeParameters) {
-      const tsParams = typeParameters.params.map(convertFlowType);
+      const tsParams = typeParameters.params.map(p => ({
+        ...convertFlowType(p),
+        ...baseNodeProps(p),
+      }));
       tsTypeParameters = tsTypeParameterInstantiation(tsParams);
     }
 
@@ -168,7 +175,7 @@ export function convertFlowType(node: FlowType): TSType {
 
   if (isIntersectionTypeAnnotation(node)) {
     const flowTypes = node.types;
-    return tsIntersectionType(flowTypes.map(convertFlowType));
+    return tsIntersectionType(flowTypes.map(p => ({ ...convertFlowType(p), ...baseNodeProps(p) })));
   }
 
   if (isMixedTypeAnnotation(node)) {
@@ -235,11 +242,11 @@ export function convertFlowType(node: FlowType): TSType {
           tsPropSignature.innerComments = property.innerComments;
           tsPropSignature.leadingComments = property.leadingComments;
           tsPropSignature.trailingComments = property.trailingComments;
-          members.push(tsPropSignature);
+          members.push({ ...tsPropSignature, ...baseNodeProps(property) });
         }
 
         if (isObjectTypeSpreadProperty(property)) {
-          // {p1:T, ...U} -> {p1:T} | U
+          // {p1:T, ...U} -> {p1:T} & U
           spreads.push(convertFlowType(property.argument));
         }
       }

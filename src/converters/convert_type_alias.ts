@@ -14,7 +14,10 @@ export function convertTypeAlias(node: TypeAlias): TSTypeAliasDeclaration {
   return tsTypeAliasDeclaration(
     node.id,
     isTypeParameterDeclaration(typeParameters)
-      ? convertTypeParameterDeclaration(typeParameters)
+      ? {
+          ...convertTypeParameterDeclaration(typeParameters),
+          ...baseNodeProps(typeParameters),
+        }
       : null,
     { ...baseNodeProps(right), ...convertFlowType(right) },
   );

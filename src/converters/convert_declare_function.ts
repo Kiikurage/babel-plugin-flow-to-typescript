@@ -3,9 +3,11 @@ import {
   tsDeclareFunction,
   isTypeAnnotation,
   isFunctionTypeAnnotation,
+  identifier,
 } from '@babel/types';
 
 import { convertFunctionTypeAnnotation } from './convert_function_type_annotation';
+import { baseNodeProps } from '../utils/baseNodeProps';
 
 export function convertDeclareFunction(node: DeclareFunction) {
   if (!isTypeAnnotation(node.id.typeAnnotation)) throw new Error('typeAnnotation is missing');
@@ -16,6 +18,6 @@ export function convertDeclareFunction(node: DeclareFunction) {
   }
 
   const { typeParams, parameters, returnType } = convertFunctionTypeAnnotation(typeAnnotation);
-
-  return tsDeclareFunction(node.id, typeParams, parameters, returnType);
+  const id = { ...identifier(node.id.name), ...baseNodeProps(node.id) };
+  return tsDeclareFunction(id, typeParams, parameters, returnType);
 }

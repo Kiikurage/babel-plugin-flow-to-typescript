@@ -1,4 +1,5 @@
 import { BaseNode } from '@babel/types';
+import { recastProps } from './recastProps';
 
 export function baseNodeProps(node: BaseNode): Omit<BaseNode, 'type'> {
   return {
@@ -8,5 +9,6 @@ export function baseNodeProps(node: BaseNode): Omit<BaseNode, 'type'> {
     start: null,
     end: null,
     loc: node.loc,
+    ...recastProps(node),
   };
 }
