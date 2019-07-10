@@ -43,12 +43,10 @@ import {
   tsNumberKeyword,
   tsObjectKeyword,
   tsParenthesizedType,
-  tsPropertySignature,
   tsStringKeyword,
   tsThisType,
   tsTupleType,
   TSType,
-  tsTypeAnnotation,
   TSTypeElement,
   tsTypeLiteral,
   tsTypeOperator,
@@ -67,6 +65,7 @@ import { convertObjectTypeCallProperty } from './convert_object_type_call_proper
 import { convertObjectTypeIndexer } from './convert_object_type_indexer';
 import { convertObjectTypeInternalSlot } from './convert_object_type_internal_slot';
 import { baseNodeProps } from '../utils/baseNodeProps';
+import { convertObjectTypeProperty } from './convert_object_type_property';
 
 export function convertFlowType(node: FlowType): TSType {
   if (isAnyTypeAnnotation(node)) {
@@ -219,30 +218,7 @@ export function convertFlowType(node: FlowType): TSType {
     if (node.properties && node.properties.length > 0) {
       for (const property of node.properties) {
         if (isObjectTypeProperty(property)) {
-          let tsT;
-          if (!isNullableTypeAnnotation(property.value)) {
-            tsT = convertFlowType(property.value);
-          } else {
-            let tsValueT = convertFlowType(property.value.typeAnnotation);
-            if (isTSFunctionType(tsValueT)) {
-              tsValueT = tsParenthesizedType(tsValueT);
-            }
-            if (property.optional) {
-              // { key?: ?T } -> { key?: T | null }
-              tsT = tsUnionType([tsValueT, tsNullKeyword()]);
-            } else {
-              // { key: ?T } -> { key: T | null | undefined }
-              tsT = tsUnionType([tsValueT, tsUndefinedKeyword(), tsNullKeyword()]);
-            }
-          }
-
-          const tsPropSignature = tsPropertySignature(property.key, tsTypeAnnotation(tsT));
-          tsPropSignature.optional = property.optional;
-          tsPropSignature.readonly = property.variance && property.variance.kind === 'plus';
-          tsPropSignature.innerComments = property.innerComments;
-          tsPropSignature.leadingComments = property.leadingComments;
-          tsPropSignature.trailingComments = property.trailingComments;
-          members.push({ ...tsPropSignature, ...baseNodeProps(property) });
+          members.push({ ...convertObjectTypeProperty(property), ...baseNodeProps(property) });
         }
 
         if (isObjectTypeSpreadProperty(property)) {

@@ -63,5 +63,14 @@ type T = A;
 type T = A;
 `,
     },
+    {
+      title: 'methods in object type',
+      code: `export type Cache = {
+  get(key: string): Promise<mixed>
+};`,
+      output: `export type Cache = {
+  get(key: string): Promise<unknown>;
+};`,
+    },
   ],
 });
