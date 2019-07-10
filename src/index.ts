@@ -20,12 +20,13 @@ import { DeclareTypeAlias } from './visitors/declare_type_alias';
 import { DeclareInterface } from './visitors/declare_interface';
 import { DeclareOpaqueType } from './visitors/declare_opaque_type';
 import { DeclareModuleExports } from './visitors/declare_module_exports';
-import { DeclareModule } from './visitors/declare_module';
+import DeclareModule from './visitors/declare_module';
 import { DeclareExportDeclaration } from './visitors/declare_export_declaration';
 import { NewExpression } from './visitors/new_expression';
 import { ArrowFunctionExpression } from './visitors/arrow_function_expression';
+import { PluginOptions, PluginPass } from './types';
 
-const visitor: Visitor = {
+const visitor: Visitor<PluginPass> = {
   Program,
   TypeAnnotation,
   TypeAlias,
@@ -55,17 +56,24 @@ const visitor: Visitor = {
   ArrowFunctionExpression,
 };
 
-export default () =>
-  ({
+// tslint:disable-next-line:no-any
+export default (_babel: any, opts: PluginOptions) => {
+  if (typeof opts.isJSX === 'undefined') {
+    opts.isJSX = true;
+  }
+  return {
     name: 'babel-plugin-flow-to-typescript',
     visitor,
 
-    manipulateOptions(_opts, parserOpts) {
+    manipulateOptions(opts: PluginOptions, parserOpts) {
       parserOpts.plugins.push('flow');
-      parserOpts.plugins.push('jsx');
+      if (opts.isJSX) {
+        parserOpts.plugins.push('jsx');
+      }
       parserOpts.plugins.push('classProperties');
       parserOpts.plugins.push('objectRestSpread');
       parserOpts.plugins.push('optionalChaining');
       parserOpts.plugins.push('dynamicImport');
     },
-  } as PluginObj);
+  } as PluginObj;
+};
