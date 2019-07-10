@@ -8,6 +8,7 @@ import {
   isDeclareFunction,
   isDeclareVariable,
   isFlowType,
+  isInterfaceDeclaration,
   isTypeAlias,
   tsTypeAnnotation,
   variableDeclaration,
@@ -20,6 +21,7 @@ import { convertDeclareFunction } from '../converters/convert_declare_function';
 import { convertDeclareTypeAlias } from '../converters/convert_declare_type_alias';
 import { convertDeclareClass } from '../converters/convert_declare_class';
 import { replaceWith } from '../utils/replaceWith';
+import { convertInterfaceDeclaration } from '../converters/convert_interface_declaration';
 
 export function DeclareExportDeclaration(path: NodePath<DeclareExportDeclaration>) {
   const node = path.node;
@@ -58,8 +60,12 @@ export function DeclareExportDeclaration(path: NodePath<DeclareExportDeclaration
       declaration = convertDeclareFunction(node.declaration);
     } else if (isTypeAlias(node.declaration)) {
       declaration = convertDeclareTypeAlias(node.declaration);
+    } else if (isDeclareClass(node.declaration)) {
+      declaration = convertDeclareClass(node.declaration);
+    } else if (isInterfaceDeclaration(node.declaration)) {
+      declaration = convertInterfaceDeclaration(node.declaration);
     } else {
-      throw path.buildCodeFrameError('declaration not converted');
+      throw path.buildCodeFrameError(`DeclareExportDeclaration not converted`);
     }
     replacement = exportNamedDeclaration(
       declaration,

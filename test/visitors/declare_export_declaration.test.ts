@@ -35,5 +35,23 @@ pluginTester({
   export default class A {}
 }`,
     },
+    {
+      title: 'declare export class',
+      code: `declare module 'react' {
+  declare export class ObservableQuery<T> extends Observable<ApolloQueryResult<T>> { }
+}`,
+      output: `declare module 'react' {
+  export class ObservableQuery<T> extends Observable<ApolloQueryResult<T>> {}
+}`,
+    },
+    {
+      title: 'declare export interface',
+      code: `declare module 'react' {
+  declare export interface FetchMoreOptions {}
+}`,
+      output: `declare module 'react' {
+  export interface FetchMoreOptions {}
+}`,
+    },
   ],
 });
