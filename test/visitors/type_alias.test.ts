@@ -72,5 +72,14 @@ type T = A;
   get(key: string): Promise<unknown>;
 };`,
     },
+    {
+      title: 'methods in object type',
+      code: `export type Cache = {
+  a: ((args: string[]) => null | false | string) & (() => string);
+};`,
+      output: `export type Cache = {
+  a: ((args: string[]) => null | false | string) & (() => string);
+};`,
+    },
   ],
 });

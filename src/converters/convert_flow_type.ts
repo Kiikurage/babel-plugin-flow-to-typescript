@@ -174,7 +174,15 @@ export function convertFlowType(node: FlowType): TSType {
 
   if (isIntersectionTypeAnnotation(node)) {
     const flowTypes = node.types;
-    return tsIntersectionType(flowTypes.map(p => ({ ...convertFlowType(p), ...baseNodeProps(p) })));
+    return tsIntersectionType(
+      flowTypes.map(v => {
+        let tsType = convertFlowType(v);
+        if (isTSFunctionType(tsType)) {
+          tsType = tsParenthesizedType(tsType);
+        }
+        return { ...tsType, ...baseNodeProps(v) };
+      }),
+    );
   }
 
   if (isMixedTypeAnnotation(node)) {
@@ -274,10 +282,11 @@ export function convertFlowType(node: FlowType): TSType {
     const flowTypes = node.types;
     return tsUnionType(
       flowTypes.map(v => {
-        const tsType = convertFlowType(v);
+        let tsType = convertFlowType(v);
         if (isTSFunctionType(tsType)) {
-          return tsParenthesizedType(tsType);
-        } else return tsType;
+          tsType = tsParenthesizedType(tsType);
+        }
+        return { ...tsType, ...baseNodeProps(v) };
       }),
     );
   }
