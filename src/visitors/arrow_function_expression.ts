@@ -2,6 +2,7 @@ import { ArrowFunctionExpression, isTypeParameterDeclaration, tsAnyKeyword } fro
 import { NodePath } from '@babel/traverse';
 import { convertTypeParameterDeclaration } from '../converters/convert_type_parameter_declaration';
 import { transformFunctionParams } from '../transforms/transform_function_params';
+import { replaceWith } from '../utils/replaceWith';
 
 export function ArrowFunctionExpression(path: NodePath<ArrowFunctionExpression>) {
   transformFunctionParams(path.get('params'));
@@ -11,6 +12,6 @@ export function ArrowFunctionExpression(path: NodePath<ArrowFunctionExpression>)
     // todo: isJSX config option
     // workaround for tsx files to differentiate type parameters from jsx
     tsTypeParameterDeclaration.params[0].constraint = tsAnyKeyword();
-    path.get('typeParameters').replaceWith(tsTypeParameterDeclaration);
+    replaceWith(path.get('typeParameters'), tsTypeParameterDeclaration);
   }
 }

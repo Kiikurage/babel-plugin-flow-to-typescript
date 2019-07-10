@@ -52,5 +52,16 @@ type T = {
 };
 `,
     },
+    {
+      title: 'Comment above type alias',
+      code: `
+// comment
+type T = A;
+`,
+      output: `
+// comment
+type T = A;
+`,
+    },
   ],
 });

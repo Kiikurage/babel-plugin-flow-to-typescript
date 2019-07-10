@@ -1,6 +1,7 @@
 import { NodePath } from '@babel/traverse';
 import { DeclareOpaqueType, tsTypeAliasDeclaration, tsUnknownKeyword } from '@babel/types';
 import { warnOnlyOnce } from '../util';
+import { replaceWith } from '../utils/replaceWith';
 
 export function DeclareOpaqueType(path: NodePath<DeclareOpaqueType>) {
   const node = path.node;
@@ -10,5 +11,5 @@ export function DeclareOpaqueType(path: NodePath<DeclareOpaqueType>) {
   const replacement = tsTypeAliasDeclaration(node.id, null, tsUnknownKeyword());
   replacement.declare = true;
 
-  path.replaceWith(replacement);
+  replaceWith(path, replacement);
 }

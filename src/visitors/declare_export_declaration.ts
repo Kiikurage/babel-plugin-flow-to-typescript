@@ -19,6 +19,7 @@ import { convertDeclareVariable } from '../converters/convert_declare_variable';
 import { convertDeclareFunction } from '../converters/convert_declare_function';
 import { convertDeclareTypeAlias } from '../converters/convert_declare_type_alias';
 import { convertDeclareClass } from '../converters/convert_declare_class';
+import { replaceWith } from '../utils/replaceWith';
 
 export function DeclareExportDeclaration(path: NodePath<DeclareExportDeclaration>) {
   const node = path.node;
@@ -30,10 +31,10 @@ export function DeclareExportDeclaration(path: NodePath<DeclareExportDeclaration
     }
     if (isDeclareFunction(node.declaration)) {
       replacement = exportDefaultDeclaration(convertDeclareFunction(node.declaration));
-      path.replaceWith(replacement);
+      replaceWith(path, replacement);
     } else if (isDeclareClass(node.declaration)) {
       replacement = exportDefaultDeclaration(convertDeclareClass(node.declaration));
-      path.replaceWith(replacement);
+      replaceWith(path, replacement);
     } else {
       if (!isFlowType(node.declaration)) {
         throw path.buildCodeFrameError('not implemented');
@@ -65,6 +66,6 @@ export function DeclareExportDeclaration(path: NodePath<DeclareExportDeclaration
       node.specifiers ? node.specifiers : [],
       node.source,
     );
-    path.replaceWith(replacement);
+    replaceWith(path, replacement);
   }
 }

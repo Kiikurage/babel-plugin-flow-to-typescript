@@ -1,6 +1,7 @@
 import { NodePath } from '@babel/traverse';
 import { DeclareModule, tsModuleBlock, tsModuleDeclaration } from '@babel/types';
 import { baseNodeProps } from '../utils/baseNodeProps';
+import { replaceWith } from '../utils/replaceWith';
 
 export function DeclareModule(path: NodePath<DeclareModule>) {
   const node = path.node;
@@ -12,5 +13,5 @@ export function DeclareModule(path: NodePath<DeclareModule>) {
 
   const replacement = tsModuleDeclaration(node.id, moduleBlock);
   replacement.declare = true;
-  path.replaceWith(replacement);
+  replaceWith(path, replacement);
 }

@@ -15,6 +15,7 @@ import {
   tsUnionType,
 } from '@babel/types';
 import { convertFlowType } from '../converters/convert_flow_type';
+import { replaceWith } from '../utils/replaceWith';
 
 export function transformFunctionParams(
   params: Array<NodePath<Identifier | Pattern | RestElement | TSParameterProperty>>,
@@ -41,7 +42,7 @@ export function transformFunctionParams(
               tsType = tsParenthesizedType(tsType);
             }
             const typeAnnotation = tsUnionType([tsType, tsNullKeyword()]);
-            paramNode.get('typeAnnotation').replaceWith(tsTypeAnnotation(typeAnnotation));
+            replaceWith(paramNode.get('typeAnnotation'), tsTypeAnnotation(typeAnnotation));
           } else {
             hasRequiredAfter = true;
           }
@@ -53,7 +54,7 @@ export function transformFunctionParams(
               tsType = tsParenthesizedType(tsType);
             }
             const typeAnnotation = tsUnionType([tsType, tsUndefinedKeyword(), tsNullKeyword()]);
-            paramNode.get('typeAnnotation').replaceWith(tsTypeAnnotation(typeAnnotation));
+            replaceWith(paramNode.get('typeAnnotation'), tsTypeAnnotation(typeAnnotation));
           }
           hasRequiredAfter = true;
         }

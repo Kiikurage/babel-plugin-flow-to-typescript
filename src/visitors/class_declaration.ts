@@ -9,20 +9,22 @@ import { NodePath } from '@babel/traverse';
 import { convertInterfaceExtends } from '../converters/convert_interface_declaration';
 import { convertTypeParameterInstantiation } from '../converters/convert_type_parameter_instantiation';
 import { convertTypeParameterDeclaration } from '../converters/convert_type_parameter_declaration';
+import { replaceWith } from '../utils/replaceWith';
 
 export function ClassDeclaration(path: NodePath<ClassDeclaration | ClassExpression>) {
   const node = path.node;
 
   const superTypeParameters = node.superTypeParameters;
   if (isTypeParameterInstantiation(superTypeParameters)) {
-    path
-      .get('superTypeParameters')
-      .replaceWith(convertTypeParameterInstantiation(superTypeParameters));
+    replaceWith(
+      path.get('superTypeParameters'),
+      convertTypeParameterInstantiation(superTypeParameters),
+    );
   }
 
   const typeParameters = node.typeParameters;
   if (isTypeParameterDeclaration(typeParameters)) {
-    path.get('typeParameters').replaceWith(convertTypeParameterDeclaration(typeParameters));
+    replaceWith(path.get('typeParameters'), convertTypeParameterDeclaration(typeParameters));
   }
 
   const classImplements = node.implements;
@@ -31,7 +33,7 @@ export function ClassDeclaration(path: NodePath<ClassDeclaration | ClassExpressi
     if (classImplements !== null) {
       for (const classImplement of classImplements) {
         if (classImplement.isClassImplements()) {
-          classImplement.replaceWith(convertInterfaceExtends(classImplement.node));
+          replaceWith(classImplement, convertInterfaceExtends(classImplement.node));
         }
       }
     }
