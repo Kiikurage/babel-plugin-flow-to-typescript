@@ -2,7 +2,8 @@ import {
   ClassDeclaration,
   isTypeParameterInstantiation,
   isTypeParameterDeclaration,
-  ClassImplements, ClassExpression,
+  ClassImplements,
+  ClassExpression,
 } from '@babel/types';
 import { NodePath } from '@babel/traverse';
 
