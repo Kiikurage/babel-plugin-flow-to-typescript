@@ -57,7 +57,7 @@ const visitor: Visitor<PluginPass> = {
 };
 
 // tslint:disable-next-line:no-any
-export default (_babel: any, opts: PluginOptions) => {
+export default (_babel: any, opts: PluginOptions = {} as PluginOptions) => {
   if (typeof opts.isJSX === 'undefined') {
     opts.isJSX = true;
   }
