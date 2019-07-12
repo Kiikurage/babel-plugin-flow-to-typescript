@@ -64,5 +64,10 @@ pluginTester({
 
 }`,
     },
+    {
+      title: 'ClassExpression',
+      code: `let a = class extends Another<Type> {};`,
+      output: `let a = class extends Another<Type> {};`,
+    },
   ],
 });

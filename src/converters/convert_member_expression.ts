@@ -10,6 +10,7 @@ import {
   MemberExpression,
   ConditionalExpression,
   OptionalMemberExpression,
+  isLiteral,
 } from '@babel/types';
 
 type MemberType = Identifier | MemberExpression | NumericLiteral;
@@ -23,7 +24,7 @@ function getMemberExpression(members: MemberType[]): MemberType {
   return memberExpression(
     members.length === 1 ? members[0] : getMemberExpression(members),
     lastMember,
-    lastMember!.type === 'NumericLiteral',
+    isLiteral(lastMember),
   );
 }
 function getConditionalExpression(members: MemberType[], index: number): ConditionalExpression {

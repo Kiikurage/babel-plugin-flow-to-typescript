@@ -37,6 +37,7 @@ const visitor: Visitor = {
   ClassMethod,
   DeclareClass,
   ClassDeclaration,
+  ClassExpression: ClassDeclaration,
   ExportNamedDeclaration,
   InterfaceDeclaration,
   OptionalMemberExpression,

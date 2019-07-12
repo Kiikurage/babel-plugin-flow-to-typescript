@@ -2,7 +2,7 @@ import {
   ClassDeclaration,
   isTypeParameterInstantiation,
   isTypeParameterDeclaration,
-  ClassImplements,
+  ClassImplements, ClassExpression,
 } from '@babel/types';
 import { NodePath } from '@babel/traverse';
 
@@ -10,7 +10,7 @@ import { convertInterfaceExtends } from '../converters/convert_interface_declara
 import { convertTypeParameterInstantiation } from '../converters/convert_type_parameter_instantiation';
 import { convertTypeParameterDeclaration } from '../converters/convert_type_parameter_declaration';
 
-export function ClassDeclaration(path: NodePath<ClassDeclaration>) {
+export function ClassDeclaration(path: NodePath<ClassDeclaration | ClassExpression>) {
   const node = path.node;
 
   const superTypeParameters = node.superTypeParameters;
