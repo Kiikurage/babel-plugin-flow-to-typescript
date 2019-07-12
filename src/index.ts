@@ -65,7 +65,8 @@ export default (_babel: any, opts: PluginOptions = {} as PluginOptions) => {
     name: 'babel-plugin-flow-to-typescript',
     visitor,
 
-    manipulateOptions(opts: PluginOptions, parserOpts) {
+    // tslint:disable-next-line:no-any
+    manipulateOptions(_babel: any, parserOpts) {
       parserOpts.plugins.push('flow');
       if (opts.isJSX) {
         parserOpts.plugins.push('jsx');
