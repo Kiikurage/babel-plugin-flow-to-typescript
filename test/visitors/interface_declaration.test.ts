@@ -85,5 +85,14 @@ pluginTester({
   map<T>(fn: (node: this, index: number) => T): Array<T>;
 }`,
     },
+    {
+      title: 'iterable interface',
+      code: `interface A {
+  @@iterator(): Iterator<string>;
+}`,
+      output: `interface A {
+  [Symbol.iterator](): Iterator<string>;
+}`,
+    },
   ],
 });

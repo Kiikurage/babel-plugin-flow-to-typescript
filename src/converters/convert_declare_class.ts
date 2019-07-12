@@ -19,6 +19,7 @@ import { convertObjectTypeIndexer } from './convert_object_type_indexer';
 import { warnOnlyOnce } from '../util';
 import { convertInterfaceExtends } from './convert_interface_declaration';
 import { convertTypeParameterDeclaration } from './convert_type_parameter_declaration';
+import { getPropertyKey } from './get_property_key';
 
 export function convertDeclareClass(node: DeclareClass) {
   const bodyElements: ClassBody['body'] = [];
@@ -33,6 +34,7 @@ export function convertDeclareClass(node: DeclareClass) {
       convertedProperty = tsParenthesizedType(convertedProperty);
     }
 
+    const { key, isComputed } = getPropertyKey(property);
     if (property.method) {
       if (
         !isTSParenthesizedType(convertedProperty) ||
@@ -48,15 +50,18 @@ export function convertDeclareClass(node: DeclareClass) {
         convertedProperty.typeAnnotation.parameters,
         convertedProperty.typeAnnotation.typeAnnotation,
       );
-
+      // todo: fix bug in tsDeclareMethod builder to accept member expression
+      converted.key = key;
       converted.static = property.static;
       // @ts-ignore
       converted.kind = property.kind;
+      converted.computed = isComputed;
       bodyElements.push(converted);
     } else if (property.kind === 'init') {
-      const converted = classProperty(property.key, null, tsTypeAnnotation(convertedProperty));
+      const converted = classProperty(key, null, tsTypeAnnotation(convertedProperty));
       converted.static = property.static;
       converted.readonly = property.variance && property.variance.kind === 'plus';
+      converted.computed = isComputed;
       bodyElements.push({ ...converted, ...baseNodeProps(property) });
     }
   }

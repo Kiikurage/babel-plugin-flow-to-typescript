@@ -12,6 +12,7 @@ import {
 } from '@babel/types';
 import { convertFlowType } from './convert_flow_type';
 import { baseNodeProps } from '../utils/baseNodeProps';
+import { getPropertyKey } from './get_property_key';
 
 export function convertObjectTypeProperty(property: ObjectTypeProperty) {
   let tsType;
@@ -31,26 +32,30 @@ export function convertObjectTypeProperty(property: ObjectTypeProperty) {
     }
   }
 
+  const { key, isComputed } = getPropertyKey(property);
+
   if (property.method) {
     if (!isTSFunctionType(tsType)) {
       throw new Error('incorrect method declaration');
     }
     const tsMethod = tsMethodSignature(
-      property.key,
+      key,
       tsType.typeParameters,
       tsType.parameters,
       tsType.typeAnnotation,
     );
 
     tsMethod.optional = property.optional;
+    tsMethod.computed = isComputed;
     return tsMethod;
   } else {
     const tsPropSignature = tsPropertySignature(
-      property.key,
+      key,
       tsTypeAnnotation({ ...tsType, ...baseNodeProps(property.value) }),
     );
     tsPropSignature.optional = property.optional;
     tsPropSignature.readonly = property.variance && property.variance.kind === 'plus';
+    tsPropSignature.computed = isComputed;
     return tsPropSignature;
   }
 }

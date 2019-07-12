@@ -88,5 +88,23 @@ pluginTester({
   map<T>(fn: (node: this, index: number) => T): Array<T>;
 }`,
     },
+    {
+      title: 'iterable class',
+      code: `declare class A {
+  @@iterator(): Iterator<string>;
+}`,
+      output: `declare class A {
+  [Symbol.iterator](): Iterator<string>;
+}`,
+    },
+    {
+      title: 'async iterable class',
+      code: `declare class A {
+  @@asyncIterator(): Iterator<string>;
+}`,
+      output: `declare class A {
+  [Symbol.asyncIterator](): Iterator<string>;
+}`,
+    },
   ],
 });

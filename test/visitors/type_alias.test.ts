@@ -81,5 +81,14 @@ type T = A;
   a: ((args: string[]) => null | false | string) & (() => string);
 };`,
     },
+    {
+      title: 'iterable object type',
+      code: `type A = {
+  @@iterator(): Iterator<string>;
+};`,
+      output: `type A = {
+  [Symbol.iterator](): Iterator<string>;
+};`,
+    },
   ],
 });
