@@ -10,9 +10,9 @@ pluginTester({
       output: `declare module "react" {}`,
     },
     {
-      title: 'declare namespace',
+      title: 'declare module "React"',
       code: `declare module React {}`,
-      output: `declare namespace React {}`,
+      output: `declare module "React" {}`,
     },
   ],
 });

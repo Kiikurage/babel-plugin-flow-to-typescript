@@ -1,5 +1,11 @@
 import { NodePath } from '@babel/traverse';
-import { DeclareModule, tsModuleBlock, tsModuleDeclaration } from '@babel/types';
+import {
+  DeclareModule,
+  isIdentifier,
+  stringLiteral,
+  tsModuleBlock,
+  tsModuleDeclaration,
+} from '@babel/types';
 import { baseNodeProps } from '../utils/baseNodeProps';
 import { replaceWith } from '../utils/replaceWith';
 import { PluginPass } from '../types';
@@ -14,7 +20,13 @@ export default {
       ...baseNodeProps(node.body),
     };
 
-    const replacement = tsModuleDeclaration(node.id, moduleBlock);
+    let id = node.id;
+    if (isIdentifier(node.id)) {
+      // it is not documented, but looking at lib/react.js in flow sources
+      // it looks - "declare module react {}" should be identical to "declare module 'react' {}"
+      id = stringLiteral(node.id.name);
+    }
+    const replacement = tsModuleDeclaration(id, moduleBlock);
     replacement.declare = true;
     replaceWith(path, replacement);
   },
