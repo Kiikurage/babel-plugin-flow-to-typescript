@@ -25,6 +25,7 @@ import { DeclareExportDeclaration } from './visitors/declare_export_declaration'
 import { NewExpression } from './visitors/new_expression';
 import { ArrowFunctionExpression } from './visitors/arrow_function_expression';
 import { PluginOptions, PluginPass } from './types';
+import TSModuleDeclaration from './visitors/ts_module_declaration';
 
 const visitor: Visitor<PluginPass> = {
   Program,
@@ -54,6 +55,7 @@ const visitor: Visitor<PluginPass> = {
   DeclareExportDeclaration,
   NewExpression,
   ArrowFunctionExpression,
+  TSModuleDeclaration,
 };
 
 // tslint:disable-next-line:no-any
