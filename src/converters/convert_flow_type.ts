@@ -133,17 +133,11 @@ export function convertFlowType(node: FlowType): TSType {
       );
       return tsTypeParameters!.params[0];
     } else if (isIdentifier(id) && id.name === '$Diff') {
-      // $Diff<X, Y> -> Pick<X, Exclude<keyof X, keyof Y>>
+      // type $Diff<X, Y> = Omit<X, keyof y>;
       const [tsX, tsY] = tsTypeParameters!.params;
-      const tsKeyofX = tsTypeOperator(tsX);
       const tsKeyofY = tsTypeOperator(tsY);
-      tsKeyofX.operator = 'keyof';
       tsKeyofY.operator = 'keyof';
-      const tsExclude = tsTypeReference(
-        identifier('Exclude'),
-        tsTypeParameterInstantiation([tsKeyofX, tsKeyofY]),
-      );
-      return tsTypeReference(identifier('Pick'), tsTypeParameterInstantiation([tsX, tsExclude]));
+      return tsTypeReference(identifier('Omit'), tsTypeParameterInstantiation([tsX, tsKeyofY]));
     } else if (isIdentifier(id) && id.name === '$PropertyType') {
       // $PropertyType<T, k> -> T[k]
       // TODO: $PropertyType<T, k> -> k extends string ? T[k] : never

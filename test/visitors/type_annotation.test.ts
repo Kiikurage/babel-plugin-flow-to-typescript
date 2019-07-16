@@ -97,7 +97,7 @@ pluginTester({
     {
       title: 'Utility generics: $Diff',
       code: `let a: $Diff<X, Y>;`,
-      output: `let a: Pick<X, Exclude<keyof X, keyof Y>>;`,
+      output: `let a: Omit<X, keyof Y>;`,
     },
     {
       title: 'Utility generics: $PropertyType',
