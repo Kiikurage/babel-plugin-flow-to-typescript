@@ -163,7 +163,7 @@ export function convertFlowType(node: FlowType): TSType {
     } else if (isQualifiedTypeIdentifier(id) || isIdentifier(id)) {
       return tsTypeReference(convertFlowIdentifier(id), tsTypeParameters);
     }
-    //TODO: $ObjMap<T, F>, $TupleMap<T, F>, $Call<F>, $Supertype<T>, $Subtype<T>
+    // for other utility types, helpers are added at top of file in Program visitor
   }
 
   if (isIntersectionTypeAnnotation(node)) {

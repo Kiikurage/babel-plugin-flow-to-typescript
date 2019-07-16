@@ -78,5 +78,5 @@ export default (_babel: any, opts: PluginOptions = {} as PluginOptions) => {
       parserOpts.plugins.push('optionalChaining');
       parserOpts.plugins.push('dynamicImport');
     },
-  } as PluginObj;
+  } as PluginObj<PluginPass>;
 };
