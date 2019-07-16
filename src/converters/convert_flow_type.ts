@@ -21,10 +21,15 @@ import {
   isObjectTypeProperty,
   isObjectTypeSpreadProperty,
   isQualifiedTypeIdentifier,
+  isStringLiteral,
   isStringLiteralTypeAnnotation,
   isStringTypeAnnotation,
   isThisTypeAnnotation,
   isTSFunctionType,
+  isTSIndexSignature,
+  isTSMethodSignature,
+  isTSPropertySignature,
+  isTSTypeLiteral,
   isTupleTypeAnnotation,
   isTypeofTypeAnnotation,
   isUnionTypeAnnotation,
@@ -49,11 +54,13 @@ import {
   TSType,
   TSTypeElement,
   tsTypeLiteral,
+  TSTypeOperator,
   tsTypeOperator,
   TSTypeParameterInstantiation,
   tsTypeParameterInstantiation,
   tsTypeReference,
   tsUndefinedKeyword,
+  TSUnionType,
   tsUnionType,
   tsUnknownKeyword,
   tsVoidKeyword,
@@ -135,8 +142,29 @@ export function convertFlowType(node: FlowType): TSType {
     } else if (isIdentifier(id) && id.name === '$Diff') {
       // type $Diff<X, Y> = Omit<X, keyof y>;
       const [tsX, tsY] = tsTypeParameters!.params;
-      const tsKeyofY = tsTypeOperator(tsY);
+
+      let tsKeyofY: TSTypeOperator | TSUnionType = tsTypeOperator(tsY);
       tsKeyofY.operator = 'keyof';
+      if (isTSTypeLiteral(tsY)) {
+        const keys: string[] = [];
+        let doable = true;
+        tsY.members.forEach(m => {
+          if (isTSPropertySignature(m) || isTSMethodSignature(m)) {
+            if (isIdentifier(m.key)) {
+              keys.push(m.key.name);
+            } else if (isStringLiteral(m.key)) {
+              keys.push(m.key.value);
+            } else {
+              doable = false;
+            }
+          } else if (isTSIndexSignature(m)) {
+            doable = false;
+          }
+        });
+        if (doable) {
+          tsKeyofY = tsUnionType(keys.map(p => tsLiteralType(stringLiteral(p))));
+        }
+      }
       return tsTypeReference(identifier('Omit'), tsTypeParameterInstantiation([tsX, tsKeyofY]));
     } else if (isIdentifier(id) && id.name === '$PropertyType') {
       // $PropertyType<T, k> -> T[k]

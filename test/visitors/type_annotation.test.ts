@@ -100,6 +100,19 @@ pluginTester({
       output: `let a: Omit<X, keyof Y>;`,
     },
     {
+      title: 'Utility generics: $Diff when keys from type literal can be computed on compile time',
+      code: `let a: $Diff<X, {a:number, 'b':B, c():void }>;`,
+      output: `let a: Omit<X, "a" | "b" | "c">;`,
+    },
+    {
+      title:
+        'Utility generics: $Diff when keys from type literal can not be computed on compile time',
+      code: `let a: $Diff<X, {[k:string]:B}>;`,
+      output: `let a: Omit<X, keyof {
+  [k: string]: B;
+}>;`,
+    },
+    {
       title: 'Utility generics: $PropertyType',
       code: `let a: $PropertyType<T, k>;`,
       output: `let a: T[k];`,
