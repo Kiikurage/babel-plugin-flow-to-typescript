@@ -66,5 +66,10 @@ pluginTester({
       code: 'function a(c?: string = "v") {}',
       output: 'function a(c: string = "v") {}',
     },
+    {
+      title: 'function with optional parameters followed by default value',
+      code: 'function a(a?: number, b?: number, c: number = 1) {}',
+      output: 'function a(a?: number, b?: number, c: number = 1) {}',
+    },
   ],
 });

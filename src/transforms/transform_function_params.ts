@@ -28,7 +28,9 @@ export function transformFunctionParams(
         // argument with default value can not be optional in typescript
         paramNode.node.left.optional = false;
       }
-      hasRequiredAfter = true;
+      if (!paramNode.isAssignmentPattern()) {
+        hasRequiredAfter = true;
+      }
     }
     if (paramNode.isIdentifier()) {
       const param = paramNode.node;
@@ -56,7 +58,9 @@ export function transformFunctionParams(
             const typeAnnotation = tsUnionType([tsType, tsUndefinedKeyword(), tsNullKeyword()]);
             replaceWith(paramNode.get('typeAnnotation'), tsTypeAnnotation(typeAnnotation));
           }
-          hasRequiredAfter = true;
+          if (!param.optional) {
+            hasRequiredAfter = true;
+          }
         }
       }
     }
