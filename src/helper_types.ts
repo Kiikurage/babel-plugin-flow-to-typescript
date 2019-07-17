@@ -17,11 +17,11 @@ const $ObjMapi = ast`type $ObjMapi<T extends {}, F extends (k: any, v: any) => a
   [K in keyof T]: F extends (k: K, v: T[K]) => infer R ? R : never;
 };`;
 
-const $Call1 = ast`type $Call1<F extends () => any, A> = F extends (a: A, ...args: any) => infer R
+const $Call1 = ast`type $Call1<F extends (...args: any) => any, A> = F extends (a: A, ...args: any) => infer R
   ? R
   : never;`;
 
-const $Call2 = ast`type $Call2<F extends () => any, A, B> = F extends (
+const $Call2 = ast`type $Call2<F extends (...args: any) => any, A, B> = F extends (
   a: A,
   b: B,
   ...args: any
@@ -29,7 +29,7 @@ const $Call2 = ast`type $Call2<F extends () => any, A, B> = F extends (
   ? R
   : never;`;
 
-const $Call3 = ast`type $Call3<F extends () => any, A, B, C> = F extends (
+const $Call3 = ast`type $Call3<F extends (...args: any) => any, A, B, C> = F extends (
   a: A,
   b: B,
   c: C,
@@ -38,7 +38,7 @@ const $Call3 = ast`type $Call3<F extends () => any, A, B, C> = F extends (
   ? R
   : never;`;
 
-const $Call4 = ast`type $Call4<F extends () => any, A, B, C, D> = F extends (
+const $Call4 = ast`type $Call4<F extends (...args: any) => any, A, B, C, D> = F extends (
   a: A,
   b: B,
   c: C,
@@ -48,7 +48,7 @@ const $Call4 = ast`type $Call4<F extends () => any, A, B, C, D> = F extends (
   ? R
   : never;`;
 
-const $Call5 = ast`type $Call5<F extends () => any, A, B, C, D, E> = F extends (
+const $Call5 = ast`type $Call5<F extends (...args: any) => any, A, B, C, D, E> = F extends (
   a: A,
   b: B,
   c: C,

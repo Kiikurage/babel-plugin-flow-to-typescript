@@ -75,12 +75,15 @@ export default {
       },
     });
 
-    const body = path.get('body');
+    const body = path.get('body') as NodePath[];
     const imports = body.filter(st => st.isImportDeclaration());
-    const after = imports.length > 0 ? imports[imports.length - 1] : body[0];
-
+    let after: NodePath;
+    if (imports.length > 0) {
+      after = imports[imports.length - 1];
+    }
     usedHelperTypes.forEach(helperName => {
-      after.insertAfter(helperTypes[helperName]);
+      if (after) after.insertAfter(helperTypes[helperName]);
+      else body[0].insertBefore(helperTypes[helperName]);
     });
   },
 };
