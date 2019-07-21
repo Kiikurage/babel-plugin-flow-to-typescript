@@ -26,6 +26,7 @@ import { NewExpression } from './visitors/new_expression';
 import { ArrowFunctionExpression } from './visitors/arrow_function_expression';
 import { PluginOptions, PluginPass } from './types';
 import TSModuleDeclaration from './visitors/ts_module_declaration';
+import { ExportAllDeclaration } from './visitors/export_all_declaration';
 
 const visitor: Visitor<PluginPass> = {
   Program,
@@ -40,6 +41,7 @@ const visitor: Visitor<PluginPass> = {
   DeclareClass,
   ClassDeclaration,
   ClassExpression: ClassDeclaration,
+  ExportAllDeclaration,
   ExportNamedDeclaration,
   InterfaceDeclaration,
   OptionalMemberExpression,
