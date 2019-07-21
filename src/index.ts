@@ -4,7 +4,6 @@ import { OpaqueType } from './visitors/opaque_type';
 import { TypeAnnotation } from './visitors/type_annotation';
 import { TypeCastExpression } from './visitors/type_cast_expression';
 import { TypeParameterDeclaration } from './visitors/type_parameter_declaration';
-import { ClassMethod } from './visitors/class_method';
 import { ClassDeclaration } from './visitors/class_declaration';
 import { DeclareClass } from './visitors/declare_class';
 import { ExportNamedDeclaration } from './visitors/export_declaration';
@@ -37,7 +36,6 @@ const visitor: Visitor<PluginPass> = {
   ImportSpecifier,
   TypeCastExpression,
   OpaqueType,
-  ClassMethod,
   DeclareClass,
   ClassDeclaration,
   ClassExpression: ClassDeclaration,

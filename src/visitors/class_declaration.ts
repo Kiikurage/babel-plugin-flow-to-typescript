@@ -11,6 +11,7 @@ import { convertInterfaceExtends } from '../converters/convert_interface_declara
 import { convertTypeParameterInstantiation } from '../converters/convert_type_parameter_instantiation';
 import { convertTypeParameterDeclaration } from '../converters/convert_type_parameter_declaration';
 import { replaceWith } from '../utils/replaceWith';
+import { transformClassBody } from '../transforms/transform_class_body';
 
 export function ClassDeclaration(path: NodePath<ClassDeclaration | ClassExpression>) {
   const node = path.node;
@@ -39,4 +40,6 @@ export function ClassDeclaration(path: NodePath<ClassDeclaration | ClassExpressi
       }
     }
   }
+
+  transformClassBody(path.get('body'));
 }

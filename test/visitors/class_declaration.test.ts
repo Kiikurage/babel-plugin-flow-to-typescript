@@ -69,5 +69,38 @@ pluginTester({
       code: `let a = class extends Another<Type> {};`,
       output: `let a = class extends Another<Type> {};`,
     },
+    {
+      title: 'removes variance',
+      code: `
+// @flow
+
+export default class A implements B {
+  +ctx: Context;
+  hasLoaded: boolean;
+  
+  constructor() {}
+}
+`,
+      output: `export default class A implements B {
+  readonly ctx: Context;
+  hasLoaded: boolean;
+
+  constructor() {}
+
+}`,
+    },
+    {
+      title: 'class method parameters',
+      code: `class A {
+  constructor(): void{}
+  method(a:number, b?:?number, c: number = 1): void{}
+}`,
+      output: `class A {
+  constructor() {}
+
+  method(a: number, b?: number | null, c: number = 1): void {}
+
+}`,
+    },
   ],
 });
