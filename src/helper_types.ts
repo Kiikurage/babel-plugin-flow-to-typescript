@@ -59,6 +59,8 @@ const $Call5 = ast`type $Call5<F extends (...args: any) => any, A, B, C, D, E> =
   ? R
   : never;`;
 
+const Class = ast`type Class<T> = new (...args: any) => T;`;
+
 export default {
   $ObjMap,
   $TupleMap,
@@ -68,4 +70,5 @@ export default {
   $Call3,
   $Call4,
   $Call5,
+  Class,
 }
