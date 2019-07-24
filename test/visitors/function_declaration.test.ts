@@ -71,5 +71,23 @@ pluginTester({
       code: 'function a(a?: number, b?: number, c: number = 1) {}',
       output: 'function a(a?: number, b?: number, c: number = 1) {}',
     },
+    {
+      title: 'predicate function',
+      code: `function foo(x: mixed): %checks {
+  return typeof x === "string";
+}`,
+      output: `function foo(x: unknown) {
+  return typeof x === "string";
+}`,
+    },
+    {
+      title: 'predicate function 2',
+      code: `function a(v: mixed): boolean %checks {
+  return typeof v === 'undefined' || v === null || v.length === 0;
+}`,
+      output: `function a(v: unknown): boolean {
+  return typeof v === 'undefined' || v === null || v.length === 0;
+}`,
+    },
   ],
 });

@@ -10,7 +10,8 @@ export function ArrowFunctionExpression(
   state: PluginPass,
 ) {
   transformFunctionParams(path.get('params'));
-
+  // @ts-ignore todo: add babel type
+  path.get('predicate').remove();
   if (isTypeParameterDeclaration(path.node.typeParameters)) {
     const tsTypeParameterDeclaration = convertTypeParameterDeclaration(path.node.typeParameters);
     if (state.opts.isJSX) {

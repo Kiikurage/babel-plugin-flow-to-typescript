@@ -18,5 +18,10 @@ declare function something(a: string): null;`,
       code: `declare function A(create: {} | () => void): void;`,
       output: `declare function A(create: {} | (() => void)): void;`,
     },
+    {
+      title: 'predicate function declaration',
+      code: `declare function foo(x: mixed): boolean %checks(x !== null);`,
+      output: `declare function foo(x: unknown): boolean;`,
+    },
   ],
 });

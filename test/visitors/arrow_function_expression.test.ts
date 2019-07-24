@@ -57,5 +57,10 @@ pluginTester({
 ): ?T => {};`,
       output: `export const a = <T extends any>(a: A<T> | undefined | null, b: B): T | undefined | null => {};`,
     },
+    {
+      title: 'arrow predicate function',
+      code: 'var f = (x: mixed): %checks => typeof x === "string";',
+      output: 'var f = (x: unknown) => typeof x === "string";',
+    },
   ],
 });
