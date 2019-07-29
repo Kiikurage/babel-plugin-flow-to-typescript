@@ -1,37 +1,45 @@
-import {ClassMethod, ClassDeclaration} from '@babel/types';
-import {NodePath} from '@babel/traverse';
-import {convertClassConstructor} from '../converters/convert_class_constructor';
-import {convertFlowType} from '../converters/convert_flow_type'
+import {
+  ClassDeclaration,
+  isTypeParameterInstantiation,
+  isTypeParameterDeclaration,
+  ClassImplements,
+  ClassExpression,
+} from '@babel/types';
+import { NodePath } from '@babel/traverse';
 
-export function ClassMethod(path: NodePath<ClassMethod>) {
-  if (path.node.kind === 'constructor') {
-      path.replaceWith(convertClassConstructor(path));
+import { convertInterfaceExtends } from '../converters/convert_interface_declaration';
+import { convertTypeParameterInstantiation } from '../converters/convert_type_parameter_instantiation';
+import { convertTypeParameterDeclaration } from '../converters/convert_type_parameter_declaration';
+import { replaceWith } from '../utils/replaceWith';
+import { transformClassBody } from '../transforms/transform_class_body';
+
+export function ClassDeclaration(path: NodePath<ClassDeclaration | ClassExpression>) {
+  const node = path.node;
+
+  const superTypeParameters = node.superTypeParameters;
+  if (isTypeParameterInstantiation(superTypeParameters)) {
+    replaceWith(
+      path.get('superTypeParameters'),
+      convertTypeParameterInstantiation(superTypeParameters),
+    );
   }
-}
 
-function processTypeParameters(typeParameterPath: any) {
-  typeParameterPath.node.params = typeParameterPath.node.params.map((_: any, i: number) => convertFlowType(typeParameterPath.get(`params.${i}`)));
-}
-
-export function ClassDeclaration(path: NodePath<ClassDeclaration>) {
-  const superTypeParametersPath = path.get('superTypeParameters')
-  if (superTypeParametersPath.node) {
-    processTypeParameters(superTypeParametersPath)
+  const typeParameters = node.typeParameters;
+  if (isTypeParameterDeclaration(typeParameters)) {
+    replaceWith(path.get('typeParameters'), convertTypeParameterDeclaration(typeParameters));
   }
 
-  const typeParameterPath = path.get('typeParameters');
-  if (typeParameterPath.node) {
-    processTypeParameters(typeParameterPath)
-  }
-
-  const classImplements = path.get('implements')
+  const classImplements = node.implements;
   if (Array.isArray(classImplements)) {
-    // @ts-ignore
-    classImplements.forEach(classImplementsPath => {
-      const typeParameterPath = classImplementsPath.get('typeParameters');
-      if (typeParameterPath.node) {
-        processTypeParameters(typeParameterPath)
+    const classImplements = path.get('implements') as NodePath<ClassImplements>[];
+    if (classImplements !== null) {
+      for (const classImplement of classImplements) {
+        if (classImplement.isClassImplements()) {
+          replaceWith(classImplement, convertInterfaceExtends(classImplement.node));
+        }
       }
-    })
+    }
   }
+
+  transformClassBody(path.get('body'));
 }

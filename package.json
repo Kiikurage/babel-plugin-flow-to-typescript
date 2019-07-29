@@ -7,8 +7,13 @@
     "email": "y.kikura@gmail.com",
     "url": "https://github.com/Kiikurage"
   },
+  "contributors": [
+    {
+      "name": "CureApp"
+    }
+  ],
   "files": [
-    "dist",
+    "dist/*",
     "README.md"
   ],
   "version": "0.4.0",
@@ -17,7 +22,11 @@
     "test": "jest",
     "test-watch": "jest --watch",
     "build": "tsc",
-    "watch": "tsc --watch"
+    "watch": "tsc --watch",
+    "lint": "tslint --project .",
+    "cover": "jest --coverage",
+    "report-coverage": "codecov",
+    "prettify": "./node_modules/.bin/prettier --write \"{src,test}/**/*.{js,ts,tsx}\""
   },
   "keywords": [
     "babel",
@@ -30,28 +39,27 @@
     "url": "https://github.com/Kiikurage/babel-plugin-flow-to-typescript.git"
   },
   "peerDependencies": {
-    "@babel/core": "^7.2.2"
+    "@babel/core": "^7.4.4"
   },
   "dependencies": {
-    "@babel/traverse": "^7.2.3",
-    "@babel/types": "^7.2.2"
+    "@babel/template": "^7.4.4",
+    "@babel/traverse": "^7.5.5",
+    "@babel/types": "^7.5.5"
   },
   "devDependencies": {
-    "@babel/core": "^7.2.2",
-    "@types/babel-core": "^6.25.3",
-    "@types/babel-types": "^7.0.1",
-    "@types/node": "^10.12.18",
-    "babel-core": "^7.0.0-bridge.0",
-    "babel-jest": "^24.8.0",
-    "babel-plugin-tester": "^5.0.0",
+    "@types/babel__traverse": "^7.0.7",
+    "babel-plugin-tester": "^6.4.0",
+    "codecov": "^3.5.0",
     "jest": "^24.8.0",
-    "regenerator-runtime": "^0.13.1",
-    "ts-jest": "^23.10.5",
-    "tslint": "^5.9.1",
-    "typescript": "^3.2.4"
+    "prettier": "^1.17.1",
+    "ts-jest": "^24.0.2",
+    "tslint": "^5.18.0",
+    "tslint-config-prettier": "^1.18.0",
+    "tslint-plugin-prettier": "^2.0.1",
+    "typescript": "^3.5.2"
   },
   "jest": {
-    "testURL": "http://localhost/",
+    "testEnvironment": "node",
     "transform": {
       "^.+\\.tsx?$": "ts-jest"
     },

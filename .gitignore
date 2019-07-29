@@ -5,3 +5,4 @@ node_modules
 *.log
 __snapshots__
 /yarn.lock
+/coverage

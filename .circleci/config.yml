@@ -1,0 +1,31 @@
+workflows:
+  version: 2
+  node-multi-build:
+    jobs:
+      - node-latest
+
+version: 2
+jobs:
+  base: &base
+    docker:
+      - image: circleci/node:latest
+    working_directory: ~/repo
+    steps:
+      - checkout
+      - restore_cache:
+          keys:
+            - v{{ .Environment.CIRCLECI_CACHE_VERSION }}-dependencies1-{{ checksum "package-lock.json" }}
+            - v{{ .Environment.CIRCLECI_CACHE_VERSION }}-dependencies1-
+      - run: npm install
+      - save_cache:
+          paths:
+            - node_modules
+          key: v{{ .Environment.CIRCLECI_CACHE_VERSION }}-dependencies1-{{ checksum "package-lock.json" }}
+      - run: npm run lint
+      - run: npm run cover -- --runInBand
+      - run: npm run report-coverage
+      - run: npm run build
+  node-latest:
+    <<: *base
+    docker:
+      - image: node:latest

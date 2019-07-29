@@ -1,14 +1,18 @@
-import {NodePath} from '@babel/traverse';
 import {
-    TSTypeParameterDeclaration,
-    tsTypeParameterDeclaration,
-    TypeParameter,
-    TypeParameterDeclaration
+  TSTypeParameterDeclaration,
+  tsTypeParameterDeclaration,
+  TypeParameterDeclaration,
 } from '@babel/types';
-import {convertTypeParameter} from './convert_type_parameter';
+import { convertTypeParameter } from './convert_type_parameter';
+import { baseNodeProps } from '../utils/baseNodeProps';
 
-export function convertTypeParameterDeclaration(path: NodePath<TypeParameterDeclaration>): TSTypeParameterDeclaration {
-    const params = path.node.params.map((_, i) => convertTypeParameter(path.get<TypeParameter>(`params.${i}`)));
+export function convertTypeParameterDeclaration(
+  node: TypeParameterDeclaration,
+): TSTypeParameterDeclaration {
+  const params = node.params.map(p => ({
+    ...baseNodeProps(p),
+    ...convertTypeParameter(p),
+  }));
 
-    return tsTypeParameterDeclaration(params);
+  return tsTypeParameterDeclaration(params);
 }
