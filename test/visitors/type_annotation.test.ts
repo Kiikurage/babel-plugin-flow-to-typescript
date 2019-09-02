@@ -345,5 +345,10 @@ import * as React from "react";`,
 import * as React from "react";
 `,
     },
+    {
+      title: 'with empty type parameters',
+      code: `let a: A<>;`,
+      output: `let a: A;`,
+    },
   ],
 });

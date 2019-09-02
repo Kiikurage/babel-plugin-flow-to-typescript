@@ -198,7 +198,10 @@ export function convertFlowType(node: FlowType): TSType {
     } else if (isIdentifier(id) && id.name === 'Object') {
       return tsObjectKeyword();
     } else if (isQualifiedTypeIdentifier(id) || isIdentifier(id)) {
-      return tsTypeReference(convertFlowIdentifier(id), tsTypeParameters);
+      return tsTypeReference(
+        convertFlowIdentifier(id),
+        tsTypeParameters && tsTypeParameters.params.length ? tsTypeParameters : null,
+      );
     }
     // for other utility types, helpers are added at top of file in Program visitor
   }
