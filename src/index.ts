@@ -8,7 +8,6 @@ import { ClassDeclaration } from './visitors/class_declaration';
 import { DeclareClass } from './visitors/declare_class';
 import { ExportNamedDeclaration } from './visitors/export_declaration';
 import { InterfaceDeclaration } from './visitors/interface_declaration';
-import { OptionalMemberExpression } from './visitors/optional_member_expression';
 import { DeclareFunction } from './visitors/declare_function';
 import Program from './visitors/program';
 import { TypeAlias } from './visitors/type_alias';
@@ -42,7 +41,6 @@ const visitor: Visitor<PluginPass> = {
   ExportAllDeclaration,
   ExportNamedDeclaration,
   InterfaceDeclaration,
-  OptionalMemberExpression,
   DeclareFunction,
   FunctionDeclaration,
   CallExpression,
