@@ -172,6 +172,22 @@ pluginTester({
 };`,
     },
     {
+      title: 'Type literal: indexer to mapped type - skip indexer',
+      code: `let a: {
+  [x:string]: number;
+};`,
+      output: `let a: {
+  [x: string]: number;
+};`,
+    },
+    {
+      title: 'Type literal: indexer to mapped type',
+      code: `let a: {
+  [x:A]: number;
+};`,
+      output: `let a: { [x in A]: number };`,
+    },
+    {
       title: 'Type literal: type literal with variance',
       code: `let a: { +b: string, -c:number };`,
       output: `let a: {

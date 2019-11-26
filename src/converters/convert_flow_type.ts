@@ -43,6 +43,7 @@ import {
   tsIndexedAccessType,
   tsIntersectionType,
   tsLiteralType,
+  tsMappedType,
   tsNeverKeyword,
   tsNullKeyword,
   tsNumberKeyword,
@@ -56,6 +57,7 @@ import {
   tsTypeLiteral,
   TSTypeOperator,
   tsTypeOperator,
+  tsTypeParameter,
   TSTypeParameterInstantiation,
   tsTypeParameterInstantiation,
   tsTypeReference,
@@ -250,14 +252,28 @@ export function convertFlowType(node: FlowType): TSType {
     const members: TSTypeElement[] = [];
     const spreads: TSType[] = [];
 
-    if (node.exact) {
-      warnOnlyOnce(
-        "Exact object type annotation in Flow is ignored. In TypeScript, it's always regarded as exact type",
+    if (
+      (!node.properties || node.properties.length === 0) &&
+      (!node.callProperties || node.callProperties.length === 0) &&
+      (!node.internalSlots || node.internalSlots.length === 0) &&
+      node.indexers &&
+      node.indexers.length === 1 &&
+      !isNumberTypeAnnotation(node.indexers[0].key) &&
+      !isStringTypeAnnotation(node.indexers[0].key)
+    ) {
+      // should be converted to mapped type
+      // todo: handle cases when there are few indexers which should be represented as mapped types
+      return tsMappedType(
+        tsTypeParameter(
+          convertFlowType(node.indexers[0].key),
+          null,
+          node.indexers[0].id?.name || 'k',
+        ),
+        convertFlowType(node.indexers[0].value),
       );
-      node.exact = false;
     }
 
-    if (node.properties && node.properties.length > 0) {
+    if (node.properties) {
       for (const property of node.properties) {
         if (isObjectTypeProperty(property)) {
           members.push({ ...convertObjectTypeProperty(property), ...baseNodeProps(property) });
@@ -270,7 +286,7 @@ export function convertFlowType(node: FlowType): TSType {
       }
     }
 
-    if (node.indexers && node.indexers.length > 0) {
+    if (node.indexers) {
       members.push(...node.indexers.map(convertObjectTypeIndexer));
     }
 
