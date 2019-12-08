@@ -10,7 +10,7 @@ pluginTester({
   declare module.exports: A;
 }`,
       output: `declare module 'react' {
-  const __exports: A;
+  let __exports: A;
   export = __exports;
 }`,
     },
@@ -22,7 +22,7 @@ pluginTester({
   };
 }`,
       output: `declare module 'react' {
-  const __exports: {
+  let __exports: {
     a: number;
   };
   export = __exports;
