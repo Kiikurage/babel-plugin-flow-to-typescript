@@ -4,6 +4,7 @@ import {
   isTypeParameterDeclaration,
   ClassImplements,
   ClassExpression,
+  ClassBody,
 } from '@babel/types';
 import { NodePath } from '@babel/traverse';
 
@@ -19,14 +20,17 @@ export function ClassDeclaration(path: NodePath<ClassDeclaration | ClassExpressi
   const superTypeParameters = node.superTypeParameters;
   if (isTypeParameterInstantiation(superTypeParameters)) {
     replaceWith(
-      path.get('superTypeParameters'),
+      path.get('superTypeParameters') as NodePath,
       convertTypeParameterInstantiation(superTypeParameters),
     );
   }
 
   const typeParameters = node.typeParameters;
   if (isTypeParameterDeclaration(typeParameters)) {
-    replaceWith(path.get('typeParameters'), convertTypeParameterDeclaration(typeParameters));
+    replaceWith(
+      path.get('typeParameters') as NodePath,
+      convertTypeParameterDeclaration(typeParameters),
+    );
   }
 
   const classImplements = node.implements;
@@ -41,5 +45,5 @@ export function ClassDeclaration(path: NodePath<ClassDeclaration | ClassExpressi
     }
   }
 
-  transformClassBody(path.get('body'));
+  transformClassBody(path.get('body') as NodePath<ClassBody>);
 }

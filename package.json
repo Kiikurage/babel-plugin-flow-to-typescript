@@ -42,21 +42,21 @@
     "@babel/core": "^7.4.4"
   },
   "dependencies": {
-    "@babel/template": "^7.7.0",
-    "@babel/traverse": "^7.7.0",
-    "@babel/types": "^7.7.4"
+    "@babel/template": "^7.8.3",
+    "@babel/traverse": "^7.8.4",
+    "@babel/types": "^7.8.3"
   },
   "devDependencies": {
     "@types/babel__traverse": "^7.0.8",
     "babel-plugin-tester": "^7.0.1",
-    "codecov": "^3.6.1",
-    "jest": "^24.9.0",
+    "codecov": "^3.6.5",
+    "jest": "^25.1.0",
     "prettier": "^1.17.1",
-    "ts-jest": "^24.1.0",
+    "ts-jest": "^25.2.0",
     "tslint": "^5.20.1",
     "tslint-config-prettier": "^1.18.0",
-    "tslint-plugin-prettier": "^2.0.1",
-    "typescript": "^3.7.2"
+    "tslint-plugin-prettier": "^2.1.0",
+    "typescript": "^3.7.5"
   },
   "jest": {
     "testEnvironment": "node",
