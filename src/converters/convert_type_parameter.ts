@@ -3,13 +3,12 @@ import { convertFlowType } from './convert_flow_type';
 import { baseNodeProps } from '../utils/baseNodeProps';
 
 export function convertTypeParameter(node: TypeParameter): TSTypeParameter {
-  return {
-    ...tsTypeParameter(),
-    constraint: node.bound && {
+  return tsTypeParameter(
+    node.bound && {
       ...baseNodeProps(node.bound.typeAnnotation),
       ...convertFlowType(node.bound.typeAnnotation),
     },
-    default: node.default && { ...baseNodeProps(node.default), ...convertFlowType(node.default) },
-    name: node.name,
-  };
+    node.default && { ...baseNodeProps(node.default), ...convertFlowType(node.default) },
+    node.name!,
+  );
 }

@@ -62,5 +62,14 @@ pluginTester({
       code: 'var f = (x: mixed): %checks => typeof x === "string";',
       output: 'var f = (x: unknown) => typeof x === "string";',
     },
+    {
+      title: 'arrow function returning object expression',
+      code: `var f = () => ({
+  a: 1
+}: {});`,
+      output: `var f = () => ({
+  a: 1
+} as {});`,
+    },
   ],
 });

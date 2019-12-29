@@ -1,7 +1,7 @@
-import { BaseNode } from '@babel/types';
+import { Node } from '@babel/types';
 import { recastProps } from './recastProps';
 
-export function baseNodeProps(node: BaseNode): Omit<BaseNode, 'type'> {
+export function baseNodeProps(node: Node): Omit<Node, 'type'> {
   return {
     leadingComments: node.leadingComments,
     innerComments: node.innerComments,
