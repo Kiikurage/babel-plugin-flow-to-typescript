@@ -52,14 +52,14 @@ export function convertDeclareClass(node: DeclareClass) {
       );
       // todo: fix bug in tsDeclareMethod builder to accept member expression
       converted.key = key;
-      converted.static = property.static;
+      converted.static = !!property.static;
       // @ts-ignore
       converted.kind = property.kind;
       converted.computed = isComputed;
       bodyElements.push(converted);
     } else if (property.kind === 'init') {
       const converted = classProperty(key, null, tsTypeAnnotation(convertedProperty));
-      converted.static = property.static;
+      converted.static = !!property.static;
       converted.readonly = property.variance && property.variance.kind === 'plus';
       converted.computed = isComputed;
       bodyElements.push({ ...converted, ...baseNodeProps(property) });

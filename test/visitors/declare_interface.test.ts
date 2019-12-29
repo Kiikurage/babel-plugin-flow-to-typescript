@@ -18,10 +18,10 @@ pluginTester({
     {
       title: 'declare interface with call property',
       code: `declare interface A {
-  (): void
+  (): void,
 }`,
       output: `declare interface A {
-  (): void
+  (): void;
 }`,
     },
     {

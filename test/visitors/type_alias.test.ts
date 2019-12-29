@@ -48,7 +48,7 @@ type T = {
 `,
       output: `
 type T = {
-  (b: string, a: string): string
+  (b: string, a: string): string;
 };
 `,
     },
