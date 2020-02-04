@@ -64,7 +64,7 @@ type B = Class<{
 type C = Class<A>;
 `,
       output: `type Class<T> = new (...args: any) => T;
-type A = string | Class<React.Component<any, any>> | object;
+type A = string | Class<React.Component<any, any>> | any;
 type B = Class<{
   readonly scope: (a: TagsType) => void;
 }>;
