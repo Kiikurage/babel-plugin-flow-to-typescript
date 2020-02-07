@@ -334,7 +334,7 @@ type B = A.A.A;`,
     {
       title: 'Object type',
       code: `let a: Object;`,
-      output: `let a: object;`,
+      output: `let a: any;`,
     },
 
     {
