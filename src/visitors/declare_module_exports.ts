@@ -18,7 +18,7 @@ export function DeclareModuleExports(path: NodePath<DeclareModuleExports>) {
   const aliasId = identifier('__exports');
 
   path.replaceWithMultiple([
-    variableDeclaration('const', [
+    variableDeclaration('let', [
       variableDeclarator({
         ...aliasId,
         typeAnnotation: { ...tsTypeAnnotation(tsType), ...baseNodeProps(node.typeAnnotation) },

@@ -46,7 +46,7 @@ export function DeclareExportDeclaration(path: NodePath<DeclareExportDeclaration
       const aliasId = identifier('__default');
 
       path.replaceWithMultiple([
-        variableDeclaration('const', [
+        variableDeclaration('let', [
           variableDeclarator({ ...aliasId, typeAnnotation: tsTypeAnnotation(declaration) }),
         ]),
         exportDefaultDeclaration(aliasId),

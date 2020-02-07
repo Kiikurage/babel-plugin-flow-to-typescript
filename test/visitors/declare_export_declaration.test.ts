@@ -18,7 +18,7 @@ pluginTester({
   export var a: number;
   export function isValidElement(element: any): boolean;
   export type ComponentType<P> = React$ComponentType<P>;
-  const __default: {
+  let __default: {
     a: number;
   };
   export default __default;
