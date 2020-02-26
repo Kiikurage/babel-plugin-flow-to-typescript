@@ -1,5 +1,5 @@
 import { PluginObj, Visitor } from '@babel/core';
-import { ImportDeclaration, ImportSpecifier } from './visitors/import_declaration';
+import { ImportSpecifier } from './visitors/import_declaration';
 import { OpaqueType } from './visitors/opaque_type';
 import { TypeAnnotation } from './visitors/type_annotation';
 import { TypeCastExpression } from './visitors/type_cast_expression';
@@ -31,7 +31,6 @@ const visitor: Visitor<PluginPass> = {
   TypeAnnotation,
   TypeAlias,
   TypeParameterDeclaration,
-  ImportDeclaration,
   ImportSpecifier,
   TypeCastExpression,
   OpaqueType,
